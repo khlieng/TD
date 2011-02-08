@@ -9,9 +9,7 @@ namespace TD
     static class GameHelper
     {
         public static Game Game { get; set; }
-
-        //Some comment
-
+        
         public static void AddService<T>(T obj)
         {
             Game.Services.AddService(typeof(T), obj);
