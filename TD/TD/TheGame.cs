@@ -75,13 +75,13 @@ namespace TD
             
             stateManager.Add(new MainGameState(this));
 
-            emitter = new Emitter(this, Content.Load<Texture2D>("fire"), new Vector2(300, 300), 1);
-            emitter.Direction = new Vector2(0, -1);
-            emitter.MaxDirectionDevation = 180;
-            emitter.MinDuration = 500;
-            emitter.MaxDuration = 1000;
-            emitter.MinVelocity = 0;
-            emitter.MaxVelocity = 100;
+            //emitter = new Emitter(this, Content.Load<Texture2D>("fire"), new Vector2(300, 300), 1);
+            //emitter.Direction = new Vector2(0, -1);
+            //emitter.MaxDirectionDevation = 180;
+            //emitter.MinDuration = 500;
+            //emitter.MaxDuration = 1000;
+            //emitter.MinVelocity = 0;
+            //emitter.MaxVelocity = 100;
                                                 
             base.LoadContent();
         }
