@@ -95,6 +95,10 @@ namespace TD
                     case TowerType.Slow:
                         towerToAdd = new SlowTower(Game, row, col, this);
                         break;
+
+                    case TowerType.Flame:
+                        towerToAdd = new FlameTower(Game, row, col, this);
+                        break;
                 }
 
                 if (towerToAdd != null && MainGameState.TakeMoney(towerToAdd.Cost))

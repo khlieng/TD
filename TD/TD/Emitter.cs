@@ -71,13 +71,13 @@ namespace TD
                 p.Update(gameTime);
             }
 
+            while (remove.Count > 0)
+                particles.Remove(remove.Dequeue());
+
             if (Emitting)
             {
                 while (add.Count > 0)
                     particles.AddLast(add.Dequeue());
-
-                while (remove.Count > 0)
-                    particles.Remove(remove.Dequeue());
 
                 elapsed += gameTime.ElapsedGameTime.Milliseconds;
                 while (elapsed >= interval)

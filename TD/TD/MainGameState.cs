@@ -156,12 +156,15 @@ namespace TD
         private void SetupUI()
         {
             TextButton buttonRocket = new TextButton(Game, new Vector2(20, 500), "Rocket Tower", TheGame.Fonts["Calibri 12"]);
-            TextButton buttonSlow = new TextButton(Game, new Vector2(20, 540), "Slow Tower", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonSlow = new TextButton(Game, new Vector2(20, 530), "Slow Tower", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonFlame = new TextButton(Game, new Vector2(20, 560), "Flame Tower", TheGame.Fonts["Calibri 12"]);
             buttonRocket.ToggleAble = true;
             buttonRocket.DropShadow = true;
             buttonSlow.ToggleAble = true;
             buttonSlow.DropShadow = true;
-            new ToggleGroup(buttonRocket, buttonSlow);
+            buttonFlame.ToggleAble = true;
+            buttonFlame.DropShadow = true;
+            new ToggleGroup(buttonRocket, buttonSlow, buttonFlame);
             new Tooltip(Game, buttonRocket, "Shootz dem rokkitz!\nDamange: 20\nSpeed: 2.0\nRange 150\nCost: 100") { TextColor = Color.Red };
             new Tooltip(Game, buttonSlow, "Slow jaaaa o_O\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
 
@@ -200,6 +203,18 @@ namespace TD
                     if (buttonSlow.Toggled)
                     {
                         selected = TowerType.Slow;
+                    }
+                    else
+                    {
+                        selected = TowerType.None;
+                    }
+                };
+
+            buttonFlame.Click += (o, e) =>
+                {
+                    if (buttonFlame.Toggled)
+                    {
+                        selected = TowerType.Flame;
                     }
                     else
                     {

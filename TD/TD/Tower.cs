@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TD
 {
-    enum TowerType { None, Rocket, Slow }
+    enum TowerType { None, Rocket, Slow, Flame }
 
     abstract class Tower : DrawableGameComponent
     {
