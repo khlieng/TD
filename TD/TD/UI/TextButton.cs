@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TD
 {
-    public class TextButton : DrawableGameComponent, IToggleAble
+    public class TextButton : DrawableGameComponent, IToggleAble, ITooltipProvider
     {
         private SpriteBatch spriteBatch;
 
@@ -74,8 +74,7 @@ namespace TD
         {
             MouseState current = Mouse.GetState();
 
-            if (current.X > Position.X && current.X < Position.X + textSize.X &&
-                current.Y > Position.Y && current.Y < Position.Y + textSize.Y)
+            if (MouseOver(current))
             {
                 if (!toggled)
                 {
@@ -94,9 +93,25 @@ namespace TD
                 hovered = false;
             }
 
+            if (MouseOver(current) && !MouseOver(prev))
+            {
+                OnShowTooltip();
+            }
+
+            if (!MouseOver(current) && MouseOver(prev))
+            {
+                OnHideTooltip();
+            }
+
             prev = current;
 
             base.Update(gameTime);
+        }
+
+        private bool MouseOver(MouseState state)
+        {
+            return state.X > Position.X && state.X < Position.X + textSize.X &&
+                state.Y > Position.Y && state.Y < Position.Y + textSize.Y;
         }
 
         public override void Draw(GameTime gameTime)
@@ -138,5 +153,35 @@ namespace TD
                 ToggledChanged(this, EventArgs.Empty);
             }
         }
+
+        #region ITooltipProvider implementation
+        public event EventHandler ShowTooltip;
+        public event EventHandler HideTooltip;
+
+        public Vector2 TooltipPosition
+        {
+            get
+            {
+                MouseState state = Mouse.GetState();
+                return new Vector2(state.X, state.Y - 20);
+            }
+        }
+
+        protected virtual void OnShowTooltip()
+        {
+            if (ShowTooltip != null)
+            {
+                ShowTooltip(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnHideTooltip()
+        {
+            if (HideTooltip != null)
+            {
+                HideTooltip(this, EventArgs.Empty);
+            }
+        }
+        #endregion
     }
 }

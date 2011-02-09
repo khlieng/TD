@@ -159,7 +159,8 @@ namespace TD
             buttonSlow.ToggleAble = true;
             buttonSlow.DropShadow = true;
             new ToggleGroup(buttonRocket, buttonSlow);
-
+            new Tooltip(Game, buttonRocket, "Cost: 100") { TextColor = Color.Yellow };
+            new Tooltip(Game, buttonSlow, "Cost: 150") { TextColor = Color.Yellow };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.Fonts["Calibri 12"]);
             buttonUpgrade.DropShadow = true;

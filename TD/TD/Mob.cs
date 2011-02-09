@@ -68,7 +68,7 @@ namespace TD
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
             texture = Game.Content.Load<Texture2D>("mob2");
-
+            
             hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 30, 10));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;

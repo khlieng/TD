@@ -13,6 +13,7 @@ namespace TD
         private ITooltipProvider provider;
 
         public string Text { get; set; }
+        public Color TextColor { get; set; }
 
         public Tooltip(Game game, ITooltipProvider provider, string text)
             : base(game)
@@ -21,6 +22,7 @@ namespace TD
 
             this.provider = provider;
             Text = text;
+            TextColor = Color.White;
             Enabled = false;
             Visible = false;
 
@@ -33,7 +35,7 @@ namespace TD
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(TheGame.Fonts["Calibri 8"], Text, provider.TooltipPosition, Color.White);
+            spriteBatch.DrawString(TheGame.Fonts["Calibri 8"], Text, provider.TooltipPosition, TextColor);
             spriteBatch.End();
 
             base.Draw(gameTime);
