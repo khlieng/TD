@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XNATools;
 
 namespace TD
 {
     class RocketTower : Tower
     {
-        //private Texture2D projectileTexture;
-
         public RocketTower(Game game, int row, int col, IMobContainer mobs)
             : base(game, row, col, mobs)
         {
@@ -25,15 +24,23 @@ namespace TD
         protected override void LoadContent()
         {
             texture = Game.Content.Load<Texture2D>("rocket_tower");
-            //projectileTexture = Game.Content.Load<Texture2D>("rocket");
 
             base.LoadContent();
         }
-
+        
         protected override void Fire()
-        {
-            //new Projectile(Game, center, Target, 250.0f, damage, projectileTexture);            
+        {          
             new Rocket(Game, center, Target, 300.0f, damage);
+            
+            // Smoke <3
+            Emitter emitter = new Emitter(Game, Game.Content.Load<Texture2D>("smoke"), center, 1);
+            emitter.MaxDirectionDevation = 180;
+            emitter.MinVelocity = 5;
+            emitter.MaxVelocity = 30;
+            emitter.MinDuration = 500;
+            emitter.MaxDuration = 2000;
+            new DelayedCall(Game, () => emitter.Emitting = false, 100);
+            new DelayedCall(Game, () => Game.Components.Remove(emitter), 5000);            
             
             base.Fire();
         }

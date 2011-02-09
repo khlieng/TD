@@ -25,6 +25,7 @@ namespace TD
         public int MinDuration { get; set; }
         public int MaxDuration { get; set; }
 
+        public bool Emitting { get; set; }
         public bool Additive { get; set; }
 
         int interval;
@@ -43,6 +44,7 @@ namespace TD
             Position = position;
             Direction = new Vector2(0, 1);
             this.interval = interval;
+            Emitting = true;
             Additive = true;
 
             game.Components.Add(this);
@@ -70,24 +72,27 @@ namespace TD
                 p.Update(gameTime);
             }
 
-            while (add.Count > 0)
-                particles.AddLast(add.Dequeue());
-
-            while (remove.Count > 0)
-                particles.Remove(remove.Dequeue());
-
-            elapsed += gameTime.ElapsedGameTime.Milliseconds;
-            while (elapsed >= interval)
+            if (Emitting)
             {
-                elapsed -= interval;
+                while (add.Count > 0)
+                    particles.AddLast(add.Dequeue());
 
-                float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);                
-                Vector2 pDirection = Vector2.Transform(direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
+                while (remove.Count > 0)
+                    particles.Remove(remove.Dequeue());
 
-                float velocity = rand.Next(MaxVelocity - MinVelocity + 1) + MinVelocity;
-                int duration = rand.Next(MaxDuration - MinDuration + 1) + MinDuration;                
+                elapsed += gameTime.ElapsedGameTime.Milliseconds;
+                while (elapsed >= interval)
+                {
+                    elapsed -= interval;
 
-                new Particle(this, tempTexture, Position, pDirection, velocity, duration);
+                    float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
+                    Vector2 pDirection = Vector2.Transform(direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
+
+                    float velocity = rand.Next(MaxVelocity - MinVelocity + 1) + MinVelocity;
+                    int duration = rand.Next(MaxDuration - MinDuration + 1) + MinDuration;
+
+                    new Particle(this, tempTexture, Position, pDirection, velocity, duration);
+                }
             }
 
             base.Update(gameTime);

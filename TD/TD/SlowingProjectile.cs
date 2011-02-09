@@ -6,7 +6,7 @@ namespace TD
 {
     class SlowingProjectile : Projectile
     {
-        private static Dictionary<ITarget, TimedSetter<float>> targetMap = new Dictionary<ITarget, TimedSetter<float>>();
+        private static Dictionary<ITarget, DelayedCall<float>> targetMap = new Dictionary<ITarget, DelayedCall<float>>();
 
         private float speedReduction;
         private int duration;
@@ -29,7 +29,7 @@ namespace TD
             }
             else
             {
-                targetMap.Add(target, new TimedSetter<float>(Game, f => mob.VelocityFactor = f, 1.0f, duration));
+                targetMap.Add(target, new DelayedCall<float>(Game, f => mob.VelocityFactor = f, 1.0f, duration));
             }
 
             base.OnHit();

@@ -6,21 +6,19 @@ using Microsoft.Xna.Framework;
 
 namespace XNATools
 {
-    public class TimedSetter<T> : GameComponent
+    public class DelayedCall : GameComponent
     {
-        private Action<T> setter;
-        private T val;
-        private int time;
+        private Action method;
+        private int delay;
         private int elapsed;
 
         public bool TimerRunning { get; set; }
 
-        public TimedSetter(Game game, Action<T> setter, T val, int time)
+        public DelayedCall(Game game, Action method, int delay)
             : base(game)
         {
-            this.setter = setter;
-            this.val = val;
-            this.time = time;
+            this.method = method;
+            this.delay = delay;
 
             TimerRunning = true;
             game.Components.Add(this);
@@ -39,9 +37,9 @@ namespace XNATools
         public override void Update(GameTime gameTime)
         {
             elapsed += gameTime.ElapsedGameTime.Milliseconds;
-            if (elapsed >= time)
+            if (elapsed >= delay)
             {
-                setter(val);
+                method();
                 TimerRunning = false;
                 Game.Components.Remove(this);
             }
