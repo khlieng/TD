@@ -35,12 +35,13 @@ namespace TD
             // Smoke <3
             Emitter emitter = new Emitter(Game, Game.Content.Load<Texture2D>("smoke"), center, 1);
             emitter.MaxDirectionDevation = 180;
-            emitter.MinVelocity = 5;
+            emitter.MinVelocity = 15;
             emitter.MaxVelocity = 30;
-            emitter.MinDuration = 500;
-            emitter.MaxDuration = 2000;
+            emitter.MinDuration = 200;
+            emitter.MaxDuration = 1000;
+            emitter.EmitOffset = 8;
             new DelayedCall(Game, () => emitter.Emitting = false, 100);
-            new DelayedCall(Game, () => Game.Components.Remove(emitter), 5000);            
+            new DelayedCall(Game, () => Game.Components.Remove(emitter), 2000);            
             
             base.Fire();
         }
