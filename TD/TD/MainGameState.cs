@@ -73,7 +73,7 @@ namespace TD
                 {
                     Tower added = map.GetTower(e.Row, e.Col);
                     Vector2 startPos = new Vector2(e.Col * 32, e.Row * 32);
-                    new MovingText(Game, added.Cost + "$", startPos, startPos - new Vector2(0, 20), 500);
+                    new MovingText(Game, added.Cost + "$", Color.Yellow, startPos, startPos - new Vector2(0, 20), 500);
                 }
             };
 

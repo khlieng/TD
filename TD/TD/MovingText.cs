@@ -12,6 +12,7 @@ namespace TD
         private SpriteBatch spriteBatch;
 
         private string text;
+        private Color color;
         private Vector2 position;
         private Vector2 direction;
         private float distance;
@@ -19,12 +20,18 @@ namespace TD
         private int time;
 
         public MovingText(Game game, string text, Vector2 start, Vector2 end, int time)
+            : this(game, text, Color.White, start, end, time)
+        {
+        }
+
+        public MovingText(Game game, string text, Color color, Vector2 start, Vector2 end, int time)
             : base(game)
         {
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
             this.text = text;
-            this.time = time;
+            this.color = color;
+            this.time = time;            
 
             position = start;
 
@@ -33,7 +40,7 @@ namespace TD
             direction.Normalize();
 
             game.Components.Add(this);
-        }
+        }        
 
         public override void Update(GameTime gameTime)
         {
@@ -52,7 +59,7 @@ namespace TD
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(TheGame.Fonts["Calibri 8"], text, position, Color.White);
+            spriteBatch.DrawString(TheGame.Fonts["Calibri 8"], text, position, color);
             spriteBatch.End();
 
             base.Draw(gameTime);
