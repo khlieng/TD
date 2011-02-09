@@ -94,18 +94,21 @@ namespace TD
                     towerInfoLabel.Text = string.Format("Damage: {0} + {1}\n", data.Damage, upgradedData.Damage - data.Damage);
                     towerInfoLabel.Text += string.Format("Speed: {0:0.0} + {1:0.0}\n", data.Speed, upgradedData.Speed - data.Speed);
                     towerInfoLabel.Text += string.Format("Range: {0:0.0} + {1:0.0}\n", data.Range, upgradedData.Range - data.Range);
-                    //towerInfoLabel.Text = "Damage: " + data.Damage + " + " + (upgradedData.Damage - data.Damage) + "\n" +
-                    //                      "Speed: " + data.Speed + " + " + (upgradedData.Speed - data.Speed) + "\n" +
-                    //                      "Range: " + data.Range + " + " + (upgradedData.Range - data.Range) + "\n";
+                    if (data.SlowPercentage != null)
+                    {
+                        towerInfoLabel.Text += string.Format("Slow: {0}% + {1}%\n", data.SlowPercentage, 
+                            upgradedData.SlowPercentage - data.SlowPercentage);
+                    }
                 }
                 else
                 {
                     towerInfoLabel.Text = string.Format("Damage: {0}\n", data.Damage);
                     towerInfoLabel.Text += string.Format("Speed: {0:0.0}\n", data.Speed);
                     towerInfoLabel.Text += string.Format("Range: {0:0.0}\n", data.Range);
-                    //towerInfoLabel.Text = "Damage: " + data.Damage + "\n" +
-                    //                      "Speed: " + data.Speed + "\n" +
-                    //                      "Range: " + data.Range + "\n";
+                    if (data.SlowPercentage != null)
+                    {
+                        towerInfoLabel.Text += string.Format("Slow: {0}%\n", data.SlowPercentage);
+                    }
                 }
 
                 if (selectedTower.UpgradeAvailable())

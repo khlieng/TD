@@ -71,7 +71,6 @@ namespace TD
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
 
-            //Game.Components.Add(this);
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
                 state.AddComponent(this);

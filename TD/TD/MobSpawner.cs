@@ -26,7 +26,6 @@ namespace TD
             amount = 20;
             timeBetweenMobs = TimeSpan.FromSeconds(interval / amount);
             
-            //game.Components.Add(this);
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
                 state.AddComponent(this);

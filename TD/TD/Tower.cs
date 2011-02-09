@@ -19,6 +19,7 @@ namespace TD
             public int Damage;
             public float Speed;
             public float Range;
+            public int? SlowPercentage;
             public int Cost;
         }
         protected int currentUpgrade;
