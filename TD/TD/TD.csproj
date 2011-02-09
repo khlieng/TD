@@ -122,11 +122,15 @@
   <ItemGroup>
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
+    <Compile Include="UI\FPSLabel.cs" />
     <Compile Include="GameHelper.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="GameStateManager.cs" />
     <Compile Include="IMobContainer.cs" />
     <Compile Include="ITarget.cs" />
+    <Compile Include="UI\IToggleAble.cs" />
+    <Compile Include="UI\ITooltipProvider.cs" />
+    <Compile Include="UI\Label.cs" />
     <Compile Include="MainGameState.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapClickArgs.cs" />
@@ -142,7 +146,10 @@
     <Compile Include="RocketTower.cs" />
     <Compile Include="SlowingProjectile.cs" />
     <Compile Include="SlowTower.cs" />
+    <Compile Include="UI\TextButton.cs" />
     <Compile Include="TheGame.cs" />
+    <Compile Include="UI\ToggleGroup.cs" />
+    <Compile Include="UI\Tooltip.cs" />
     <Compile Include="Tower.cs" />
   </ItemGroup>
   <ItemGroup>

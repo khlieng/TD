@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using XNATools.UI;
 
 namespace TD
 {
@@ -161,6 +160,7 @@ namespace TD
             buttonSlow.DropShadow = true;
             new ToggleGroup(buttonRocket, buttonSlow);
 
+
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.Fonts["Calibri 12"]);
             buttonUpgrade.DropShadow = true;
             buttonUpgrade.Visible = false;
@@ -178,7 +178,7 @@ namespace TD
             livesLabel.DropShadow = true;
             towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.Fonts["Calibri 12"]);
             towerInfoLabel.DropShadow = true;
-
+            
             buttonRocket.Click += (o, e) =>
                 {
                     if (buttonRocket.Toggled)

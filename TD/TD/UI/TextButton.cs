@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace XNATools.UI
+namespace TD
 {
     public class TextButton : DrawableGameComponent, IToggleAble
     {
