@@ -10,6 +10,6 @@ namespace TD
     {
         event EventHandler ShowTooltip;
         event EventHandler HideTooltip;
-        Vector2 TooltipPosition { get; }
+        //Vector2 TooltipPosition { get; }
     }
 }

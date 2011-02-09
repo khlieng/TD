@@ -109,14 +109,10 @@ namespace TD
                     {
                         state.AddComponent(towerAdded);
                     }
-                }
-
-                return true;
+                    return true;
+                }                
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public Tower GetTower(int row, int col)

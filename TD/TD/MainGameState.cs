@@ -69,10 +69,13 @@ namespace TD
             map.Click += (o, e) =>
             {
                 selectedTower = map.GetTower(e.Row, e.Col);
-                map.AddTower(e.Row, e.Col, selected);
+                if (map.AddTower(e.Row, e.Col, selected))
+                {
+                    Tower added = map.GetTower(e.Row, e.Col);
+                    Vector2 startPos = new Vector2(e.Col * 32, e.Row * 32);
+                    new MovingText(Game, added.Cost + "$", startPos, startPos - new Vector2(0, 20), 500);
+                }
             };
-
-            
 
             base.LoadContent(content);
         }
@@ -159,8 +162,8 @@ namespace TD
             buttonSlow.ToggleAble = true;
             buttonSlow.DropShadow = true;
             new ToggleGroup(buttonRocket, buttonSlow);
-            new Tooltip(Game, buttonRocket, "Cost: 100") { TextColor = Color.Yellow };
-            new Tooltip(Game, buttonSlow, "Cost: 150") { TextColor = Color.Yellow };
+            new Tooltip(Game, buttonRocket, "Shootz dem rokkitz!\nDamange: 20\nSpeed: 2.0\nRange 150\nCost: 100") { TextColor = Color.Red };
+            new Tooltip(Game, buttonSlow, "Slow jaaaa o_O\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.Fonts["Calibri 12"]);
             buttonUpgrade.DropShadow = true;

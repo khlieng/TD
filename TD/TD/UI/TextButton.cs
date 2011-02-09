@@ -158,14 +158,14 @@ namespace TD
         public event EventHandler ShowTooltip;
         public event EventHandler HideTooltip;
 
-        public Vector2 TooltipPosition
-        {
-            get
-            {
-                MouseState state = Mouse.GetState();
-                return new Vector2(state.X, state.Y - 20);
-            }
-        }
+        //public Vector2 TooltipPosition
+        //{
+        //    get
+        //    {
+        //        MouseState state = Mouse.GetState();
+        //        return new Vector2(state.X, state.Y - 80);
+        //    }
+        //}
 
         protected virtual void OnShowTooltip()
         {
