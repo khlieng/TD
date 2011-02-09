@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="GameHelper.cs" />
     <Compile Include="GameState.cs" />

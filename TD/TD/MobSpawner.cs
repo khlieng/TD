@@ -77,7 +77,10 @@ namespace TD
             mobContainer.AddMob(mob);
             mob.Died += (o, e) =>
             {
-                MainGameState.AddMoney(6 + 2 * level);
+                if (e.Cause == CauseOfDeath.Killed)
+                {
+                    MainGameState.AddMoney(6 + 2 * level);
+                }
                 mobContainer.RemoveMob(mob);
             };
             mobsSent++;

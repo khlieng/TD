@@ -10,6 +10,6 @@ namespace TD
     {
         Vector2 Center { get; }
         bool DoDamage(int damage);
-        event EventHandler Died;
+        event EventHandler<DeathEventArgs> Died;
     }
 }

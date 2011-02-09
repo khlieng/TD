@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace TD
 {
+    enum CauseOfDeath { Killed, LeftMap }
+
     class Mob : DrawableGameComponent, ITarget
     {
         private SpriteBatch spriteBatch;
@@ -19,7 +21,7 @@ namespace TD
 
         private ProgressBar hpBar;
 
-        public event EventHandler Died;
+        public event EventHandler<DeathEventArgs> Died;
         
         public Vector2 Position
         {
@@ -121,23 +123,23 @@ namespace TD
 
             if (hp <= 0)
             {
-                OnMobDied();
+                OnMobDied(CauseOfDeath.Killed);
                 return true;
             }
             return false;
         }
 
-        public void Kill()
+        public void LeftMap()
         {
             hp = 0;
-            OnMobDied();
+            OnMobDied(CauseOfDeath.LeftMap);
         }
 
-        protected virtual void OnMobDied()
+        protected virtual void OnMobDied(CauseOfDeath cause)
         {
             if (Died != null)
             {
-                Died(this, EventArgs.Empty);
+                Died(this, new DeathEventArgs(cause));
             }
         }
     }

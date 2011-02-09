@@ -142,7 +142,6 @@ namespace TD
                 state.RemoveComponent(mob);
             }
             mob.Dispose();
-            //Game.Components.Remove(mob);
         }
 
         MouseState prev;
@@ -209,7 +208,7 @@ namespace TD
             {
                 MainGameState.LifeLost();
                 Mob mob = removeThese.Dequeue();
-                mob.Kill();
+                mob.LeftMap();
                 RemoveMob(mob);
             }
 
