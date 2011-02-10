@@ -155,9 +155,11 @@ namespace TD
 
         private void SetupUI()
         {
-            TextButton buttonRocket = new TextButton(Game, new Vector2(20, 500), "Rocket Tower", TheGame.Fonts["Calibri 12"]);
-            TextButton buttonSlow = new TextButton(Game, new Vector2(20, 530), "Slow Tower", TheGame.Fonts["Calibri 12"]);
-            TextButton buttonFlame = new TextButton(Game, new Vector2(20, 560), "Flame Tower", TheGame.Fonts["Calibri 12"]);
+            Label towersLabel = new Label(Game, new Vector2(20, 490), "Towers:", TheGame.Fonts["Calibri 12"]);
+            towersLabel.DropShadow = true;
+            TextButton buttonRocket = new TextButton(Game, new Vector2(20, 520), "Rocket", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonSlow = new TextButton(Game, new Vector2(100, 520), "Slow", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonFlame = new TextButton(Game, new Vector2(160, 520), "Flame", TheGame.Fonts["Calibri 12"]);
             buttonRocket.ToggleAble = true;
             buttonRocket.DropShadow = true;
             buttonSlow.ToggleAble = true;
@@ -167,13 +169,14 @@ namespace TD
             new ToggleGroup(buttonRocket, buttonSlow, buttonFlame);
             new Tooltip(Game, buttonRocket, "Shootz dem rokkitz!\nDamange: 20\nSpeed: 2.0\nRange 150\nCost: 100") { TextColor = Color.Red };
             new Tooltip(Game, buttonSlow, "Slow jaaaa o_O\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
+            new Tooltip(Game, buttonFlame, "HAWT ^,^\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.Fonts["Calibri 12"]);
             buttonUpgrade.DropShadow = true;
             buttonUpgrade.Visible = false;
-
-            fpsLabel = new FPSLabel(Game, new Vector2(650, 580), TheGame.Fonts["Calibri 12"]);
-            timeLabel = new Label(Game, new Vector2(730, 580), String.Empty, TheGame.Fonts["Calibri 12"]);
+            
+            fpsLabel = new FPSLabel(Game, new Vector2(640, 575), TheGame.Fonts["Calibri 12"]);
+            timeLabel = new Label(Game, new Vector2(717, 575), String.Empty, TheGame.Fonts["Calibri 12"]);
 #if !DEBUG
             fpsLabel.Visible = false;
             timeLabel.Visible = false;

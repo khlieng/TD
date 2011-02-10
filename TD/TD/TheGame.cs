@@ -31,7 +31,7 @@ namespace TD
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;
+            graphics.PreferredBackBufferHeight = 600;                       
 
             GameHelper.Game = this;
         }
@@ -55,7 +55,7 @@ namespace TD
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            GameHelper.AddService<SpriteBatch>(spriteBatch);
+            GameHelper.AddService<SpriteBatch>(spriteBatch);            
 
             XNATools.Draw.Init(GraphicsDevice);
             
@@ -63,7 +63,7 @@ namespace TD
 
             Fonts = new Dictionary<string, SpriteFont>();
             Fonts.Add("Calibri 8", Content.Load<SpriteFont>("Calibri_8"));
-            Fonts.Add("Calibri 12", Content.Load<SpriteFont>("Calibri_12"));
+            Fonts.Add("Calibri 12", Content.Load<SpriteFont>("Miramonte_14"));
 
             stateManager = new GameStateManager(this);
             GameHelper.AddService<GameStateManager>(stateManager);

@@ -61,10 +61,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calibri_12.spritefont">
-      <Name>Calibri_12</Name>
+    <Compile Include="Miramonte_14.spritefont">
+      <Name>Miramonte_14</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +101,7 @@
       <Name>Calibri_8</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+      <SubType>Designer</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
