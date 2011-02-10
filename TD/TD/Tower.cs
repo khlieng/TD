@@ -13,6 +13,12 @@ namespace TD
     {
         protected SpriteBatch spriteBatch;
         protected Texture2D texture;
+        public static Dictionary<TowerType, string> TextureNames = new Dictionary<TowerType, string>();
+        static Tower()
+        {
+            TextureNames.Add(TowerType.Rocket, "rocket_tower");
+            TextureNames.Add(TowerType.Slow, "slow_tower");
+        }
         
         public struct TowerData
         {

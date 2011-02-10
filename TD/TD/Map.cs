@@ -39,7 +39,6 @@ namespace TD
         
         public Map(Game game, int cols, int rows) : base(game)
         {
-            //GameStateManager manager = (GameStateManager)Game.Services.GetService(typeof(GameStateManager));
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
                 state.AddComponent(this);
@@ -82,7 +81,7 @@ namespace TD
 
         public bool AddTower(int row, int col, TowerType type)
         {
-            if (towers[row, col] == null && tiles[row, col] == (int)TileType.Grass)
+            if (CanAddTower(row, col))
             {
                 Tower towerAdded = null;
                 Tower towerToAdd = null;
@@ -122,6 +121,11 @@ namespace TD
         public Tower GetTower(int row, int col)
         {
             return towers[row, col];
+        }
+
+        public bool CanAddTower(int row, int col)
+        {
+            return towers[row, col] == null && tiles[row, col] == (int)TileType.Grass;
         }
 
         public void AddMob(Mob mob)
@@ -237,20 +241,20 @@ namespace TD
 #endif
             spriteBatch.End();
 
-            int mCol = (Mouse.GetState().X - (Mouse.GetState().X % 32)) / 32;
-            int mRow = (Mouse.GetState().Y - (Mouse.GetState().Y % 32)) / 32;
+            //int mCol = (Mouse.GetState().X - (Mouse.GetState().X % 32)) / 32;
+            //int mRow = (Mouse.GetState().Y - (Mouse.GetState().Y % 32)) / 32;
             
-            if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
-            {
-                if (tiles[mRow, mCol] == 0)
-                {
-                    XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.White);
-                }
-                else
-                {
-                    XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.Red);
-                }
-            }
+            //if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            //{
+            //    if (tiles[mRow, mCol] == 0)
+            //    {
+            //        XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.White);
+            //    }
+            //    else
+            //    {
+            //        XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.Red);
+            //    }
+            //}
 
             base.Draw(gameTime);
         }

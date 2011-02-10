@@ -144,13 +144,46 @@ namespace TD
             base.Update(gameTime);
         }
 
+        MouseState prev;
         public override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(overlay, new Vector2(0, 0), Color.White);
+            spriteBatch.Begin();            
+            spriteBatch.Draw(overlay, new Vector2(0, 0), Color.White);            
             spriteBatch.End();
             
             base.Draw(gameTime);
+
+            MouseState current = Mouse.GetState();
+            int mCol = (current.X - (current.X % 32)) / 32;
+            int mRow = (current.Y - (current.Y % 32)) / 32;
+            
+            if (selected != TowerType.None && 0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            {
+                Texture2D towerTexture = null;
+                Color color = new Color();
+
+                if (map.CanAddTower(mRow, mCol) && Tower.TextureNames.ContainsKey(selected))
+                {
+                    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);   
+                    color = Color.White;
+                    color.A = 128;
+                }
+                else if (!map.CanAddTower(mRow, mCol) && map.GetTower(mRow, mCol) == null && Tower.TextureNames.ContainsKey(selected))
+                {
+                    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);
+                    color = Color.Red;
+                    color.A = 128;                    
+                }
+                
+                if (towerTexture != null)
+                {
+                    spriteBatch.Begin();
+                    spriteBatch.Draw(towerTexture, new Vector2(mCol * 32, mRow * 32), color);
+                    spriteBatch.End();
+                }
+            }            
+
+            prev = current;
         }
 
         private void SetupUI()
