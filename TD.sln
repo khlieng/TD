@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDContent", "TD\TDContent\T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNATools", "XNATools\XNATools.csproj", "{E4F8EC23-91B5-40C9-B071-EC2C0B706A50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleTest", "ParticleTest\ParticleTest\ParticleTest.csproj", "{1A60B97B-F069-4493-97F0-5FE41B9737E4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParticleTestContent", "ParticleTest\ParticleTestContent\ParticleTestContent.contentproj", "{19390675-496F-448A-8432-EDFCBB6F4870}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -27,12 +23,6 @@ Global
 		{E4F8EC23-91B5-40C9-B071-EC2C0B706A50}.Debug|x86.Build.0 = Debug|x86
 		{E4F8EC23-91B5-40C9-B071-EC2C0B706A50}.Release|x86.ActiveCfg = Release|x86
 		{E4F8EC23-91B5-40C9-B071-EC2C0B706A50}.Release|x86.Build.0 = Release|x86
-		{1A60B97B-F069-4493-97F0-5FE41B9737E4}.Debug|x86.ActiveCfg = Debug|x86
-		{1A60B97B-F069-4493-97F0-5FE41B9737E4}.Debug|x86.Build.0 = Debug|x86
-		{1A60B97B-F069-4493-97F0-5FE41B9737E4}.Release|x86.ActiveCfg = Release|x86
-		{1A60B97B-F069-4493-97F0-5FE41B9737E4}.Release|x86.Build.0 = Release|x86
-		{19390675-496F-448A-8432-EDFCBB6F4870}.Debug|x86.ActiveCfg = Debug|x86
-		{19390675-496F-448A-8432-EDFCBB6F4870}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

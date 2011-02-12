@@ -20,6 +20,7 @@ namespace TD
                                         new Rectangle(0, 16, 16, 16), new Rectangle(16, 16, 16, 16), new Rectangle(32, 16, 16, 16),
                                         new Rectangle(0, 32, 16, 16), new Rectangle(16, 32, 16, 16), new Rectangle(32, 32, 16, 16) };
 
+        private int rows, cols;
         private int[,] tiles;
         private Tower[,] towers;
 
@@ -39,6 +40,9 @@ namespace TD
         
         public Map(Game game, int cols, int rows) : base(game)
         {
+            this.rows = rows;
+            this.cols = cols;
+
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
                 state.AddComponent(this);
@@ -261,80 +265,184 @@ namespace TD
 
         private void GeneratePath()
         {
-            path = new List<Point>();
-            Point current = new Point();
-            int col = 0, row = 0;
+            Point start = new Point(1, 0);
+            Point target = new Point(13, 19);
 
-            bool foundStart = false;
-            while (!foundStart)
+            LinkedList<Node> openList = new LinkedList<Node>();
+            LinkedList<Node> closedList = new LinkedList<Node>();
+
+            Node startNode = new Node(start.X, start.Y);
+            Node targetNode = new Node(target.X, target.Y);
+            Node current = null;
+            Point currentP = new Point();
+            openList.AddLast(startNode);
+
+            while (openList.Count > 0)
             {
-                if (tiles[row, col] == 1)
+                current = openList.Where(n => n.f == openList.Min(no => no.f)).First();
+                currentP.X = current.x;
+                currentP.Y = current.y;
+
+                if (currentP == target)
                 {
-                    current.X = col;
-                    current.Y = row;
-                    path.Add(current);
-                    foundStart = true;
+                    path = new List<Point>();
+                    do
+                    {
+                        path.Add(new Point(current.y, current.x));
+                    } while ((current = current.parent) != startNode);
+
+                    path.Add(new Point(start.Y, start.X));
+                    path.Reverse();
+                    break;
                 }
 
-                row++;
+                openList.Remove(current);
+                closedList.AddLast(current);
+
+                foreach (Point p in Neighbours(currentP))
+                {
+                    if (p.X < 0 || p.X >= rows || p.Y < 0 || p.Y >= cols) continue;
+
+                    if (tiles[p.X, p.Y] == (int)TileType.Grass) continue;
+
+                    if (closedList.Where(n => n.x == p.X && n.y == p.Y).Count() > 0) continue;
+
+                    float g = (p.X != current.x && p.Y != current.y) ? current.g + 1.4f : current.g + 1f;
+                    float h = Math.Abs(p.X - targetNode.x) + Math.Abs(p.Y - targetNode.y);
+
+                    var q = openList.Where(n => n.x == p.X && n.y == p.Y);
+                    Node onOpen = q.Count() > 0 ? q.First() : null;
+
+                    if (onOpen == null)
+                    {
+                        openList.AddLast(new Node(p.X, p.Y, g, h, current));
+                    }
+                    else
+                    {
+                        if (g < onOpen.g)
+                        {
+                            onOpen.parent = current;
+                            onOpen.g = g;
+                            onOpen.f = onOpen.g + onOpen.h;
+                        }
+                    }
+                }
+            }        
+            
+            //path = new List<Point>();
+            //Point current = new Point();
+            //int col = 0, row = 0;
+
+            //bool foundStart = false;
+            //while (!foundStart)
+            //{
+            //    if (tiles[row, col] == 1)
+            //    {
+            //        current.X = col;
+            //        current.Y = row;
+            //        path.Add(current);
+            //        foundStart = true;
+            //    }
+
+            //    row++;
+            //}
+
+            //row = current.Y;
+            //int prev = 0;
+            //while (col < 19)
+            //{
+            //    if (prev != 4 && tiles[row, col + 1] == 1)
+            //    {
+            //        // Go right until it change direction
+            //        while (col < 19 && tiles[row, col + 1] == 1)
+            //        {
+            //            col++;
+            //        }
+            //        current.X = col;
+            //        current.Y = row;
+            //        path.Add(current);
+            //        prev = 1;
+            //    }
+            //    else if (prev != 3 && row > 0 && tiles[row - 1, col] == 1)
+            //    {
+            //        // Go up until dir change
+            //        while (row > 0 && tiles[row - 1, col] == 1)
+            //        {
+            //            row--;
+            //        }
+            //        current.X = col;
+            //        current.Y = row;
+            //        path.Add(current);
+            //        prev = 2;
+            //    }
+            //    else if (prev != 2 && tiles[row + 1, col] == 1)
+            //    {
+            //        // Go down until dir change
+            //        while (row < 14 && tiles[row + 1, col] == 1)
+            //        {
+            //            row++;
+            //        }
+            //        current.X = col;
+            //        current.Y = row;
+            //        path.Add(current);
+            //        prev = 3;
+            //    }
+            //    else if (prev != 1 && col > 0 && tiles[row, col - 1] == 1)
+            //    {
+            //        // Go backwards until dir change
+            //        while (col > 0 && tiles[row, col - 1] == 1)
+            //        {
+            //            col--;
+            //        }
+            //        current.X = col;
+            //        current.Y = row;
+            //        path.Add(current);
+            //        prev = 4;
+            //    }
+            //    else
+            //    {
+            //        // Error in map!
+            //    }
+            //}
+        }
+
+        private IEnumerable<Point> Neighbours(Point p)
+        {
+            //for (int x = p.X - 1; x <= p.X + 1; x++)
+            //{
+            //    for (int y = p.Y - 1; y <= p.Y + 1; y++)
+            //    {
+            //        if (!(x == p.X && y == p.Y))
+            //        {
+            //            yield return new Point(x, y);
+            //        }
+            //    }
+            //}
+            yield return new Point(p.X - 1, p.Y);
+            yield return new Point(p.X, p.Y - 1);
+            yield return new Point(p.X + 1, p.Y);
+            yield return new Point(p.X, p.Y + 1);
+        }
+
+        private class Node
+        {
+            public Node parent;
+            public float f, g, h;
+            public int x, y;
+
+            public Node(int x, int y)
+                : this(x, y, 0f, 0f, null)
+            {
             }
 
-            row = current.Y;
-            int prev = 0;
-            while (col < 19)
+            public Node(int x, int y, float g, float h, Node parent)
             {
-                if (prev != 4 && tiles[row, col + 1] == 1)
-                {
-                    // Go right until it change direction
-                    while (col < 19 && tiles[row, col + 1] == 1)
-                    {
-                        col++;
-                    }
-                    current.X = col;
-                    current.Y = row;
-                    path.Add(current);
-                    prev = 1;
-                }
-                else if (prev != 3 && row > 0 && tiles[row - 1, col] == 1)
-                {
-                    // Go up until dir change
-                    while (row > 0 && tiles[row - 1, col] == 1)
-                    {
-                        row--;
-                    }
-                    current.X = col;
-                    current.Y = row;
-                    path.Add(current);
-                    prev = 2;
-                }
-                else if (prev != 2 && tiles[row + 1, col] == 1)
-                {
-                    // Go down until dir change
-                    while (row < 14 && tiles[row + 1, col] == 1)
-                    {
-                        row++;
-                    }
-                    current.X = col;
-                    current.Y = row;
-                    path.Add(current);
-                    prev = 3;
-                }
-                else if (prev != 1 && col > 0 && tiles[row, col - 1] == 1)
-                {
-                    // Go backwards until dir change
-                    while (col > 0 && tiles[row, col - 1] == 1)
-                    {
-                        col--;
-                    }
-                    current.X = col;
-                    current.Y = row;
-                    path.Add(current);
-                    prev = 4;
-                }
-                else
-                {
-                    // Error in map!
-                }
+                this.x = x;
+                this.y = y;
+                this.g = g;
+                this.h = h;
+                this.parent = parent;
+                f = g + h;
             }
         }
 

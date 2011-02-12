@@ -100,7 +100,7 @@ namespace TD
             {
                 dumpIt = false;
             }
-            //emitter.Position = new Vector2(Mouse.GetState().X, Mouse.GetState().Y);
+
             prevKeyState = currentKeyState;
             base.Update(gameTime);
         }
@@ -115,6 +115,10 @@ namespace TD
             
             base.Draw(gameTime);
 
+            spriteBatch.Begin();
+            spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
+            spriteBatch.End();
+
             if (dumpIt)
             {
                 Color[] data = new Color[800 * 600];
@@ -128,10 +132,6 @@ namespace TD
                     dump.SaveAsPng(file, 800, 600);
                 }
             }
-
-            spriteBatch.Begin();              
-            spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);            
-            spriteBatch.End();
         }
 
         /// <summary>
