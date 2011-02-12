@@ -131,7 +131,7 @@ namespace TD
 
             spriteBatch.Begin();              
             spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);            
-            spriteBatch.End();            
+            spriteBatch.End();
         }
 
         /// <summary>
