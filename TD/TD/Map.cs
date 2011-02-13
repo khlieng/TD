@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,20 +11,44 @@ namespace TD
 {
     class Map : DrawableGameComponent, IMobContainer
     {
+        struct Sprite
+        {
+            public int SheetIndex { get; set; }
+            public Rectangle Source { get; set; }
+
+            public Sprite(int sheetIndex, Rectangle source)
+                : this()
+            {
+                SheetIndex = sheetIndex;
+                Source = source;
+            }
+        }
+
+        struct Tile
+        {
+            public int SpriteIndex { get; set; }
+            public bool Walkable { get; set; }
+
+            public Tile(int spriteIndex, bool walkable)
+                : this()
+            {
+                SpriteIndex = spriteIndex;
+                Walkable = walkable;
+            }
+        }
+
         private SpriteBatch spriteBatch;
 
-        enum TileType { Grass, Dirt }
-        private static Texture2D[] textures;
-
-        private Texture2D temp;
-        private Rectangle[] sources = { new Rectangle(0, 0, 16, 16), new Rectangle(16, 0, 16, 16), new Rectangle(32, 0, 16, 16),
-                                        new Rectangle(0, 16, 16, 16), new Rectangle(16, 16, 16, 16), new Rectangle(32, 16, 16, 16),
-                                        new Rectangle(0, 32, 16, 16), new Rectangle(16, 32, 16, 16), new Rectangle(32, 32, 16, 16) };
-
+        private Texture2D[] textures;
+        private Sprite[] sprites;
+        
         private int rows, cols;
-        private int[,] tiles;
+        private Tile[,] tiles;
+
         private Tower[,] towers;
 
+        private Point spawn;
+        private Point exit;
         private List<Point> path;
 
         private LinkedList<Mob> mobs;
@@ -58,22 +83,11 @@ namespace TD
         {
             DrawOrder = 8;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
-            temp = Game.Content.Load<Texture2D>("tempsheet");
-            
-            if (textures == null)
-            {
-                textures = new Texture2D[2];
-                textures[(int)TileType.Grass] = new Texture2D(Game.GraphicsDevice, 1, 1);
-                textures[(int)TileType.Dirt] = new Texture2D(Game.GraphicsDevice, 1, 1);
 
-                textures[(int)TileType.Grass].SetData<Color>(new[] { Color.DarkGreen });
-                textures[(int)TileType.Dirt].SetData<Color>(new[] { Color.SaddleBrown });
-            }
-
-            //tiles = new int[rows, cols];
-            tiles = tempMap;
+            Load(@"Maps\test.map");
             GeneratePath();
             SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
+
             towers = new Tower[15, 20];
 
             mobs = new LinkedList<Mob>();
@@ -129,7 +143,7 @@ namespace TD
 
         public bool CanAddTower(int row, int col)
         {
-            return towers[row, col] == null && tiles[row, col] == (int)TileType.Grass;
+            return towers[row, col] == null && !tiles[row, col].Walkable;
         }
 
         public void AddMob(Mob mob)
@@ -232,47 +246,28 @@ namespace TD
             for (int row = 0; row < 15; row++)
             {
                 for (int col = 0; col < 20; col++)
-                {                    
-                    //spriteBatch.Draw(textures[tiles[row, col]], new Rectangle(col * 32, row * 32, 32, 32), Color.White);     
-                    spriteBatch.Draw(temp, new Rectangle(col * 32, row * 32, 32, 32), sources[tempMap2[row, col]], Color.White);
+                {
+                    spriteBatch.Draw(textures[sprites[tiles[row, col].SpriteIndex].SheetIndex], 
+                        new Rectangle(col * 32, row * 32, 32, 32), sprites[tiles[row, col].SpriteIndex].Source, Color.White);
                 }
-            }            
+            }
+            spriteBatch.End();
 #if DEBUG
             foreach (Point p in path)
             {
-                spriteBatch.Draw(textures[(int)TileType.Grass], new Rectangle(p.X * 32 + 14, p.Y * 32 + 14, 4, 4), Color.Black);
+                XNATools.Draw.FilledRect(new Rectangle(p.X * 32 + 14, p.Y * 32 + 14, 4, 4), Color.Black);
             }
 #endif
-            spriteBatch.End();
-
-            //int mCol = (Mouse.GetState().X - (Mouse.GetState().X % 32)) / 32;
-            //int mRow = (Mouse.GetState().Y - (Mouse.GetState().Y % 32)) / 32;
-            
-            //if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
-            //{
-            //    if (tiles[mRow, mCol] == 0)
-            //    {
-            //        XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.White);
-            //    }
-            //    else
-            //    {
-            //        XNATools.Draw.Rect(new Rectangle(mCol * 32, mRow * 32, 31, 31), Color.Red);
-            //    }
-            //}
-
             base.Draw(gameTime);
         }
 
         private void GeneratePath()
         {
-            Point start = new Point(1, 0);
-            Point target = new Point(13, 19);
-
             LinkedList<Node> openList = new LinkedList<Node>();
             LinkedList<Node> closedList = new LinkedList<Node>();
 
-            Node startNode = new Node(start.X, start.Y);
-            Node targetNode = new Node(target.X, target.Y);
+            Node startNode = new Node(spawn.X, spawn.Y);
+            Node targetNode = new Node(exit.X, exit.Y);
             Node current = null;
             Point currentP = new Point();
             openList.AddLast(startNode);
@@ -283,7 +278,7 @@ namespace TD
                 currentP.X = current.x;
                 currentP.Y = current.y;
 
-                if (currentP == target)
+                if (currentP == exit)
                 {
                     path = new List<Point>();
                     do
@@ -291,7 +286,7 @@ namespace TD
                         path.Add(new Point(current.y, current.x));
                     } while ((current = current.parent) != startNode);
 
-                    path.Add(new Point(start.Y, start.X));
+                    path.Add(new Point(spawn.Y, spawn.X));
                     path.Reverse();
                     break;
                 }
@@ -303,7 +298,7 @@ namespace TD
                 {
                     if (p.X < 0 || p.X >= rows || p.Y < 0 || p.Y >= cols) continue;
 
-                    if (tiles[p.X, p.Y] == (int)TileType.Grass) continue;
+                    if (!tiles[p.X, p.Y].Walkable) continue;
 
                     if (closedList.Where(n => n.x == p.X && n.y == p.Y).Count() > 0) continue;
 
@@ -327,83 +322,7 @@ namespace TD
                         }
                     }
                 }
-            }        
-            
-            //path = new List<Point>();
-            //Point current = new Point();
-            //int col = 0, row = 0;
-
-            //bool foundStart = false;
-            //while (!foundStart)
-            //{
-            //    if (tiles[row, col] == 1)
-            //    {
-            //        current.X = col;
-            //        current.Y = row;
-            //        path.Add(current);
-            //        foundStart = true;
-            //    }
-
-            //    row++;
-            //}
-
-            //row = current.Y;
-            //int prev = 0;
-            //while (col < 19)
-            //{
-            //    if (prev != 4 && tiles[row, col + 1] == 1)
-            //    {
-            //        // Go right until it change direction
-            //        while (col < 19 && tiles[row, col + 1] == 1)
-            //        {
-            //            col++;
-            //        }
-            //        current.X = col;
-            //        current.Y = row;
-            //        path.Add(current);
-            //        prev = 1;
-            //    }
-            //    else if (prev != 3 && row > 0 && tiles[row - 1, col] == 1)
-            //    {
-            //        // Go up until dir change
-            //        while (row > 0 && tiles[row - 1, col] == 1)
-            //        {
-            //            row--;
-            //        }
-            //        current.X = col;
-            //        current.Y = row;
-            //        path.Add(current);
-            //        prev = 2;
-            //    }
-            //    else if (prev != 2 && tiles[row + 1, col] == 1)
-            //    {
-            //        // Go down until dir change
-            //        while (row < 14 && tiles[row + 1, col] == 1)
-            //        {
-            //            row++;
-            //        }
-            //        current.X = col;
-            //        current.Y = row;
-            //        path.Add(current);
-            //        prev = 3;
-            //    }
-            //    else if (prev != 1 && col > 0 && tiles[row, col - 1] == 1)
-            //    {
-            //        // Go backwards until dir change
-            //        while (col > 0 && tiles[row, col - 1] == 1)
-            //        {
-            //            col--;
-            //        }
-            //        current.X = col;
-            //        current.Y = row;
-            //        path.Add(current);
-            //        prev = 4;
-            //    }
-            //    else
-            //    {
-            //        // Error in map!
-            //    }
-            //}
+            }
         }
 
         private IEnumerable<Point> Neighbours(Point p)
@@ -446,6 +365,38 @@ namespace TD
             }
         }
 
+        private void Load(string fileName)
+        {
+            using (Stream stream = File.OpenRead(fileName))
+            using (BinaryReader br = new BinaryReader(stream))
+            {
+                textures = new Texture2D[br.ReadInt32()];
+                for (int i = 0; i < textures.Length; i++)
+                {
+                    textures[i] = Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(br.ReadString()));
+                }
+
+                sprites = new Sprite[br.ReadInt32()];
+                for (int i = 0; i < sprites.Length; i++)
+                {
+                    sprites[i] = new Sprite(br.ReadInt32(), 
+                        new Rectangle(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32()));
+                }
+
+                spawn = new Point(br.ReadInt32(), br.ReadInt32());
+                exit = new Point(br.ReadInt32(), br.ReadInt32());
+
+                tiles = new Tile[rows, cols];
+                for (int row = 0; row < rows; row++)
+                {
+                    for (int col = 0; col < cols; col++)
+                    {
+                        tiles[row, col] = new Tile(br.ReadInt32(), br.ReadBoolean());
+                    }
+                }
+            }
+        }
+
         protected virtual void OnClick(MapClickArgs args)
         {
             if (Click != null)
@@ -453,43 +404,5 @@ namespace TD
                 Click(this, args);
             }
         }
-
-        static int[,] tempMap =
-        {
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 },
-            { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        };
-
-        static int[,] tempMap2 =
-        {
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 4, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 4, 4 },
-            { 4, 4, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 8, 4, 4 },
-            { 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 4, 4, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-            { 4, 4, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-            { 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 },
-        };
     }
 }
