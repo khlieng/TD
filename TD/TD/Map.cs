@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -84,7 +85,7 @@ namespace TD
             DrawOrder = 8;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
-            Load(@"Maps\test.map");
+            //Load(@"Maps\test.map");
             GeneratePath();
             SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
 
@@ -365,43 +366,78 @@ namespace TD
             }
         }
 
-        private void Load(string fileName)
-        {
-            using (Stream stream = File.OpenRead(fileName))
-            using (BinaryReader br = new BinaryReader(stream))
-            {
-                textures = new Texture2D[br.ReadInt32()];
-                for (int i = 0; i < textures.Length; i++)
-                {
-                    textures[i] = Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(br.ReadString()));
-                }
+        //private void Load(string fileName)
+        //{
+        //    using (Stream stream = File.OpenRead(fileName))
+        //    using (BinaryReader br = new BinaryReader(stream))
+        //    {
+        //        textures = new Texture2D[br.ReadInt32()];
+        //        for (int i = 0; i < textures.Length; i++)
+        //        {
+        //            textures[i] = Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(br.ReadString()));
+        //        }
 
-                sprites = new Sprite[br.ReadInt32()];
-                for (int i = 0; i < sprites.Length; i++)
-                {
-                    sprites[i] = new Sprite(br.ReadInt32(), 
-                        new Rectangle(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32()));
-                }
+        //        sprites = new Sprite[br.ReadInt32()];
+        //        for (int i = 0; i < sprites.Length; i++)
+        //        {
+        //            sprites[i] = new Sprite(br.ReadInt32(), 
+        //                new Rectangle(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32()));
+        //        }
 
-                spawn = new Point(br.ReadInt32(), br.ReadInt32());
-                exit = new Point(br.ReadInt32(), br.ReadInt32());
+        //        spawn = new Point(br.ReadInt32(), br.ReadInt32());
+        //        exit = new Point(br.ReadInt32(), br.ReadInt32());
 
-                tiles = new Tile[rows, cols];
-                for (int row = 0; row < rows; row++)
-                {
-                    for (int col = 0; col < cols; col++)
-                    {
-                        tiles[row, col] = new Tile(br.ReadInt32(), br.ReadBoolean());
-                    }
-                }
-            }
-        }
+        //        tiles = new Tile[rows, cols];
+        //        for (int row = 0; row < rows; row++)
+        //        {
+        //            for (int col = 0; col < cols; col++)
+        //            {
+        //                tiles[row, col] = new Tile(br.ReadInt32(), br.ReadBoolean());
+        //            }
+        //        }
+        //    }
+        //}
 
         protected virtual void OnClick(MapClickArgs args)
         {
             if (Click != null)
             {
                 Click(this, args);
+            }
+        }
+
+        public class MapReader : ContentTypeReader<Map>
+        {
+            protected override Map Read(ContentReader input, Map existingInstance)
+            {
+                Map map = new Map(GameHelper.Game, 20, 15);
+
+                map.textures = new Texture2D[input.ReadInt32()];
+                for (int i = 0; i < map.textures.Length; i++)
+                {
+                    map.textures[i] = GameHelper.Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(input.ReadString()));
+                }
+
+                map.sprites = new Sprite[input.ReadInt32()];
+                for (int i = 0; i < map.sprites.Length; i++)
+                {
+                    map.sprites[i] = new Sprite(input.ReadInt32(),
+                        new Rectangle(input.ReadInt32(), input.ReadInt32(), input.ReadInt32(), input.ReadInt32()));
+                }
+
+                map.spawn = new Point(input.ReadInt32(), input.ReadInt32());
+                map.exit = new Point(input.ReadInt32(), input.ReadInt32());
+
+                map.tiles = new Tile[map.rows, map.cols];
+                for (int row = 0; row < map.rows; row++)
+                {
+                    for (int col = 0; col < map.cols; col++)
+                    {
+                        map.tiles[row, col] = new Tile(input.ReadInt32(), input.ReadBoolean());
+                    }
+                }
+
+                return map;
             }
         }
     }

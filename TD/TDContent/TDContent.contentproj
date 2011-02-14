@@ -49,6 +49,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Maps\test.map">
+      <Name>test</Name>
+      <Importer>MapImporter</Importer>
+      <Processor>PassThroughProcessor</Processor>
+    </Compile>
     <Compile Include="mob.png">
       <Name>mob</Name>
       <Importer>TextureImporter</Importer>
@@ -160,6 +165,13 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\TDContentProcessors\TDContentProcessors.csproj">
+      <Project>{692886B8-95A5-46B2-A547-59E049BCEDFE}</Project>
+      <Name>TDContentProcessors</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
