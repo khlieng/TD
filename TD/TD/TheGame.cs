@@ -22,6 +22,7 @@ namespace TD
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         GameStateManager stateManager;
+        BloomComponent bloom;
 
         Texture2D cursor;
 
@@ -32,7 +33,12 @@ namespace TD
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 800;
-            graphics.PreferredBackBufferHeight = 600;                       
+            graphics.PreferredBackBufferHeight = 600;
+
+            bloom = new BloomComponent(this);
+            bloom.Settings = BloomSettings.PresetSettings[5];
+            bloom.DrawOrder = 20;
+            Components.Add(bloom);
 
             GameHelper.Game = this;
         }
@@ -56,7 +62,7 @@ namespace TD
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            GameHelper.AddService<SpriteBatch>(spriteBatch);            
+            GameHelper.AddService<SpriteBatch>(spriteBatch);
 
             XNATools.Draw.Init(GraphicsDevice);
             
@@ -102,6 +108,9 @@ namespace TD
                 dumpIt = false;
             }
 
+            if (currentKeyState.IsKeyDown(Keys.Q) && prevKeyState.IsKeyUp(Keys.Q))
+                bloom.Visible = !bloom.Visible;
+
             prevKeyState = currentKeyState;
             base.Update(gameTime);
         }
@@ -112,7 +121,9 @@ namespace TD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.FromNonPremultiplied(20, 20, 20, 255));
+            bloom.BeginDraw();
+            
+            GraphicsDevice.Clear(Color.FromNonPremultiplied(20, 20, 20, 255));            
             
             base.Draw(gameTime);
 

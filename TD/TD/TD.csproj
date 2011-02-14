@@ -120,6 +120,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BloomComponent.cs" />
+    <Compile Include="BloomSettings.cs" />
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="FlameTower.cs" />
