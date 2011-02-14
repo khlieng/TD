@@ -35,6 +35,30 @@ namespace TD
 
         protected override void OnHit()
         {
+            Emitter explosionEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("fire"), target.Center);
+            explosionEmitter.MaxDirectionDevation = 180;
+            explosionEmitter.MinVelocity = 5;
+            explosionEmitter.MaxVelocity = 50;
+            explosionEmitter.MinDuration = 300;
+            explosionEmitter.MaxDuration = 500;
+            explosionEmitter.MinScale = 0.5f;
+            explosionEmitter.MaxScale = 1.0f;
+            explosionEmitter.Emit(100);
+            new DelayedCall(Game, () => Game.Components.Remove(explosionEmitter), 600);
+
+            Emitter smokeEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("smoke"), target.Center, 5);
+            smokeEmitter.Additive = false;
+            smokeEmitter.MaxDirectionDevation = 180;
+            smokeEmitter.MinVelocity = 15;
+            smokeEmitter.MaxVelocity = 50;
+            smokeEmitter.MinDuration = 200;
+            smokeEmitter.MaxDuration = 800;
+            smokeEmitter.MinScale = 0.4f;
+            smokeEmitter.MaxScale = 0.8f;
+            smokeEmitter.EmitOffset = 4;
+            new DelayedCall(Game, () => smokeEmitter.Emitting = false, 100);
+            new DelayedCall(Game, () => Game.Components.Remove(smokeEmitter), 1000);   
+
             base.OnHit();
         }
 
