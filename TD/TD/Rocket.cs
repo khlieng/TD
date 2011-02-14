@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XNATools;
 
 namespace TD
 {
@@ -20,6 +21,8 @@ namespace TD
             emitter.MaxVelocity = 100;
             emitter.MinDuration = 50;
             emitter.MaxDuration = 200;
+            emitter.MinScale = 0.1f;
+            emitter.MaxScale = 0.8f;
         }
 
         public override void Update(GameTime gameTime)

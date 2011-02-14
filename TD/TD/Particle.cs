@@ -12,12 +12,14 @@ namespace TD
         Texture2D texture;
         Vector2 position;
         Vector2 direction;
+        Vector2 origin;
         float velocity;
+        float scale;
         int elapsed;
         int time;
         Emitter emitter;
 
-        public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, float velocity, int time)
+        public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, float velocity, float scale, int time)
         {
             this.emitter = emitter;
             this.texture = texture;
@@ -25,6 +27,8 @@ namespace TD
             this.direction = direction;
             this.velocity = velocity;
             this.time = time;
+            this.scale = scale;
+            origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
 
             emitter.Add(this);
         }
@@ -42,8 +46,8 @@ namespace TD
         }
 
         public void Draw(SpriteBatch spriteBatch)
-        {            
-            spriteBatch.Draw(texture, new Rectangle((int)position.X - 8, (int)position.Y - 8, 16, 16), Color.White);
+        {
+            spriteBatch.Draw(texture, position, null, Color.White, 0.0f, origin, scale, SpriteEffects.None, 0);
         }
     }
 }

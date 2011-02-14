@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using XNATools;
 
 namespace TD
@@ -20,6 +21,23 @@ namespace TD
 
         protected override void OnHit()
         {
+            //
+            // This will be used for a machinegun-ish tower
+            //
+            //Emitter bloodEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("blood"), target.Center);
+            //bloodEmitter.Additive = false;
+            //bloodEmitter.Direction = direction;
+            //bloodEmitter.MaxDirectionDevation = 15;
+            //bloodEmitter.MinVelocity = 30;
+            //bloodEmitter.MaxVelocity = 400;
+            //bloodEmitter.MinDuration = 20;
+            //bloodEmitter.MaxDuration = 300;
+            //bloodEmitter.MinScale = 0.01f;
+            //bloodEmitter.MaxScale = 0.2f;
+            //bloodEmitter.EmitOffset = 8;
+            //bloodEmitter.Emit(50);
+            //new DelayedCall(Game, () => Game.Components.Remove(bloodEmitter), 500);   
+
             Mob mob = (Mob)target;
             mob.VelocityFactor = 1.0f - speedReduction;
 

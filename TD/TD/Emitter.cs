@@ -22,9 +22,16 @@ namespace TD
         public int MaxVelocity { get; set; }
         public int MinDuration { get; set; }
         public int MaxDuration { get; set; }
+        public float MinScale { get; set; }
+        public float MaxScale { get; set; }
         public int EmitOffset { get; set; }
 
-        public bool Emitting { get; set; }
+        private bool emitting;
+        public bool Emitting
+        {
+            get { return emitting; }
+            set { if (!instant) emitting = value; }
+        }
         public bool Additive { get; set; }
 
         private int interval;
@@ -33,6 +40,26 @@ namespace TD
         private LinkedList<Particle> particles = new LinkedList<Particle>();
         private Queue<Particle> remove = new Queue<Particle>();
         private Queue<Particle> add = new Queue<Particle>();
+
+        private bool instant;
+
+        public Emitter(Game game, Texture2D texture, Vector2 position)
+            : base(game)
+        {
+            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            this.texture = texture;
+
+            Position = position;
+            Direction = new Vector2(0, 1);
+            Additive = true;
+
+            MaxScale = 1.0f;
+            MinScale = 1.0f;
+
+            instant = true;
+
+            game.Components.Add(this);
+        }        
         
         public Emitter(Game game, Texture2D texture, Vector2 position, int interval)
             : base(game)
@@ -45,6 +72,9 @@ namespace TD
             this.interval = interval;
             Emitting = true;
             Additive = true;
+
+            MaxScale = 1.0f;
+            MinScale = 1.0f;
 
             game.Components.Add(this);
         }
@@ -62,6 +92,14 @@ namespace TD
         public void Remove(Particle particle)
         {
             remove.Enqueue(particle);
+        }
+
+        public void Emit(int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                particles.AddLast(CreateParticle());
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -83,14 +121,7 @@ namespace TD
                 while (elapsed >= interval)
                 {
                     elapsed -= interval;
-
-                    float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
-                    Vector2 pDirection = Vector2.Transform(Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
-
-                    float velocity = rand.Next(MaxVelocity - MinVelocity + 1) + MinVelocity;
-                    int duration = rand.Next(MaxDuration - MinDuration + 1) + MinDuration;
-
-                    new Particle(this, texture, Position + pDirection * EmitOffset, pDirection, velocity, duration);
+                    CreateParticle();
                 }
             }
 
@@ -116,6 +147,18 @@ namespace TD
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private Particle CreateParticle()
+        {
+            float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
+            Vector2 pDirection = Vector2.Transform(Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
+
+            float velocity = rand.Next(MaxVelocity - MinVelocity + 1) + MinVelocity;
+            int duration = rand.Next(MaxDuration - MinDuration + 1) + MinDuration;
+            float scale = rand.Next((int)(MaxScale * 100) - (int)(MinScale * 100) + 1) / 100.0f + MinScale;
+
+            return new Particle(this, texture, Position + pDirection * EmitOffset, pDirection, velocity, scale, duration);
         }
     }
 }

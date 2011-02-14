@@ -39,6 +39,8 @@ namespace TD
             emitter.MaxVelocity = 30;
             emitter.MinDuration = 200;
             emitter.MaxDuration = 1000;
+            emitter.MinScale = 0.4f;
+            emitter.MaxScale = 0.8f;
             emitter.EmitOffset = 8;
             new DelayedCall(Game, () => emitter.Emitting = false, 100);
             new DelayedCall(Game, () => Game.Components.Remove(emitter), 2000);            
