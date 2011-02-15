@@ -27,6 +27,7 @@ namespace TD
         Texture2D cursor;
 
         KeyboardState prevKeyState;
+        MouseState prevMouseState;
 
         public TheGame()
         {
@@ -53,6 +54,8 @@ namespace TD
         {   
             base.Initialize();
         }
+
+        Emitter e;
         
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -77,6 +80,19 @@ namespace TD
             Components.Add(stateManager);
             
             stateManager.Add(new MainGameState(this));
+
+            e = new Emitter(this, Vector2.Zero, 1, Content.Load<Texture2D>("fireOrb"));
+            //Vector2 direction = new Vector2(1, 1);
+            //direction.Normalize();
+            //e.MaxDirectionDevation = 5;
+            //e.Direction = direction;
+            //e.MinVelocity = 500;
+            //e.MaxVelocity = 500;    
+            e.MinScale = 0.4f;
+            e.MaxScale = 0.4f;
+            e.MinDuration = 200;
+            e.MaxDuration = 200;
+            e.Emitting = true;
                                                 
             base.LoadContent();
         }
@@ -98,6 +114,10 @@ namespace TD
         protected override void Update(GameTime gameTime)
         {
             KeyboardState currentKeyState = Keyboard.GetState();
+            MouseState currentMouseState = Mouse.GetState();
+
+            e.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
+            //e.Position += new Vector2(10, 10);
 
             if (currentKeyState.IsKeyDown(Keys.P) && prevKeyState.IsKeyUp(Keys.P))
             {
@@ -112,6 +132,8 @@ namespace TD
                 bloom.Visible = !bloom.Visible;
 
             prevKeyState = currentKeyState;
+            prevMouseState = currentMouseState;
+
             base.Update(gameTime);
         }
         
@@ -127,9 +149,9 @@ namespace TD
             
             base.Draw(gameTime);
 
-            spriteBatch.Begin();
-            spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
+            //spriteBatch.End();
 
             if (dumpIt)
             {

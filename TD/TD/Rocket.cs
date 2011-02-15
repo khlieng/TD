@@ -24,6 +24,7 @@ namespace TD
             emitter.MinScale = 0.1f;
             emitter.MaxScale = 0.8f;
             emitter.DecayTimeFraction = 0.2f;
+            emitter.Emitting = true;
         }
 
         public override void Update(GameTime gameTime)

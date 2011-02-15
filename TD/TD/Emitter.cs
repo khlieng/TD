@@ -14,9 +14,27 @@ namespace TD
         private Texture2D[] textures;
         private int currentTexture;
 
-        private Random rand = new Random();        
+        private int interval;
+        private int elapsed;
+        private bool instant;
 
-        public Vector2 Position { get; set; }
+        private Random rand = new Random();
+
+        private Vector2 position;        
+        public Vector2 Position
+        {
+            get { return position; }
+            set
+            {
+                positionChangeDirection = value - position;
+                positionChangeAmount = positionChangeDirection.Length();
+                positionChangeDirection.Normalize();
+                position = value;
+            }
+        }
+        private Vector2 positionChangeDirection;
+        private float positionChangeAmount;
+
         public Vector2 Direction { get; set; }
 
         public int MaxDirectionDevation { get; set; }
@@ -28,6 +46,7 @@ namespace TD
         public float MaxScale { get; set; }
         public int EmitOffset { get; set; }
         public float DecayTimeFraction { get; set; }
+        public bool Additive { get; set; }
 
         private bool emitting;
         public bool Emitting
@@ -35,16 +54,10 @@ namespace TD
             get { return emitting; }
             set { if (!instant) emitting = value; }
         }
-        public bool Additive { get; set; }
-
-        private int interval;
-        private int elapsed;
 
         private LinkedList<Particle> particles = new LinkedList<Particle>();
         private Queue<Particle> remove = new Queue<Particle>();
         private Queue<Particle> add = new Queue<Particle>();
-
-        private bool instant;
 
         public Emitter(Game game, Vector2 position, params Texture2D[] textures)
             : this(game, textures, position, 0)
@@ -64,6 +77,8 @@ namespace TD
             currentTexture = textures.Length - 1;
 
             Position = position;
+            positionChangeDirection = Vector2.Zero;
+            positionChangeAmount = 0.0f;
             Direction = new Vector2(0, 1);
 
             this.interval = interval;
@@ -86,7 +101,7 @@ namespace TD
         {
             for (int i = 0; i < amount; i++)
             {
-                particles.AddLast(CreateParticle());
+                particles.AddLast(CreateParticle(Vector2.Zero));
             }
         }
 
@@ -125,13 +140,31 @@ namespace TD
             {
                 while (add.Count > 0)
                     particles.AddLast(add.Dequeue());
-
+                
                 elapsed += gameTime.ElapsedGameTime.Milliseconds;
+                int initialElapsed = elapsed;
+                
+                Vector2 previousPositon = position - positionChangeDirection * positionChangeAmount;                
+                Vector2 offset = Vector2.Zero;
+
+                int emitTime = 0;
                 while (elapsed >= interval)
                 {
+                    emitTime = elapsed - elapsed % interval;
                     elapsed -= interval;
-                    CreateParticle();
+
+                    if (positionChangeAmount > 0.0f)
+                    {
+                        Vector2 actualPosition = previousPositon + 
+                            positionChangeDirection * ((positionChangeAmount / initialElapsed) * emitTime);
+                        offset = actualPosition - position;
+                    }
+
+                    Particle particle = CreateParticle(offset);
+                    particle.Update(new GameTime(gameTime.TotalGameTime, TimeSpan.FromMilliseconds(emitTime)));
+                    Add(particle);
                 }
+                positionChangeAmount = 0.0f;
             }
 
             base.Update(gameTime);
@@ -157,8 +190,8 @@ namespace TD
 
             base.Draw(gameTime);
         }
-
-        private Particle CreateParticle()
+        
+        private Particle CreateParticle(Vector2 offset)
         {
             float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
             Vector2 pDirection = Vector2.Transform(Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
@@ -169,7 +202,7 @@ namespace TD
 
             currentTexture = ++currentTexture % textures.Length;
 
-            return new Particle(this, textures[currentTexture], Position + pDirection * EmitOffset, 
+            return new Particle(this, textures[currentTexture], Position + pDirection * EmitOffset + offset, 
                 pDirection, velocity, scale, duration, DecayTimeFraction);
         }
     }

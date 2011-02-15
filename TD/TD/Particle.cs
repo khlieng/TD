@@ -37,8 +37,6 @@ namespace TD
             decayTime = time * decayFraction;
             decayStart = time - decayTime;
             color = Color.White;
-
-            emitter.Add(this);
         }
 
         public void Update(GameTime gameTime)
