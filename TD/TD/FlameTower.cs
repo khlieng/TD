@@ -27,7 +27,7 @@ namespace TD
             texture = new Texture2D(Game.GraphicsDevice, 1, 1);
             texture.SetData<Color>(new[] { Color.White });
 
-            emitter = new Emitter(Game, Game.Content.Load<Texture2D>("fire"), center, 1);
+            emitter = new Emitter(Game, center, 1, Game.Content.Load<Texture2D>("fire"));
             emitter.MaxDirectionDevation = 90;
             emitter.MinVelocity = 50;
             emitter.MaxVelocity = 100;

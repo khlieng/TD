@@ -15,7 +15,7 @@ namespace TD
         public Rocket(Game game, Vector2 position, ITarget target, float velocity, int onHitDamage)
             : base(game, position, target, velocity, onHitDamage, game.Content.Load<Texture2D>("rocket"))
         {
-            emitter = new Emitter(game, game.Content.Load<Texture2D>("fire"), position, 5);
+            emitter = new Emitter(game, position, 5, game.Content.Load<Texture2D>("fire"));
             emitter.MaxDirectionDevation = 180;
             emitter.MinVelocity = 20;
             emitter.MaxVelocity = 100;
@@ -23,6 +23,7 @@ namespace TD
             emitter.MaxDuration = 200;
             emitter.MinScale = 0.1f;
             emitter.MaxScale = 0.8f;
+            emitter.DecayTimeFraction = 0.2f;
         }
 
         public override void Update(GameTime gameTime)
@@ -35,29 +36,32 @@ namespace TD
 
         protected override void OnHit()
         {
-            Emitter explosionEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("fire"), target.Center);
+            Emitter explosionEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("fire"));
             explosionEmitter.MaxDirectionDevation = 180;
             explosionEmitter.MinVelocity = 5;
             explosionEmitter.MaxVelocity = 50;
-            explosionEmitter.MinDuration = 300;
-            explosionEmitter.MaxDuration = 500;
+            explosionEmitter.MinDuration = 400;
+            explosionEmitter.MaxDuration = 750;
             explosionEmitter.MinScale = 0.5f;
             explosionEmitter.MaxScale = 1.0f;
             explosionEmitter.Emit(100);
-            new DelayedCall(Game, () => Game.Components.Remove(explosionEmitter), 600);
-
-            Emitter smokeEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("smoke"), target.Center, 5);
+            explosionEmitter.DecayTimeFraction = 0.1f;
+            new DelayedCall(Game, () => Game.Components.Remove(explosionEmitter), 1000);
+            
+            Emitter smokeEmitter = new Emitter(Game, target.Center, 25, Game.Content.Load<Texture2D>("smoke"));
             smokeEmitter.Additive = false;
             smokeEmitter.MaxDirectionDevation = 180;
             smokeEmitter.MinVelocity = 15;
             smokeEmitter.MaxVelocity = 50;
             smokeEmitter.MinDuration = 200;
-            smokeEmitter.MaxDuration = 800;
+            smokeEmitter.MaxDuration = 750;
             smokeEmitter.MinScale = 0.4f;
             smokeEmitter.MaxScale = 0.8f;
-            smokeEmitter.EmitOffset = 4;
-            new DelayedCall(Game, () => smokeEmitter.Emitting = false, 100);
-            new DelayedCall(Game, () => Game.Components.Remove(smokeEmitter), 1000);   
+            smokeEmitter.EmitOffset = 8;
+            smokeEmitter.DecayTimeFraction = 0.2f;
+
+            new DelayedCall(Game, () => smokeEmitter.Emitting = false, 500);
+            new DelayedCall(Game, () => Game.Components.Remove(smokeEmitter), 1500);
 
             base.OnHit();
         }

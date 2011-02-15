@@ -10,7 +10,8 @@ namespace TD
     class Emitter : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D texture;
+        private Texture2D[] textures;
+        private int currentTexture;
 
         private Random rand = new Random();        
 
@@ -25,6 +26,7 @@ namespace TD
         public float MinScale { get; set; }
         public float MaxScale { get; set; }
         public int EmitOffset { get; set; }
+        public float DecayTimeFraction { get; set; }
 
         private bool emitting;
         public bool Emitting
@@ -43,38 +45,33 @@ namespace TD
 
         private bool instant;
 
-        public Emitter(Game game, Texture2D texture, Vector2 position)
+        public Emitter(Game game, Vector2 position, params Texture2D[] textures)
+            : this(game, textures, position, 0)
+        {
+        }
+
+        public Emitter(Game game, Vector2 position, int interval, params Texture2D[] textures)
+            : this(game, textures, position, interval)
+        {
+        }
+
+        private Emitter(Game game, Texture2D[] textures, Vector2 position, int interval)
             : base(game)
         {
             spriteBatch = GameHelper.GetService<SpriteBatch>();
-            this.texture = texture;
-
-            Position = position;
-            Direction = new Vector2(0, 1);
-            Additive = true;
-
-            MaxScale = 1.0f;
-            MinScale = 1.0f;
-
-            instant = true;
-
-            game.Components.Add(this);
-        }        
-        
-        public Emitter(Game game, Texture2D texture, Vector2 position, int interval)
-            : base(game)
-        {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
-            this.texture = texture;
+            this.textures = textures;
+            currentTexture = textures.Length - 1;
 
             Position = position;
             Direction = new Vector2(0, 1);
             this.interval = interval;
+            instant = interval < 1;
             Emitting = true;
             Additive = true;
 
             MaxScale = 1.0f;
             MinScale = 1.0f;
+            DecayTimeFraction = 0.5f;
 
             game.Components.Add(this);
         }
@@ -158,7 +155,10 @@ namespace TD
             int duration = rand.Next(MaxDuration - MinDuration + 1) + MinDuration;
             float scale = rand.Next((int)(MaxScale * 100) - (int)(MinScale * 100) + 1) / 100.0f + MinScale;
 
-            return new Particle(this, texture, Position + pDirection * EmitOffset, pDirection, velocity, scale, duration);
+            currentTexture = ++currentTexture % textures.Length;
+
+            return new Particle(this, textures[currentTexture], Position + pDirection * EmitOffset, 
+                pDirection, velocity, scale, duration, DecayTimeFraction);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace TD
             new Rocket(Game, center, Target, 300.0f, damage);
             
             // Smoke <3
-            Emitter emitter = new Emitter(Game, Game.Content.Load<Texture2D>("smoke"), center, 1);
+            Emitter emitter = new Emitter(Game, center, 1, Game.Content.Load<Texture2D>("smoke"));
             emitter.MaxDirectionDevation = 180;
             emitter.MinVelocity = 15;
             emitter.MaxVelocity = 30;
