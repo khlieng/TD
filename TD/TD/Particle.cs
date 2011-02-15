@@ -9,6 +9,8 @@ namespace TD
 {
     class Particle
     {
+        Emitter emitter;
+
         Texture2D texture;
         Vector2 position;
         Vector2 direction;
@@ -17,11 +19,9 @@ namespace TD
         float scale;
         int elapsed;
         int time;
-        Emitter emitter;
-
         float decayTime;
         float decayStart;
-        Color color = Color.White;
+        Color color;
 
         public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, 
             float velocity, float scale, int time, float decayFraction)
@@ -36,6 +36,7 @@ namespace TD
             origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
             decayTime = time * decayFraction;
             decayStart = time - decayTime;
+            color = Color.White;
 
             emitter.Add(this);
         }

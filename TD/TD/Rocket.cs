@@ -44,9 +44,20 @@ namespace TD
             explosionEmitter.MaxDuration = 750;
             explosionEmitter.MinScale = 0.5f;
             explosionEmitter.MaxScale = 1.0f;
-            explosionEmitter.Emit(100);
             explosionEmitter.DecayTimeFraction = 0.1f;
-            new DelayedCall(Game, () => Game.Components.Remove(explosionEmitter), 1000);
+            explosionEmitter.Emit(100);            
+            explosionEmitter.RemoveAfter(800);
+
+            Emitter sparkEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("fireOrb"));
+            sparkEmitter.MaxDirectionDevation = 180;
+            sparkEmitter.MinVelocity = 100;
+            sparkEmitter.MaxVelocity = 200;
+            sparkEmitter.MaxDuration = 500;
+            sparkEmitter.MinScale = 0.1f;
+            sparkEmitter.MaxScale = 0.3f;
+            sparkEmitter.DecayTimeFraction = 0.8f;
+            sparkEmitter.Emit(50);
+            sparkEmitter.RemoveAfter(600);
             
             Emitter smokeEmitter = new Emitter(Game, target.Center, 25, Game.Content.Load<Texture2D>("smoke"));
             smokeEmitter.Additive = false;
@@ -59,9 +70,8 @@ namespace TD
             smokeEmitter.MaxScale = 0.8f;
             smokeEmitter.EmitOffset = 8;
             smokeEmitter.DecayTimeFraction = 0.2f;
-
-            new DelayedCall(Game, () => smokeEmitter.Emitting = false, 500);
-            new DelayedCall(Game, () => Game.Components.Remove(smokeEmitter), 1500);
+            smokeEmitter.EmitFor(500);
+            smokeEmitter.RemoveAfter(1500);
 
             base.OnHit();
         }

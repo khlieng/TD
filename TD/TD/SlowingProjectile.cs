@@ -24,7 +24,7 @@ namespace TD
             //
             // This will be used for a machinegun-ish tower
             //
-            //Emitter bloodEmitter = new Emitter(Game, Game.Content.Load<Texture2D>("blood"), target.Center);
+            //Emitter bloodEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("blood2"));
             //bloodEmitter.Additive = false;
             //bloodEmitter.Direction = direction;
             //bloodEmitter.MaxDirectionDevation = 15;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XNATools;
 
 namespace TD
 {
@@ -64,11 +65,11 @@ namespace TD
 
             Position = position;
             Direction = new Vector2(0, 1);
+
             this.interval = interval;
             instant = interval < 1;
-            Emitting = true;
-            Additive = true;
 
+            Additive = true;
             MaxScale = 1.0f;
             MinScale = 1.0f;
             DecayTimeFraction = 0.5f;
@@ -81,6 +82,25 @@ namespace TD
             base.LoadContent();
         }
 
+        public void Emit(int amount)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                particles.AddLast(CreateParticle());
+            }
+        }
+
+        public void EmitFor(int ms)
+        {
+            emitting = true;
+            new DelayedCall(Game, () => emitting = false, ms);
+        }
+
+        public void RemoveAfter(int ms)
+        {
+            new DelayedCall(Game, () => Game.Components.Remove(this), ms);
+        }
+
         public void Add(Particle particle)
         {
             add.Enqueue(particle);
@@ -89,14 +109,6 @@ namespace TD
         public void Remove(Particle particle)
         {
             remove.Enqueue(particle);
-        }
-
-        public void Emit(int amount)
-        {
-            for (int i = 0; i < amount; i++)
-            {
-                particles.AddLast(CreateParticle());
-            }
         }
 
         public override void Update(GameTime gameTime)

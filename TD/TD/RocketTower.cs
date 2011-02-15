@@ -42,8 +42,8 @@ namespace TD
             emitter.MinScale = 0.4f;
             emitter.MaxScale = 0.8f;
             emitter.EmitOffset = 8;
-            new DelayedCall(Game, () => emitter.Emitting = false, 100);
-            new DelayedCall(Game, () => Game.Components.Remove(emitter), 2000);            
+            emitter.EmitFor(100);
+            new DelayedCall(Game, () => Game.Components.Remove(emitter), 1500);            
             
             base.Fire();
         }

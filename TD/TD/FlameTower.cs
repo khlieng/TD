@@ -34,6 +34,7 @@ namespace TD
             emitter.MinDuration = 50;
             emitter.MaxDuration = 500;
             emitter.EmitOffset = 16;
+            emitter.Emitting = true;
 
             base.LoadContent();
         }
