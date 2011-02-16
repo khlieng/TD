@@ -23,7 +23,7 @@ namespace TD
             emitter.MaxDuration = 200;
             emitter.MinScale = 0.1f;
             emitter.MaxScale = 0.8f;
-            emitter.DecayTimeFraction = 0.2f;
+            emitter.AlphaDecayTimeFraction = 0.2f;
             emitter.Emitting = true;
         }
 
@@ -45,7 +45,7 @@ namespace TD
             explosionEmitter.MaxDuration = 750;
             explosionEmitter.MinScale = 0.5f;
             explosionEmitter.MaxScale = 1.0f;
-            explosionEmitter.DecayTimeFraction = 0.1f;
+            explosionEmitter.AlphaDecayTimeFraction = 0.1f;
             explosionEmitter.Emit(100);            
             explosionEmitter.RemoveAfter(800);
 
@@ -56,7 +56,7 @@ namespace TD
             sparkEmitter.MaxDuration = 500;
             sparkEmitter.MinScale = 0.1f;
             sparkEmitter.MaxScale = 0.3f;
-            sparkEmitter.DecayTimeFraction = 0.8f;
+            sparkEmitter.AlphaDecayTimeFraction = 0.8f;
             sparkEmitter.Emit(50);
             sparkEmitter.RemoveAfter(600);
             
@@ -70,7 +70,7 @@ namespace TD
             smokeEmitter.MinScale = 0.4f;
             smokeEmitter.MaxScale = 0.8f;
             smokeEmitter.EmitOffset = 8;
-            smokeEmitter.DecayTimeFraction = 0.2f;
+            smokeEmitter.AlphaDecayTimeFraction = 0.2f;
             smokeEmitter.EmitFor(500);
             smokeEmitter.RemoveAfter(1500);
 

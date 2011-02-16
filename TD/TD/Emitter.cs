@@ -14,8 +14,8 @@ namespace TD
         private Texture2D[] textures;
         private int currentTexture;
 
-        private int interval;
-        private int elapsed;
+        private float interval;
+        private float elapsed;
         private bool instant;
 
         private Random rand = new Random();
@@ -45,7 +45,8 @@ namespace TD
         public float MinScale { get; set; }
         public float MaxScale { get; set; }
         public int EmitOffset { get; set; }
-        public float DecayTimeFraction { get; set; }
+        public float AlphaDecayTimeFraction { get; set; }
+        public float ScaleDecayTimeFraction { get; set; }
         public bool Additive { get; set; }
 
         private bool emitting;
@@ -60,16 +61,16 @@ namespace TD
         private Queue<Particle> add = new Queue<Particle>();
 
         public Emitter(Game game, Vector2 position, params Texture2D[] textures)
-            : this(game, textures, position, 0)
+            : this(game, textures, position, 0f)
         {
         }
 
-        public Emitter(Game game, Vector2 position, int interval, params Texture2D[] textures)
+        public Emitter(Game game, Vector2 position, float interval, params Texture2D[] textures)
             : this(game, textures, position, interval)
         {
         }
 
-        private Emitter(Game game, Texture2D[] textures, Vector2 position, int interval)
+        private Emitter(Game game, Texture2D[] textures, Vector2 position, float interval)
             : base(game)
         {
             spriteBatch = GameHelper.GetService<SpriteBatch>();
@@ -82,12 +83,12 @@ namespace TD
             Direction = new Vector2(0, 1);
 
             this.interval = interval;
-            instant = interval < 1;
+            instant = interval == 0f;
 
             Additive = true;
             MaxScale = 1.0f;
             MinScale = 1.0f;
-            DecayTimeFraction = 0.5f;
+            AlphaDecayTimeFraction = 0.5f;
 
             game.Components.Add(this);
         }
@@ -113,7 +114,7 @@ namespace TD
 
         public void RemoveAfter(int ms)
         {
-            new DelayedCall(Game, () => Game.Components.Remove(this), ms);
+            new DelayedCall(Game, () => { Game.Components.Remove(this); Dispose(true); }, ms);
         }
 
         public void Add(Particle particle)
@@ -142,26 +143,24 @@ namespace TD
                     particles.AddLast(add.Dequeue());
                 
                 elapsed += gameTime.ElapsedGameTime.Milliseconds;
-                int initialElapsed = elapsed;
+                float initialElapsed = elapsed;
                 
                 Vector2 previousPositon = position - positionChangeDirection * positionChangeAmount;                
                 Vector2 offset = Vector2.Zero;
 
-                int emitTime = 0;
                 while (elapsed >= interval)
                 {
-                    emitTime = elapsed - elapsed % interval;
                     elapsed -= interval;
 
                     if (positionChangeAmount > 0.0f)
                     {
                         Vector2 actualPosition = previousPositon + 
-                            positionChangeDirection * ((positionChangeAmount / initialElapsed) * emitTime);
+                            positionChangeDirection * ((positionChangeAmount / initialElapsed) * elapsed);
                         offset = actualPosition - position;
                     }
 
                     Particle particle = CreateParticle(offset);
-                    particle.Update(new GameTime(gameTime.TotalGameTime, TimeSpan.FromMilliseconds(emitTime)));
+                    particle.Update(new GameTime(gameTime.TotalGameTime, TimeSpan.FromMilliseconds(elapsed)));
                     Add(particle);
                 }
                 positionChangeAmount = 0.0f;
@@ -203,7 +202,7 @@ namespace TD
             currentTexture = ++currentTexture % textures.Length;
 
             return new Particle(this, textures[currentTexture], Position + pDirection * EmitOffset + offset, 
-                pDirection, velocity, scale, duration, DecayTimeFraction);
+                pDirection, velocity, scale, duration, AlphaDecayTimeFraction, ScaleDecayTimeFraction);
         }
     }
 }

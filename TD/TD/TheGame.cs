@@ -81,19 +81,15 @@ namespace TD
             
             stateManager.Add(new MainGameState(this));
 
-            e = new Emitter(this, Vector2.Zero, 1, Content.Load<Texture2D>("fireOrb"));
-            //Vector2 direction = new Vector2(1, 1);
-            //direction.Normalize();
-            //e.MaxDirectionDevation = 5;
-            //e.Direction = direction;
-            //e.MinVelocity = 500;
-            //e.MaxVelocity = 500;    
-            e.MinScale = 0.4f;
-            e.MaxScale = 0.4f;
-            e.MinDuration = 200;
-            e.MaxDuration = 200;
+            e = new Emitter(this, Vector2.Zero, 0.5f, Content.Load<Texture2D>("fireOrb"));
+            e.MinScale = 0.5f;
+            e.MaxScale = 0.5f;
+            e.MinDuration = 600;
+            e.MaxDuration = 600;
+            e.AlphaDecayTimeFraction = 1.0f;
+            e.ScaleDecayTimeFraction = 1.0f;
             e.Emitting = true;
-                                                
+            
             base.LoadContent();
         }
 

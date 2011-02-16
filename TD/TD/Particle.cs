@@ -16,15 +16,18 @@ namespace TD
         Vector2 direction;
         Vector2 origin;
         float velocity;
+        float initialScale;
         float scale;
         int elapsed;
         int time;
-        float decayTime;
-        float decayStart;
+        float alphaDecayTime;
+        float alphaDecayStart;
+        float scaleDecayTime;
+        float scaleDecayStart;
         Color color;
 
         public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, 
-            float velocity, float scale, int time, float decayFraction)
+            float velocity, float scale, int time, float alphaDecayFraction, float scaleDecayFraction)
         {
             this.emitter = emitter;
             this.texture = texture;
@@ -32,10 +35,13 @@ namespace TD
             this.direction = direction;
             this.velocity = velocity;
             this.time = time;
+            this.initialScale = scale;
             this.scale = scale;
             origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
-            decayTime = time * decayFraction;
-            decayStart = time - decayTime;
+            alphaDecayTime = time * alphaDecayFraction;
+            alphaDecayStart = time - alphaDecayTime;
+            scaleDecayTime = time * scaleDecayFraction;
+            scaleDecayStart = time - scaleDecayTime;
             color = Color.White;
         }
 
@@ -50,11 +56,18 @@ namespace TD
                 emitter.Remove(this);
             }
 
-            if (elapsed > decayStart)
+            if (elapsed > alphaDecayStart)
             {
-                float decayDelta = elapsed - decayStart;
-                float percent = 1.0f - (1.0f / decayTime) * decayDelta;
+                float decayDelta = elapsed - alphaDecayStart;
+                float percent = 1.0f - (1.0f / alphaDecayTime) * decayDelta;
                 color.A = (byte)(255.0f * percent);
+            }
+
+            if (elapsed > scaleDecayStart)
+            {
+                float decayDelta = elapsed - scaleDecayStart;
+                float percent = 1.0f - (1.0f / scaleDecayTime) * decayDelta;
+                scale = initialScale * percent;
             }
         }
 
