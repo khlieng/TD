@@ -56,6 +56,29 @@ namespace TD
         }
 
         Emitter e;
+
+        List<Vector2> points = new List<Vector2>();
+        string text = string.Empty;
+        List<Vector2> apexList;
+        Vector2[] path = new[]
+                {
+                    new Vector2(0, 16),
+                    new Vector2(32, 16),
+                    new Vector2(64, 16),
+                    new Vector2(96, 16),
+                    new Vector2(96, 48),
+                    new Vector2(96, 48 + 32),
+                    new Vector2(96, 48 + 64),
+                    new Vector2(64, 48 + 64),
+                    new Vector2(32, 48 + 64),
+                    new Vector2(0, 48 + 64),
+                    new Vector2(0, 48 + 96),
+                    new Vector2(0, 48 + 128),
+                    new Vector2(0, 48 + 128 + 32),
+                    new Vector2(32, 48 + 128 + 32),
+                    new Vector2(64, 48 + 128 + 32)
+                };
+        List<Vector2> pathList;
         
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -89,7 +112,21 @@ namespace TD
             e.AlphaDecayTimeFraction = 1.0f;
             e.ScaleDecayTimeFraction = 1.0f;
             e.Emitting = true;
+
+            pathList = new List<Vector2>(path);
+            apexList = new List<Vector2>();
             
+            //Point p = new Point(16, 16);
+            //Vector2 apex = new Vector2(0, 32);
+            //Vector2 direction = new Vector2(0, -1);
+            //float r = 16.0f;
+            //points.Add(apex + direction * r);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    direction = Vector2.Transform(direction, Matrix.CreateRotationZ((float)(Math.PI / 2) / 10.0f));
+            //    points.Add(apex + direction * r);
+            //}
+
             base.LoadContent();
         }
 
@@ -148,6 +185,19 @@ namespace TD
             //spriteBatch.Begin();
             //spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
             //spriteBatch.End();
+
+            spriteBatch.Begin();
+            for (int i = 0; i < pathList.Count - 1; i++)
+            {
+                XNATools.Draw.Line(pathList[i], pathList[i + 1], Color.Red);                
+            }
+
+            foreach (Vector2 apex in apexList)
+            {
+                XNATools.Draw.FilledRect(apex - Vector2.One, new Vector2(2, 2), Color.Red);
+            }
+            //spriteBatch.DrawString(Fonts["Calibri 8"], text, new Vector2(10, 10), Color.White);
+            spriteBatch.End();
 
             if (dumpIt)
             {

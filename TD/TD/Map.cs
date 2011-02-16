@@ -48,9 +48,9 @@ namespace TD
 
         private Tower[,] towers;
 
-        private Point spawn;
-        private Point exit;
-        private List<Point> path;
+        private Vector2 spawn;
+        private Vector2 exit;
+        private List<Vector2> path;
 
         private LinkedList<Mob> mobs;
         public IEnumerable<ITarget> Mobs
@@ -87,6 +87,7 @@ namespace TD
 
             //Load(@"Maps\test.map");
             GeneratePath();
+            SmoothPath();
             SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
 
             towers = new Tower[15, 20];
@@ -254,9 +255,9 @@ namespace TD
             }
             spriteBatch.End();
 #if DEBUG
-            foreach (Point p in path)
+            foreach (Vector2 p in path)
             {
-                XNATools.Draw.FilledRect(new Rectangle(p.X * 32 + 14, p.Y * 32 + 14, 4, 4), Color.Black);
+                XNATools.Draw.FilledRect(new Rectangle((int)(p.X * 32) + 14, (int)(p.Y * 32) + 14, 4, 4), Color.Black);
             }
 #endif
             base.Draw(gameTime);
@@ -270,7 +271,7 @@ namespace TD
             Node startNode = new Node(spawn.X, spawn.Y);
             Node targetNode = new Node(exit.X, exit.Y);
             Node current = null;
-            Point currentP = new Point();
+            Vector2 currentP = new Vector2();
             openList.AddLast(startNode);
 
             while (openList.Count > 0)
@@ -281,13 +282,13 @@ namespace TD
 
                 if (currentP == exit)
                 {
-                    path = new List<Point>();
+                    path = new List<Vector2>();
                     do
                     {
-                        path.Add(new Point(current.y, current.x));
+                        path.Add(new Vector2(current.y, current.x));
                     } while ((current = current.parent) != startNode);
 
-                    path.Add(new Point(spawn.Y, spawn.X));
+                    path.Add(new Vector2(spawn.Y, spawn.X));
                     path.Reverse();
                     break;
                 }
@@ -295,11 +296,11 @@ namespace TD
                 openList.Remove(current);
                 closedList.AddLast(current);
 
-                foreach (Point p in Neighbours(currentP))
+                foreach (Vector2 p in Neighbours(currentP))
                 {
                     if (p.X < 0 || p.X >= rows || p.Y < 0 || p.Y >= cols) continue;
 
-                    if (!tiles[p.X, p.Y].Walkable) continue;
+                    if (!tiles[(int)p.X, (int)p.Y].Walkable) continue;
 
                     if (closedList.Where(n => n.x == p.X && n.y == p.Y).Count() > 0) continue;
 
@@ -326,7 +327,48 @@ namespace TD
             }
         }
 
-        private IEnumerable<Point> Neighbours(Point p)
+        private void SmoothPath()
+        {
+            for (int i = 1; i < path.Count - 1; i++)
+            {
+                Vector2 p = path[i];
+                Vector2 v1 = path[i] - path[i - 1];
+                Vector2 v2 = path[i + 1] - path[i];
+
+                if (v1 != v2)
+                {
+                    Vector2 apex = -0.5f * v1 + 0.5f * v2;
+                    apex += p;
+
+                    Vector2 dir = p - apex;
+                    dir.Normalize();
+
+                    float applePie = 0.0f;
+                    if (dir.X > 0.0f)
+                    {
+                        dir = Vector2.Transform(dir, Matrix.CreateRotationZ(-MathHelper.PiOver4));
+                        applePie = 3.0f;
+                    }
+                    else
+                    {
+                        dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver4));
+                        applePie = -3.0f;
+                    }
+
+                    path.RemoveAt(i);
+                    for (int j = 0; j < 3; j++)
+                    {
+                        path.Insert(i, apex + dir * 0.5f);
+                        dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver2 / applePie));
+                        i++;
+                    }
+                    path.Insert(i, apex + dir * 0.5f);
+                    i++;
+                }
+            }
+        }
+
+        private IEnumerable<Vector2> Neighbours(Vector2 p)
         {
             //for (int x = p.X - 1; x <= p.X + 1; x++)
             //{
@@ -338,24 +380,23 @@ namespace TD
             //        }
             //    }
             //}
-            yield return new Point(p.X - 1, p.Y);
-            yield return new Point(p.X, p.Y - 1);
-            yield return new Point(p.X + 1, p.Y);
-            yield return new Point(p.X, p.Y + 1);
+            yield return p - new Vector2(1, 0);
+            yield return p - new Vector2(0, 1);
+            yield return p + new Vector2(1, 0);
+            yield return p + new Vector2(0, 1);
         }
 
         private class Node
         {
             public Node parent;
-            public float f, g, h;
-            public int x, y;
+            public float f, g, h, x, y;
 
-            public Node(int x, int y)
+            public Node(float x, float y)
                 : this(x, y, 0f, 0f, null)
             {
             }
 
-            public Node(int x, int y, float g, float h, Node parent)
+            public Node(float x, float y, float g, float h, Node parent)
             {
                 this.x = x;
                 this.y = y;
@@ -425,8 +466,8 @@ namespace TD
                         new Rectangle(input.ReadInt32(), input.ReadInt32(), input.ReadInt32(), input.ReadInt32()));
                 }
 
-                map.spawn = new Point(input.ReadInt32(), input.ReadInt32());
-                map.exit = new Point(input.ReadInt32(), input.ReadInt32());
+                map.spawn = new Vector2(input.ReadInt32(), input.ReadInt32());
+                map.exit = new Vector2(input.ReadInt32(), input.ReadInt32());
 
                 map.tiles = new Tile[map.rows, map.cols];
                 for (int row = 0; row < map.rows; row++)

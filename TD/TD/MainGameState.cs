@@ -65,7 +65,7 @@ namespace TD
             overlay = Game.Content.Load<Texture2D>("overlay3");
             SetupUI();
 
-            map = Game.Content.Load<Map>(@"Maps\test");
+            map = Game.Content.Load<Map>(@"Maps\test2");
             map.Click += (o, e) =>
             {
                 selectedTower = map.GetTower(e.Row, e.Col);
