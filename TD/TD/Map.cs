@@ -87,7 +87,7 @@ namespace TD
 
             //Load(@"Maps\test.map");
             GeneratePath();
-            SmoothPath();
+            SmoothPath(3);
             SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
 
             towers = new Tower[15, 20];
@@ -210,7 +210,7 @@ namespace TD
 
                 for (int i = 0; i < path.Count; i++)
                 {
-                    if ((mob.Center - new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16)).Length() < 5.0f)
+                    if ((mob.Center - new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16)).Length() < 4.0f)
                     {
                         if (i + 1 == path.Count)
                         {
@@ -220,7 +220,6 @@ namespace TD
 
                         Vector2 velocity = new Vector2(path[i + 1].X * 32 + 16, path[i + 1].Y * 32 + 16) -
                             new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16);
-                            //mob.Center;
                         velocity.Normalize();
                         velocity *= mob.Velocity.Length();
                         mob.Velocity = velocity;
@@ -254,7 +253,11 @@ namespace TD
                 }
             }
             spriteBatch.End();
-#if DEBUG
+#if DEBUG            
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                XNATools.Draw.Line(path[i] * 32 + new Vector2(16, 16), path[i + 1] * 32 + new Vector2(16, 16), Color.Red);
+            }
             foreach (Vector2 p in path)
             {
                 XNATools.Draw.FilledRect(new Rectangle((int)(p.X * 32) + 14, (int)(p.Y * 32) + 14, 4, 4), Color.Black);
@@ -327,13 +330,14 @@ namespace TD
             }
         }
 
-        private void SmoothPath()
+        private void SmoothPath(int subdivs)
         {
             for (int i = 1; i < path.Count - 1; i++)
             {
                 Vector2 p = path[i];
                 Vector2 v1 = path[i] - path[i - 1];
                 Vector2 v2 = path[i + 1] - path[i];
+                Vector2 v12 = v1 + v2;
 
                 if (v1 != v2)
                 {
@@ -344,19 +348,36 @@ namespace TD
                     dir.Normalize();
 
                     float applePie = 0.0f;
+                    
                     if (dir.X > 0.0f)
                     {
-                        dir = Vector2.Transform(dir, Matrix.CreateRotationZ(-MathHelper.PiOver4));
-                        applePie = 3.0f;
+                        if (v12.Y > 0.0f)
+                        {
+                            dir = Vector2.Transform(dir, Matrix.CreateRotationZ(-MathHelper.PiOver4));
+                            applePie = subdivs;
+                        }
+                        else
+                        {
+                            dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver4));
+                            applePie = -subdivs;
+                        }
                     }
                     else
                     {
-                        dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver4));
-                        applePie = -3.0f;
+                        if (v12.Y > 0.0f)
+                        {
+                            dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver4));
+                            applePie = -subdivs;
+                        }
+                        else
+                        {
+                            dir = Vector2.Transform(dir, Matrix.CreateRotationZ(-MathHelper.PiOver4));
+                            applePie = subdivs;
+                        }
                     }
 
                     path.RemoveAt(i);
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < subdivs; j++)
                     {
                         path.Insert(i, apex + dir * 0.5f);
                         dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver2 / applePie));
@@ -406,38 +427,6 @@ namespace TD
                 f = g + h;
             }
         }
-
-        //private void Load(string fileName)
-        //{
-        //    using (Stream stream = File.OpenRead(fileName))
-        //    using (BinaryReader br = new BinaryReader(stream))
-        //    {
-        //        textures = new Texture2D[br.ReadInt32()];
-        //        for (int i = 0; i < textures.Length; i++)
-        //        {
-        //            textures[i] = Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(br.ReadString()));
-        //        }
-
-        //        sprites = new Sprite[br.ReadInt32()];
-        //        for (int i = 0; i < sprites.Length; i++)
-        //        {
-        //            sprites[i] = new Sprite(br.ReadInt32(), 
-        //                new Rectangle(br.ReadInt32(), br.ReadInt32(), br.ReadInt32(), br.ReadInt32()));
-        //        }
-
-        //        spawn = new Point(br.ReadInt32(), br.ReadInt32());
-        //        exit = new Point(br.ReadInt32(), br.ReadInt32());
-
-        //        tiles = new Tile[rows, cols];
-        //        for (int row = 0; row < rows; row++)
-        //        {
-        //            for (int col = 0; col < cols; col++)
-        //            {
-        //                tiles[row, col] = new Tile(br.ReadInt32(), br.ReadBoolean());
-        //            }
-        //        }
-        //    }
-        //}
 
         protected virtual void OnClick(MapClickArgs args)
         {

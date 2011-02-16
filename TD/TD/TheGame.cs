@@ -186,18 +186,18 @@ namespace TD
             //spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
             //spriteBatch.End();
 
-            spriteBatch.Begin();
-            for (int i = 0; i < pathList.Count - 1; i++)
-            {
-                XNATools.Draw.Line(pathList[i], pathList[i + 1], Color.Red);                
-            }
+            //spriteBatch.Begin();
+            //for (int i = 0; i < pathList.Count - 1; i++)
+            //{
+            //    XNATools.Draw.Line(pathList[i], pathList[i + 1], Color.Red);                
+            //}
 
-            foreach (Vector2 apex in apexList)
-            {
-                XNATools.Draw.FilledRect(apex - Vector2.One, new Vector2(2, 2), Color.Red);
-            }
-            //spriteBatch.DrawString(Fonts["Calibri 8"], text, new Vector2(10, 10), Color.White);
-            spriteBatch.End();
+            //foreach (Vector2 apex in apexList)
+            //{
+            //    XNATools.Draw.FilledRect(apex - Vector2.One, new Vector2(2, 2), Color.Red);
+            //}
+            ////spriteBatch.DrawString(Fonts["Calibri 8"], text, new Vector2(10, 10), Color.White);
+            //spriteBatch.End();
 
             if (dumpIt)
             {
