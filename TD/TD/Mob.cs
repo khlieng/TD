@@ -12,7 +12,8 @@ namespace TD
     class Mob : DrawableGameComponent, ITarget
     {
         private SpriteBatch spriteBatch;
-        private Texture2D texture;
+        //private Texture2D texture;
+        private Animation animation;
 
         private Vector2 position;
         private Vector2 velocity;
@@ -67,7 +68,8 @@ namespace TD
         {
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
-            texture = Game.Content.Load<Texture2D>("mob2");
+            //texture = Game.Content.Load<Texture2D>("mob2");
+            animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 150);
             
             hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 30, 10));
             hpBar.ForegroundColor = Color.Red;
@@ -107,7 +109,7 @@ namespace TD
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(texture, Center, null, Color.White, (float)Math.Atan2(velocity.Y, velocity.X), 
+            spriteBatch.Draw(animation.Texture, Center, null, Color.White, (float)Math.Atan2(velocity.Y, velocity.X), 
                 new Vector2(16, 16), 1.0f, SpriteEffects.None, 0.0f);
             spriteBatch.End();
 
