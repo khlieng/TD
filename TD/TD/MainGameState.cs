@@ -21,6 +21,9 @@ namespace TD
         Map map;
         Tower selectedTower;
 
+        Vector2 radiusCircle;
+        float radius;
+
         KeyboardState prevKeyState;
 
         static int money;
@@ -76,6 +79,20 @@ namespace TD
                     new MovingText(Game, added.Cost + "$", Color.Yellow, startPos, startPos - new Vector2(0, 20), 500);
                 }
             };
+
+            map.MouseTileEnter += (o, e) =>
+                {
+                    Tower tower = map.GetTower(e.Row, e.Col);
+                    if (tower != null)
+                    {
+                        radiusCircle = new Vector2(e.Col * 32 + 16, e.Row * 32 + 16);
+                        radius = tower.GetStats().Range;
+                    }
+                };
+            map.MouseTileLeave += (o, e) =>
+                {
+                    radius = 0.0f;
+                };
 
             base.LoadContent(content);
         }
@@ -181,7 +198,12 @@ namespace TD
                     spriteBatch.Draw(towerTexture, new Vector2(mCol * 32, mRow * 32), color);
                     spriteBatch.End();
                 }
-            }            
+            }
+
+            if (radius > 0.0f)
+            {
+                XNATools.Draw.Circle(radiusCircle, radius, 32, Color.White);
+            }
 
             prev = current;
         }

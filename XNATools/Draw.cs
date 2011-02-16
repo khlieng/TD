@@ -71,6 +71,20 @@ namespace XNATools
             DrawVertices(vertices, PrimitiveType.TriangleList);
         }
 
+        public static void Circle(Vector2 center, float radius, int subdivs, Color color)
+        {
+            VertexPositionColor[] vertices = new VertexPositionColor[subdivs + 1];
+
+            Vector2 direction = new Vector2(0, -1);
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = new VertexPositionColor(new Vector3(center + direction * radius, 0f), color);
+                direction = Vector2.Transform(direction, Matrix.CreateRotationZ(MathHelper.TwoPi / subdivs));
+            }
+
+            DrawVertices(vertices, PrimitiveType.LineStrip);
+        }
+
         private static void DrawVertices(VertexPositionColor[] vertices, PrimitiveType type)
         {
             if (device != null)

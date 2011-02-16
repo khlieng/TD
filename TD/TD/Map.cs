@@ -63,6 +63,8 @@ namespace TD
         public Vector2 SpawnPoint { get; private set; }
 
         public event EventHandler<MapClickArgs> Click;
+        public event EventHandler<MapClickArgs> MouseTileEnter;
+        public event EventHandler<MapClickArgs> MouseTileLeave;
         
         public Map(Game game, int cols, int rows) : base(game)
         {
@@ -175,22 +177,34 @@ namespace TD
         {
             get { return selectedMob; }
         }
+
+        int prevCol;
+        int prevRow;
         
         public override void Update(GameTime gameTime)
         {
             MouseState current = Mouse.GetState();
             KeyboardState currentKey = Keyboard.GetState();
 
-            if (prev.LeftButton == ButtonState.Released &&
-                current.LeftButton == ButtonState.Pressed)
-            {
-                int mCol = (current.X - (current.X % 32)) / 32;
-                int mRow = (current.Y - (current.Y % 32)) / 32;
+            int mCol = (current.X - (current.X % 32)) / 32;
+            int mRow = (current.Y - (current.Y % 32)) / 32;
 
-                if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            {
+                if (prev.LeftButton == ButtonState.Released &&
+                    current.LeftButton == ButtonState.Pressed)
                 {
                     OnClick(new MapClickArgs(mRow, mCol));
                 }
+
+                if (mCol != prevCol || mRow != prevRow)
+                {
+                    OnMouseTileLeave(new MapClickArgs(prevRow, prevCol));
+                    OnMouseTileEnter(new MapClickArgs(mRow, mCol));
+                }
+
+                prevCol = mCol;
+                prevRow = mRow;
             }
 
             if (prevKey.IsKeyUp(Keys.Space) &&
@@ -433,6 +447,22 @@ namespace TD
             if (Click != null)
             {
                 Click(this, args);
+            }
+        }
+
+        protected virtual void OnMouseTileEnter(MapClickArgs args)
+        {
+            if (MouseTileEnter != null)
+            {
+                MouseTileEnter(this, args);
+            }
+        }
+
+        protected virtual void OnMouseTileLeave(MapClickArgs args)
+        {
+            if (MouseTileLeave != null)
+            {
+                MouseTileLeave(this, args);
             }
         }
 
