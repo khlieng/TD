@@ -24,8 +24,8 @@ namespace TD
 
         protected override void LoadContent()
         {
-            texture = new Texture2D(Game.GraphicsDevice, 1, 1);
-            texture.SetData<Color>(new[] { Color.White });
+            Texture = new Texture2D(Game.GraphicsDevice, 1, 1);
+            Texture.SetData<Color>(new[] { Color.White });
 
             emitter = new Emitter(Game, center, 1, Game.Content.Load<Texture2D>("fire"));
             emitter.MaxDirectionDevation = 90;

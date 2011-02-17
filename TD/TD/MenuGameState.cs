@@ -18,13 +18,13 @@ namespace TD
 
         public override void LoadContent(ContentManager content)
         {
-            Label label = new Label(Game, new Vector2(100, 80), "Some TD", TheGame.Fonts["Calibri 12"]);
+            Label label = new Label(Game, new Vector2(100, 80), "Some TD", TheGame.GetFont(Font.Large));
             label.Color = Color.Orange;
             label.DropShadow = true;            
             
-            TextButton button = new TextButton(Game, new Vector2(100, 100), "GO!", TheGame.Fonts["Calibri 12"]);
+            TextButton button = new TextButton(Game, new Vector2(100, 100), "GO!", TheGame.GetFont(Font.Large));
             button.DropShadow = true;
-            TextButton buttonExit = new TextButton(Game, new Vector2(100, 120), "Exit", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonExit = new TextButton(Game, new Vector2(100, 120), "Exit", TheGame.GetFont(Font.Large));
             buttonExit.DropShadow = true;
 
             button.Click += (o, e) =>

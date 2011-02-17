@@ -59,7 +59,7 @@ namespace TD
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(TheGame.Fonts["Calibri 8"], text, position, color);
+            spriteBatch.DrawString(TheGame.GetFont(Font.Small), text, position, color);
             spriteBatch.End();
 
             base.Draw(gameTime);

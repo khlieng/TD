@@ -12,12 +12,24 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TD
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
-    public class TheGame : Microsoft.Xna.Framework.Game
+    public enum Font { Small, Large }
+
+    public class TheGame : Game
     {
-        public static Dictionary<string, SpriteFont> Fonts { get; private set; }
+        public static SpriteFont GetFont(Font font)
+        {
+            switch (font)
+            {
+                case Font.Small:
+                    return GameHelper.Game.Content.Load<SpriteFont>("Calibri_8");
+                    
+                case Font.Large:
+                    return GameHelper.Game.Content.Load<SpriteFont>("Miramonte_14");
+
+                default:
+                    return null;
+            }
+        }
 
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -25,9 +37,12 @@ namespace TD
         BloomComponent bloom;
 
         Texture2D cursor;
+        Emitter cursorEmitter;
 
         KeyboardState prevKeyState;
         MouseState prevMouseState;
+
+        bool dumpIt;
 
         public TheGame()
         {
@@ -53,32 +68,7 @@ namespace TD
         protected override void Initialize()
         {   
             base.Initialize();
-        }
-
-        Emitter e;
-
-        List<Vector2> points = new List<Vector2>();
-        string text = string.Empty;
-        List<Vector2> apexList;
-        Vector2[] path = new[]
-                {
-                    new Vector2(0, 16),
-                    new Vector2(32, 16),
-                    new Vector2(64, 16),
-                    new Vector2(96, 16),
-                    new Vector2(96, 48),
-                    new Vector2(96, 48 + 32),
-                    new Vector2(96, 48 + 64),
-                    new Vector2(64, 48 + 64),
-                    new Vector2(32, 48 + 64),
-                    new Vector2(0, 48 + 64),
-                    new Vector2(0, 48 + 96),
-                    new Vector2(0, 48 + 128),
-                    new Vector2(0, 48 + 128 + 32),
-                    new Vector2(32, 48 + 128 + 32),
-                    new Vector2(64, 48 + 128 + 32)
-                };
-        List<Vector2> pathList;
+        }        
         
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
@@ -93,39 +83,21 @@ namespace TD
             XNATools.Draw.Init(GraphicsDevice);
             
             cursor = Content.Load<Texture2D>("glowing_cursor");            
-
-            Fonts = new Dictionary<string, SpriteFont>();
-            Fonts.Add("Calibri 8", Content.Load<SpriteFont>("Calibri_8"));
-            Fonts.Add("Calibri 12", Content.Load<SpriteFont>("Miramonte_14"));
-
+            
             stateManager = new GameStateManager(this);
             GameHelper.AddService<GameStateManager>(stateManager);
             Components.Add(stateManager);
             
             stateManager.Add(new MainGameState(this));
 
-            e = new Emitter(this, Vector2.Zero, 0.5f, Content.Load<Texture2D>("fireOrb"));
-            e.MinScale = 0.5f;
-            e.MaxScale = 0.5f;
-            e.MinDuration = 600;
-            e.MaxDuration = 600;
-            e.AlphaDecayTimeFraction = 1.0f;
-            e.ScaleDecayTimeFraction = 1.0f;
-            e.Emitting = true;
-
-            pathList = new List<Vector2>(path);
-            apexList = new List<Vector2>();
-            
-            //Point p = new Point(16, 16);
-            //Vector2 apex = new Vector2(0, 32);
-            //Vector2 direction = new Vector2(0, -1);
-            //float r = 16.0f;
-            //points.Add(apex + direction * r);
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    direction = Vector2.Transform(direction, Matrix.CreateRotationZ((float)(Math.PI / 2) / 10.0f));
-            //    points.Add(apex + direction * r);
-            //}
+            cursorEmitter = new Emitter(this, Vector2.Zero, 0.5f, Content.Load<Texture2D>("fireOrb"));
+            cursorEmitter.MinScale = 0.5f;
+            cursorEmitter.MaxScale = 0.5f;
+            cursorEmitter.MinDuration = 600;
+            cursorEmitter.MaxDuration = 600;
+            cursorEmitter.AlphaDecayTimeFraction = 1.0f;
+            cursorEmitter.ScaleDecayTimeFraction = 1.0f;
+            cursorEmitter.Emitting = true;
 
             base.LoadContent();
         }
@@ -138,7 +110,7 @@ namespace TD
         {
             // TODO: Unload any non ContentManager content here
         }
-        bool dumpIt;
+        
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -149,8 +121,7 @@ namespace TD
             KeyboardState currentKeyState = Keyboard.GetState();
             MouseState currentMouseState = Mouse.GetState();
 
-            e.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
-            //e.Position += new Vector2(10, 10);
+            cursorEmitter.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
 
             if (currentKeyState.IsKeyDown(Keys.P) && prevKeyState.IsKeyUp(Keys.P))
             {
@@ -162,7 +133,9 @@ namespace TD
             }
 
             if (currentKeyState.IsKeyDown(Keys.Q) && prevKeyState.IsKeyUp(Keys.Q))
+            {
                 bloom.Visible = !bloom.Visible;
+            }
 
             prevKeyState = currentKeyState;
             prevMouseState = currentMouseState;
@@ -184,20 +157,7 @@ namespace TD
 
             //spriteBatch.Begin();
             //spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
-            //spriteBatch.End();
-
-            //spriteBatch.Begin();
-            //for (int i = 0; i < pathList.Count - 1; i++)
-            //{
-            //    XNATools.Draw.Line(pathList[i], pathList[i + 1], Color.Red);                
-            //}
-
-            //foreach (Vector2 apex in apexList)
-            //{
-            //    XNATools.Draw.FilledRect(apex - Vector2.One, new Vector2(2, 2), Color.Red);
-            //}
-            ////spriteBatch.DrawString(Fonts["Calibri 8"], text, new Vector2(10, 10), Color.White);
-            //spriteBatch.End();
+            //spriteBatch.End();       
 
             if (dumpIt)
             {
@@ -207,11 +167,30 @@ namespace TD
                 Texture2D dump = new Texture2D(GraphicsDevice, 800, 600);
                 dump.SetData<Color>(data);
                 
-                using (System.IO.Stream file = System.IO.File.Create(@"C:\Users\Ken-Håvard\Documents\Dump.png"))
+                string documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                using (Stream file = File.Create(CreateUniqueFileName(documents + @"\Dump.png")))
                 {
                     dump.SaveAsPng(file, 800, 600);
                 }
             }
+        }
+
+        private string CreateUniqueFileName(string path)
+        {
+            if (File.Exists(path))
+            {
+                string pathWithoutExtension = Path.GetDirectoryName(path) + "\\" + Path.GetFileNameWithoutExtension(path);
+                string extension = Path.GetExtension(path);
+
+                string result;
+                int number = 0;
+                while (File.Exists(result = pathWithoutExtension + number + extension))
+                {
+                    number++;
+                }
+                return result;
+            }
+            return path;
         }
 
         /// <summary>

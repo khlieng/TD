@@ -23,7 +23,7 @@ namespace TD
 
         protected override void LoadContent()
         {
-            texture = Game.Content.Load<Texture2D>("rocket_tower");
+            Texture = Game.Content.Load<Texture2D>("rocket_tower");
 
             base.LoadContent();
         }
@@ -43,7 +43,7 @@ namespace TD
             emitter.MaxScale = 0.8f;
             emitter.EmitOffset = 8;
             emitter.EmitFor(100);
-            new DelayedCall(Game, () => Game.Components.Remove(emitter), 1500);            
+            emitter.RemoveAfter(1200);       
             
             base.Fire();
         }

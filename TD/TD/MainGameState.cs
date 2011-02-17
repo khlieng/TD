@@ -179,19 +179,44 @@ namespace TD
                 Texture2D towerTexture = null;
                 Color color = new Color();
 
+                Tower tower = null;
+                switch (selected)
+                {
+                    case TowerType.Rocket:
+                        tower = new RocketTower(Game, 0, 0, null);
+                        break;
+
+                    case TowerType.Slow:
+                        tower = new SlowTower(Game, 0, 0, null);
+                        break;
+
+                    case TowerType.Flame:
+                        tower = new FlameTower(Game, 0, 0, null);
+                        break;
+                }
+
                 if (map.CanAddTower(mRow, mCol) && Tower.TextureNames.ContainsKey(selected))
                 {
-                    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);   
+                    if (Tower.TextureNames[selected] != string.Empty)
+                    {
+                        towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);
+                    }
+                    radiusCircle = new Vector2(mCol * 32 + 16, mRow * 32 + 16);
+                    radius = tower.GetStats().Range;
                     color = Color.White;
                     color.A = 128;
                 }
                 else if (!map.CanAddTower(mRow, mCol) && map.GetTower(mRow, mCol) == null && Tower.TextureNames.ContainsKey(selected))
                 {
-                    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);
+                    if (Tower.TextureNames[selected] != string.Empty)
+                    {
+                        towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[selected]);
+                    }
+                    radius = 0.0f;
                     color = Color.Red;
                     color.A = 128;                    
                 }
-                
+
                 if (towerTexture != null)
                 {
                     spriteBatch.Begin();
@@ -202,7 +227,7 @@ namespace TD
 
             if (radius > 0.0f)
             {
-                XNATools.Draw.Circle(radiusCircle, radius, 32, Color.White);
+                XNATools.Draw.Circle(radiusCircle, radius, 32, Color.FromNonPremultiplied(255, 255, 255, 30));
             }
 
             prev = current;
@@ -210,11 +235,11 @@ namespace TD
 
         private void SetupUI()
         {
-            Label towersLabel = new Label(Game, new Vector2(20, 490), "Towers:", TheGame.Fonts["Calibri 12"]);
+            Label towersLabel = new Label(Game, new Vector2(20, 490), "Towers:", TheGame.GetFont(Font.Large));
             towersLabel.DropShadow = true;
-            TextButton buttonRocket = new TextButton(Game, new Vector2(20, 520), "Rocket", TheGame.Fonts["Calibri 12"]);
-            TextButton buttonSlow = new TextButton(Game, new Vector2(100, 520), "Slow", TheGame.Fonts["Calibri 12"]);
-            TextButton buttonFlame = new TextButton(Game, new Vector2(160, 520), "Flame", TheGame.Fonts["Calibri 12"]);
+            TextButton buttonRocket = new TextButton(Game, new Vector2(20, 520), "Rocket", TheGame.GetFont(Font.Large));
+            TextButton buttonSlow = new TextButton(Game, new Vector2(100, 520), "Slow", TheGame.GetFont(Font.Large));
+            TextButton buttonFlame = new TextButton(Game, new Vector2(160, 520), "Flame", TheGame.GetFont(Font.Large));
             buttonRocket.ToggleAble = true;
             buttonRocket.DropShadow = true;
             buttonSlow.ToggleAble = true;
@@ -226,22 +251,22 @@ namespace TD
             new Tooltip(Game, buttonSlow, "Slow jaaaa o_O\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
             new Tooltip(Game, buttonFlame, "HAWT ^,^\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
 
-            buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.Fonts["Calibri 12"]);
+            buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;
             buttonUpgrade.Visible = false;
-            
-            fpsLabel = new FPSLabel(Game, new Vector2(640, 575), TheGame.Fonts["Calibri 12"]);
-            timeLabel = new Label(Game, new Vector2(717, 575), String.Empty, TheGame.Fonts["Calibri 12"]);
+
+            fpsLabel = new FPSLabel(Game, new Vector2(640, 575), TheGame.GetFont(Font.Large));
+            timeLabel = new Label(Game, new Vector2(717, 575), String.Empty, TheGame.GetFont(Font.Large));
 #if !DEBUG
             fpsLabel.Visible = false;
             timeLabel.Visible = false;
 #endif
-            moneyLabel = new Label(Game, new Vector2(650, 5), "Cash: " + money + "$", TheGame.Fonts["Calibri 12"]);
+            moneyLabel = new Label(Game, new Vector2(650, 5), "Cash: " + money + "$", TheGame.GetFont(Font.Large));
             moneyLabel.Color = Color.Yellow;
             moneyLabel.DropShadow = true;
-            livesLabel = new Label(Game, new Vector2(650, 25), "Lives: " + lives, TheGame.Fonts["Calibri 12"]);
+            livesLabel = new Label(Game, new Vector2(650, 25), "Lives: " + lives, TheGame.GetFont(Font.Large));
             livesLabel.DropShadow = true;
-            towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.Fonts["Calibri 12"]);
+            towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.GetFont(Font.Large));
             towerInfoLabel.DropShadow = true;
             
             buttonRocket.Click += (o, e) =>

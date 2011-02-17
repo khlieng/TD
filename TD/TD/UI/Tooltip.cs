@@ -23,7 +23,7 @@ namespace TD
             : base(game)
         {
             spriteBatch = GameHelper.GetService<SpriteBatch>();
-            Font = TheGame.Fonts["Calibri 8"];
+            Font = TheGame.GetFont(TD.Font.Small);
 
             this.provider = provider;
             Text = text;

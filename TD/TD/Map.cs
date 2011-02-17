@@ -62,6 +62,7 @@ namespace TD
 
         public Vector2 SpawnPoint { get; private set; }
 
+        private bool mouseOnMap;
         public event EventHandler<MapClickArgs> Click;
         public event EventHandler<MapClickArgs> MouseTileEnter;
         public event EventHandler<MapClickArgs> MouseTileLeave;
@@ -191,6 +192,8 @@ namespace TD
 
             if (0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
             {
+                mouseOnMap = true;
+
                 if (prev.LeftButton == ButtonState.Released &&
                     current.LeftButton == ButtonState.Pressed)
                 {
@@ -205,6 +208,14 @@ namespace TD
 
                 prevCol = mCol;
                 prevRow = mRow;
+            }
+            else
+            {
+                if (mouseOnMap)
+                {
+                    OnMouseTileLeave(new MapClickArgs(prevRow, prevCol));
+                }
+                mouseOnMap = false;
             }
 
             if (prevKey.IsKeyUp(Keys.Space) &&

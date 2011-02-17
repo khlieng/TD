@@ -12,12 +12,13 @@ namespace TD
     abstract class Tower : DrawableGameComponent
     {
         protected SpriteBatch spriteBatch;
-        protected Texture2D texture;
+        public Texture2D Texture { get; protected set; }
         public static Dictionary<TowerType, string> TextureNames = new Dictionary<TowerType, string>();
         static Tower()
         {
             TextureNames.Add(TowerType.Rocket, "rocket_tower");
             TextureNames.Add(TowerType.Slow, "slow_tower");
+            TextureNames.Add(TowerType.Flame, string.Empty);
         }
         
         public struct TowerData
@@ -141,11 +142,11 @@ namespace TD
             spriteBatch.Begin();
             if (hot)
             {
-                spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.Red);
+                spriteBatch.Draw(Texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.Red);
             }
             else
             {
-                spriteBatch.Draw(texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.White);
+                spriteBatch.Draw(Texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.White);
             }
             spriteBatch.End();
 

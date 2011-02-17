@@ -24,7 +24,7 @@ namespace TD
 
         protected override void LoadContent()
         {
-            texture = Game.Content.Load<Texture2D>("slow_tower");
+            Texture = Game.Content.Load<Texture2D>("slow_tower");
 
             base.LoadContent();
         }
