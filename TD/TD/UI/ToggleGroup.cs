@@ -65,5 +65,13 @@ namespace TD
                 Add(t);
             }
         }
+
+        public void UnToggleAll()
+        {
+            foreach (IToggleAble t in toggleAbles)
+            {
+                t.Toggled = false;
+            }
+        }
     }
 }

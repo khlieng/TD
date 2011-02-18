@@ -79,7 +79,7 @@ namespace TD
             {
                 if (e.Cause == CauseOfDeath.Killed)
                 {
-                    MainGameState.AddMoney(6 + 2 * level);
+                    Player.AddMoney(6 + 2 * level);
                 }
                 mobContainer.RemoveMob(mob);
             };

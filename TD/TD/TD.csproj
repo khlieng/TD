@@ -127,6 +127,7 @@
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="FlameTower.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="UI\FPSLabel.cs" />
     <Compile Include="GameHelper.cs" />
     <Compile Include="GameState.cs" />

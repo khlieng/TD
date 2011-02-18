@@ -123,7 +123,7 @@ namespace TD
                         break;
                 }
 
-                if (towerToAdd != null && MainGameState.TakeMoney(towerToAdd.Cost))
+                if (towerToAdd != null && Player.TryTakeMoney(towerToAdd.Cost))
                 {
                     towerAdded = towerToAdd;
                 }
@@ -143,12 +143,20 @@ namespace TD
 
         public Tower GetTower(int row, int col)
         {
-            return towers[row, col];
+            if (row >= 0 && col >= 0 && row < rows && col < cols)
+            {
+                return towers[row, col];
+            }
+            return null;
         }
 
         public bool CanAddTower(int row, int col)
         {
-            return towers[row, col] == null && !tiles[row, col].Walkable;
+            if (row >= 0 && col >= 0 && row < rows && col < cols)
+            {
+                return towers[row, col] == null && !tiles[row, col].Walkable;
+            }
+            return false;
         }
 
         public void AddMob(Mob mob)
@@ -262,7 +270,7 @@ namespace TD
                 MobRemoval mobRemoval = removeThese.Dequeue();
                 if (mobRemoval.Reason == CauseOfDeath.LeftMap)
                 {
-                    MainGameState.LifeLost();
+                    Player.LoseLife();
                     mobRemoval.Mob.LeftMap();
                 }
                 DeleteMob(mobRemoval.Mob);
