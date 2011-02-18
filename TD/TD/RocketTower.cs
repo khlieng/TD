@@ -29,8 +29,8 @@ namespace TD
         }
         
         protected override void Fire()
-        {          
-            new Rocket(Game, center, Target, 300.0f, damage);
+        {
+            new Rocket(Game, center, Target, mobs, 300.0f, damage);
             
             // Smoke <3
             Emitter emitter = new Emitter(Game, center, 1, Game.Content.Load<Texture2D>("smoke"));

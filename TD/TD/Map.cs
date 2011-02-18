@@ -58,7 +58,7 @@ namespace TD
             get { return mobs; }
         }
         private MobSpawner spawner;
-        private Queue<Mob> removeThese;
+        private Queue<MobRemoval> removeThese;
 
         public Vector2 SpawnPoint { get; private set; }
 
@@ -97,7 +97,7 @@ namespace TD
 
             mobs = new LinkedList<Mob>();
             spawner = new MobSpawner(Game, this, 20.0f);
-            removeThese = new Queue<Mob>();
+            removeThese = new Queue<MobRemoval>();
 
             base.LoadContent();
         }
@@ -157,6 +157,11 @@ namespace TD
         }
 
         public void RemoveMob(Mob mob)
+        {
+            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.Killed));
+        }
+
+        private void DeleteMob(Mob mob)
         {
             if (selectedMob == mob)
             {
@@ -239,7 +244,7 @@ namespace TD
                     {
                         if (i + 1 == path.Count)
                         {
-                            removeThese.Enqueue(mob);
+                            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
                             break;
                         }
 
@@ -254,10 +259,13 @@ namespace TD
 
             while (removeThese.Count > 0)
             {
-                MainGameState.LifeLost();
-                Mob mob = removeThese.Dequeue();
-                mob.LeftMap();
-                RemoveMob(mob);
+                MobRemoval mobRemoval = removeThese.Dequeue();
+                if (mobRemoval.Reason == CauseOfDeath.LeftMap)
+                {
+                    MainGameState.LifeLost();
+                    mobRemoval.Mob.LeftMap();
+                }
+                DeleteMob(mobRemoval.Mob);
             }
 
             prev = current;
@@ -474,6 +482,19 @@ namespace TD
             if (MouseTileLeave != null)
             {
                 MouseTileLeave(this, args);
+            }
+        }
+
+        private struct MobRemoval
+        {
+            public Mob Mob { get; private set; }
+            public CauseOfDeath Reason { get; private set; }
+
+            public MobRemoval(Mob mob, CauseOfDeath reason)
+                : this()
+            {
+                Mob = mob;
+                Reason = reason;
             }
         }
 

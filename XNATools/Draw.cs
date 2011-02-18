@@ -47,7 +47,7 @@ namespace XNATools
                 new VertexPositionColor(new Vector3(position.X, position.Y + size.Y, 0), color),
                 new VertexPositionColor(new Vector3(position.X, position.Y, 0), color)
             };
-
+            
             DrawVertices(vertices, PrimitiveType.LineStrip);
         }
 

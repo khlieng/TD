@@ -8,12 +8,12 @@ using XNATools;
 
 namespace TD
 {
-    class Rocket : Projectile
+    class Rocket : AOEProjectile
     {
         private Emitter emitter;
 
-        public Rocket(Game game, Vector2 position, ITarget target, float velocity, int onHitDamage)
-            : base(game, position, target, velocity, onHitDamage, game.Content.Load<Texture2D>("rocket"))
+        public Rocket(Game game, Vector2 position, ITarget target, IMobContainer mobContainer, float velocity, int onHitDamage)
+            : base(game, position, target, mobContainer, velocity, onHitDamage, 80.0f, game.Content.Load<Texture2D>("rocket"))
         {
             emitter = new Emitter(game, position, 5, game.Content.Load<Texture2D>("fire"));
             emitter.MaxDirectionDevation = 180;
