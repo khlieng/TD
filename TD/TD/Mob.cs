@@ -69,9 +69,9 @@ namespace TD
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
             //texture = Game.Content.Load<Texture2D>("mob2");
-            animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 150);
+            animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
             
-            hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 30, 10));
+            hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 20, 8));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
 
@@ -110,7 +110,7 @@ namespace TD
         {
             spriteBatch.Begin();
             spriteBatch.Draw(animation.Texture, Center, null, Color.White, (float)Math.Atan2(velocity.Y, velocity.X), 
-                new Vector2(16, 16), 1.0f, SpriteEffects.None, 0.0f);
+                new Vector2(16, 16), 0.6f, SpriteEffects.None, 0.0f);
             spriteBatch.End();
 
             base.Draw(gameTime);

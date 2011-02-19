@@ -23,8 +23,8 @@ namespace TD
             mobContainer = container;
             rand = new Random();            
             this.interval = interval;
-            amount = 20;
-            timeBetweenMobs = TimeSpan.FromSeconds(interval / amount);
+            amount = 30;
+            timeBetweenMobs = TimeSpan.FromSeconds((rand.NextDouble() + 0.5) * (interval / amount));
             
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
@@ -41,6 +41,7 @@ namespace TD
                 if (acc > timeBetweenMobs)
                 {
                     acc -= timeBetweenMobs;
+                    timeBetweenMobs = TimeSpan.FromSeconds((rand.NextDouble() + 0.5) * (interval / amount));
 
                     SendMob();
                 }
@@ -73,7 +74,7 @@ namespace TD
 
         private void SendMob()
         {
-            Mob mob = new Mob(Game, mobContainer.SpawnPoint + new Vector2(0, 4 - rand.Next(9)), new Vector2(60.0f + 2.0f * level, 0), 150 + 40 * level * level);
+            Mob mob = new Mob(Game, mobContainer.SpawnPoint + new Vector2(0, 4 - rand.Next(9)), new Vector2(40.0f + 2.0f * level, 0), 150 + 40 * level * level);
             mobContainer.AddMob(mob);
             mob.Died += (o, e) =>
             {

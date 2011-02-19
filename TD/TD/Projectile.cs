@@ -153,5 +153,35 @@ namespace TD
                 Hit(this, EventArgs.Empty);
             }
         }
+
+        public static IEnumerable<Vector2> FireRay(Vector2 position, ITarget target, IMobContainer mobContainer, int damage,
+            float range, int maxPassThrough, int passThroughDamageReduction)
+        {
+            Vector2 direction = target.Center - position;
+            direction.Normalize();
+            Ray ray = new Ray(new Vector3(position, 0), new Vector3(direction, 0));
+
+            var mobsInRange = from mob in mobContainer.Mobs
+                              let distance = (mob.Center - new Vector2(ray.Position.X, ray.Position.Y)).Length()
+                              where mob != target && distance < range
+                              orderby distance
+                              select mob;
+
+            target.DoDamage(damage);
+            damage -= passThroughDamageReduction;
+            int passThroughs = 1;
+            yield return target.Center;
+
+            foreach (ITarget mob in mobsInRange)
+            {
+                if (passThroughs < maxPassThrough && ray.Intersects(new BoundingSphere(new Vector3(mob.Center, 0), 10)) != null)
+                {
+                    mob.DoDamage(damage);
+                    damage -= passThroughDamageReduction;
+                    passThroughs++;
+                    yield return mob.Center;
+                }
+            }
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace TD
             towers = new Tower[15, 20];
 
             mobs = new LinkedList<Mob>();
-            spawner = new MobSpawner(Game, this, 20.0f);
+            spawner = new MobSpawner(Game, this, 40.0f);
             removeThese = new Queue<MobRemoval>();
 
             base.LoadContent();
