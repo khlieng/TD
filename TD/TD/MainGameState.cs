@@ -17,6 +17,8 @@ namespace TD
         Label livesLabel;
         Label towerInfoLabel;
         TextButton buttonUpgrade;
+        TextButton buttonSell;
+        Tooltip sellTooltip;
         ToggleGroup towerButtons;
 
         Map map;
@@ -221,6 +223,8 @@ namespace TD
 
                 buttonUpgrade.Visible = selectedTower.UpgradeAvailable();
                 buttonUpgrade.Enabled = selectedTower.UpgradeAvailable();
+
+                sellTooltip.Text = "Returns " + (int)(selectedTower.Cost * 0.75) + "$";
             }
             else
             {
@@ -228,6 +232,9 @@ namespace TD
                 buttonUpgrade.Visible = false;
                 buttonUpgrade.Enabled = false;
             }
+
+            buttonSell.Visible = selectedTower != null;
+            buttonSell.Enabled = selectedTower != null;
         }
 
         private void SetupUI()
@@ -251,6 +258,11 @@ namespace TD
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;
             buttonUpgrade.Visible = false;
+
+            buttonSell = new TextButton(Game, new Vector2(650, 230), "Sell", TheGame.GetFont(Font.Large));
+            buttonSell.DropShadow = true;
+            buttonSell.Visible = false;
+            sellTooltip = new Tooltip(Game, buttonSell, string.Empty);
 
             fpsLabel = new FPSLabel(Game, new Vector2(640, 575), TheGame.GetFont(Font.Large));
             timeLabel = new Label(Game, new Vector2(717, 575), String.Empty, TheGame.GetFont(Font.Large));
@@ -276,6 +288,12 @@ namespace TD
                     {
                         selectedTower.Upgrade();
                     }
+                };
+            buttonSell.Click += (o, e) =>
+                {
+                    map.RemoveTower(selectedTower.Row, selectedTower.Col);
+                    Player.AddMoney((int)(0.75 * selectedTower.Cost));
+                    selectedTower = null;
                 };
 
             Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";

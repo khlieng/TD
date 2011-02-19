@@ -65,6 +65,14 @@ namespace TD
             ToggledColor = Color.Red;
             textSize = font.MeasureString(text);
 
+            VisibleChanged += (o, e) =>
+                {
+                    if (!Visible)
+                    {
+                        OnHideTooltip();
+                    }
+                };
+
             spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
 
             game.Components.Add(this);

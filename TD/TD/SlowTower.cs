@@ -52,7 +52,7 @@ namespace TD
 
         protected override void Fire()
         {
-            new AOEProjectile(Game, position, Target, mobs, 1000.0f, damage, 100.0f)
+            new AOEProjectile(Game, position, Target, mobs, 1000.0f, damage, 80.0f)
                 .Effects.Add(new SlowEffect(speedReduction, 1000));
 
             base.Fire();

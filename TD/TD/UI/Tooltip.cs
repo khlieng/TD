@@ -30,7 +30,7 @@ namespace TD
             TextColor = Color.White;
             Enabled = false;
             Visible = false;
-
+            
             provider.ShowTooltip += (o, e) => Visible = true;
             provider.HideTooltip += (o, e) => Visible = false;
 

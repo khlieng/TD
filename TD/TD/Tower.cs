@@ -46,6 +46,9 @@ namespace TD
         public ITarget Target { get; set; }
         public int Cost { get; private set; }
 
+        public int Row { get; private set; }
+        public int Col { get; private set; }
+
         private static int count = 0;
         private int id;
 
@@ -54,7 +57,9 @@ namespace TD
             DrawOrder = 10;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
             upgradeLevels = new List<TowerData>();
-            
+
+            Row = row;
+            Col = col;
             position = new Vector2(col * 32, row * 32);
             center = new Vector2(position.X + 16, position.Y + 16);
             this.mobs = mobs;
@@ -85,7 +90,7 @@ namespace TD
             damage = upgradeLevels[level].Damage;
             speed = upgradeLevels[level].Speed;
             range = upgradeLevels[level].Range;
-            Cost = upgradeLevels[level].Cost;
+            Cost += upgradeLevels[level].Cost;
             currentUpgrade = level;
         }
 

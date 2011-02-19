@@ -113,7 +113,7 @@ namespace TD
                     case TowerType.Rocket:
                         towerToAdd = new RocketTower(Game, row, col, this);
                         break;
-
+                        
                     case TowerType.Slow:
                         towerToAdd = new SlowTower(Game, row, col, this);
                         break;
@@ -137,6 +137,21 @@ namespace TD
                     }
                     return true;
                 }                
+            }
+            return false;
+        }
+
+        public bool RemoveTower(int row, int col)
+        {
+            if (towers[row, col] != null)
+            {
+                foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
+                {
+                    state.RemoveComponent(towers[row, col]);
+                }
+                towers[row, col] = null;
+
+                return true;
             }
             return false;
         }
