@@ -124,6 +124,7 @@
     <Compile Include="AOEProjectile.cs" />
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
+    <Compile Include="BouncingProjectile.cs" />
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="FlameTower.cs" />
