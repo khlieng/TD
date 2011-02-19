@@ -12,6 +12,12 @@ namespace TD
         protected IMobContainer mobContainer;
         protected float aoeRadius;
 
+        public AOEProjectile(Game game, Vector2 position, ITarget target, IMobContainer mobContainer,
+            float velocity, int onHitDamage, float aoeRadius)
+            : this(game, position, target, mobContainer, velocity, onHitDamage, aoeRadius, null)
+        {
+        }
+
         public AOEProjectile(Game game, Vector2 position, ITarget target, IMobContainer mobContainer, 
             float velocity, int onHitDamage, float aoeRadius, Texture2D texture)
             : base(game, position, target, velocity, onHitDamage, texture)
@@ -27,6 +33,7 @@ namespace TD
                 if (otherTarget != target && (otherTarget.Center - position).Length() < aoeRadius)
                 {
                     otherTarget.DoDamage(damage);
+                    ApplyEffects(otherTarget);
                 }
             }
 

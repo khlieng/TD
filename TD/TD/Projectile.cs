@@ -22,9 +22,11 @@ namespace TD
 
         public event EventHandler Hit;
 
+        public List<IProjectileEffect> Effects { get; private set; }
+
         public Projectile(Game game, Vector2 position, ITarget target, float velocity, int onHitDamage)
             : this(game, position, target, velocity, onHitDamage, null)
-        {            
+        {
         }
 
         public Projectile(Game game, Vector2 position, ITarget target, float velocity, int onHitDamage, Texture2D texture)
@@ -36,6 +38,7 @@ namespace TD
             this.velocity = velocity;
             damage = onHitDamage;
             this.texture = texture;
+            Effects = new List<IProjectileEffect>();
 
             target.Died += (o, e) =>
                 {
@@ -85,6 +88,9 @@ namespace TD
                 if ((target.Center - position).Length() < 5.0f)
                 {
                     target.DoDamage(damage);
+
+                    ApplyEffects();
+
                     OnHit();
                 }
             }
@@ -111,6 +117,19 @@ namespace TD
             }
 
             base.Draw(gameTime);
+        }
+
+        protected virtual void ApplyEffects()
+        {
+            ApplyEffects(target);
+        }
+
+        protected virtual void ApplyEffects(ITarget target)
+        {
+            foreach (IProjectileEffect effect in Effects)
+            {
+                effect.Apply(target);
+            }
         }
 
         //protected virtual void PositionChanged()
