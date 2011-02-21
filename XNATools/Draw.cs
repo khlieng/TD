@@ -85,6 +85,27 @@ namespace XNATools
             DrawVertices(vertices, PrimitiveType.LineStrip);
         }
 
+        public static void FilledCircle(Vector2 center, float radius, int subdivs, Color color)
+        {
+            VertexPositionColor[] vertices = new VertexPositionColor[subdivs * 3];
+
+            Vector2 direction = new Vector2(0, -1);
+            for (int i = 0; i < vertices.Length; i += 3)
+            {
+                vertices[i] = new VertexPositionColor(new Vector3(center, 0f), color);
+                vertices[i + 1] = new VertexPositionColor(new Vector3(center + direction * radius, 0), color);
+                direction = Vector2.Transform(direction, Matrix.CreateRotationZ(MathHelper.TwoPi / subdivs));
+                vertices[i + 2] = new VertexPositionColor(new Vector3(center + direction * radius, 0), color);
+            }
+
+            DrawVertices(vertices, PrimitiveType.TriangleList);
+        }
+
+        public static void Shape(Shape shape)
+        {
+            DrawVertices(shape.Vertices, shape.PrimitiveType);
+        }
+
         private static void DrawVertices(VertexPositionColor[] vertices, PrimitiveType type)
         {
             if (device != null)
@@ -92,7 +113,7 @@ namespace XNATools
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-
+                    
                     switch (type)
                     {
                         case PrimitiveType.LineList:

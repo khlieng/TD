@@ -150,14 +150,14 @@ namespace TD
         protected override void Draw(GameTime gameTime)
         {
             bloom.BeginDraw();
-            
-            GraphicsDevice.Clear(Color.FromNonPremultiplied(20, 20, 20, 255));            
-            
+
+            GraphicsDevice.Clear(Color.FromNonPremultiplied(20, 20, 20, 255));
+
             base.Draw(gameTime);
 
             //spriteBatch.Begin();
             //spriteBatch.Draw(cursor, new Rectangle(Mouse.GetState().X - 10, Mouse.GetState().Y - 5, 32, 32), Color.White);
-            //spriteBatch.End();       
+            //spriteBatch.End();
 
             if (dumpIt)
             {
