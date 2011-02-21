@@ -51,6 +51,7 @@ namespace TD
         private Vector2 spawn;
         private Vector2 exit;
         private List<Vector2> path;
+        private List<Vector2> pathScreen;
 
         private LinkedList<Mob> mobs;
         public IEnumerable<ITarget> Mobs
@@ -91,6 +92,7 @@ namespace TD
             //Load(@"Maps\test.map");
             GeneratePath();
             SmoothPath(3);
+            CreateScreenSpacePath();
             SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
 
             towers = new Tower[15, 20];
@@ -261,23 +263,44 @@ namespace TD
                     selectedMob = mob;
                 }
 
-                for (int i = 0; i < path.Count; i++)
+                int closest = 0;
+                for (int i = 1; i < pathScreen.Count; i++)
                 {
-                    if ((mob.Center - new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16)).Length() < 4.0f)
+                    if ((pathScreen[i] - mob.Center).LengthSquared() < (pathScreen[closest] - mob.Center).LengthSquared())
                     {
-                        if (i + 1 == path.Count)
-                        {
-                            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
-                            break;
-                        }
-
-                        Vector2 velocity = new Vector2(path[i + 1].X * 32 + 16, path[i + 1].Y * 32 + 16) -
-                            new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16);
-                        velocity.Normalize();
-                        velocity *= mob.Velocity.Length();
-                        mob.Velocity = velocity;
+                        closest = i;
                     }
                 }
+
+                if (closest != pathScreen.Count - 1)
+                {
+                    Vector2 velocity = pathScreen[closest + 1] - pathScreen[closest];
+                    velocity.Normalize();
+                    velocity *= mob.Velocity.Length();
+                    mob.Velocity = velocity;
+                }
+                else
+                {
+                    removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
+                }
+
+                //for (int i = 0; i < path.Count; i++)
+                //{
+                //    if ((mob.Center - new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16)).Length() < 6.0f)
+                //    {
+                //        if (i + 1 == path.Count)
+                //        {
+                //            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
+                //            break;
+                //        }
+                        
+                //        Vector2 velocity = new Vector2(path[i + 1].X * 32 + 16, path[i + 1].Y * 32 + 16) -
+                //            new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16);
+                //        velocity.Normalize();
+                //        velocity *= mob.Velocity.Length();
+                //        mob.Velocity = velocity;
+                //    }
+                //}
             }
 
             while (removeThese.Count > 0)
@@ -310,13 +333,13 @@ namespace TD
             }
             spriteBatch.End();
 #if DEBUG            
-            for (int i = 0; i < path.Count - 1; i++)
+            for (int i = 0; i < pathScreen.Count - 1; i++)
             {
-                XNATools.Draw.Line(path[i] * 32 + new Vector2(16, 16), path[i + 1] * 32 + new Vector2(16, 16), Color.Red);
+                XNATools.Draw.Line(pathScreen[i], pathScreen[i + 1], Color.Red);
             }
-            foreach (Vector2 p in path)
+            foreach (Vector2 p in pathScreen)
             {
-                XNATools.Draw.FilledRect(new Rectangle((int)(p.X * 32) + 14, (int)(p.Y * 32) + 14, 4, 4), Color.Black);
+                XNATools.Draw.FilledRect(p - new Vector2(2, 2), new Vector2(4, 4), Color.Black);
             }
 #endif
             base.Draw(gameTime);
@@ -442,6 +465,15 @@ namespace TD
                     path.Insert(i, apex + dir * 0.5f);
                     i++;
                 }
+            }
+        }
+
+        private void CreateScreenSpacePath()
+        {
+            pathScreen = new List<Vector2>();
+            foreach (Vector2 point in path)
+            {
+                pathScreen.Add(point * 32 + new Vector2(16, 16));
             }
         }
 

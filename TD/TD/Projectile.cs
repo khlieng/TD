@@ -65,16 +65,16 @@ namespace TD
             if (!lostTarget)
             {
                 direction = target.Center - position;
-                float distance = direction.Length();
+                float distanceSquared = direction.LengthSquared();
                 direction.Normalize();
                 
-                if (distance > velocity * timeDelta)
+                if (distanceSquared > (velocity * timeDelta) * (velocity * timeDelta))
                 {
                     position += direction * velocity * timeDelta;
                 }
                 else
                 {
-                    position += direction * distance;
+                    position += direction * (float)Math.Sqrt(distanceSquared);
                 }
             }
             else
@@ -85,7 +85,7 @@ namespace TD
 
             if (!lostTarget)
             {
-                if ((target.Center - position).Length() < 5.0f)
+                if ((target.Center - position).LengthSquared() < 25.0f)
                 {
                     target.DoDamage(damage);
 
