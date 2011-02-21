@@ -100,7 +100,7 @@ namespace TD
             {
                 currentUpgrade++;
                 SetStats(currentUpgrade);
-                new MovingText(Game, "  UP", position, position - new Vector2(0, 20), 500);
+                new MovingText(Game, "  UP", TheGame.GetFont(Font.Small), position, position - new Vector2(0, 20), 500);
             }
         }
 

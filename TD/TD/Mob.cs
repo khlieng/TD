@@ -146,7 +146,7 @@ namespace TD
             hp -= amount;
             hpBar.Percentage = (int)((100.0f / initalHp) * hp);
 
-            new MovingText(Game, amount.ToString(), position, new Vector2(position.X, position.Y - 20), 500);
+            new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), position, new Vector2(position.X, position.Y - 20), 500);
 
             if (hp <= 0)
             {

@@ -56,7 +56,7 @@ namespace TD
                 {
                     Tower added = map.GetTower(e.Row, e.Col);
                     Vector2 startPos = new Vector2(e.Col * 32, e.Row * 32);
-                    new MovingText(Game, added.Cost + "$", Color.Yellow, startPos, startPos - new Vector2(0, 20), 500);
+                    new MovingText(Game, added.Cost + "$", TheGame.GetFont(Font.Small), Color.Yellow, startPos, startPos - new Vector2(0, 20), 500);
                 }
             };
 
@@ -130,7 +130,10 @@ namespace TD
 
             if (radius > 0.0f)
             {
-                XNATools.Draw.Circle(radiusCircle, radius, 32, Color.FromNonPremultiplied(255, 255, 255, 30));
+                Color c = Color.Black;
+                c.A = 16;
+                XNATools.Draw.FilledCircle(radiusCircle, radius, 32, c);
+                XNATools.Draw.Circle(radiusCircle, radius, 32, Color.FromNonPremultiplied(0, 0, 0, 64));
             }
         }
 
@@ -170,13 +173,16 @@ namespace TD
                 }
                 else if (!map.CanAddTower(mRow, mCol) && map.GetTower(mRow, mCol) == null && Tower.TextureNames.ContainsKey(currentlyBuilding))
                 {
-                    if (Tower.TextureNames[currentlyBuilding] != string.Empty)
-                    {
-                        towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[currentlyBuilding]);
-                    }
-                    radius = 0.0f;
+                    //if (Tower.TextureNames[currentlyBuilding] != string.Empty)
+                    //{
+                    //    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[currentlyBuilding]);
+                    //}
+                    //radius = 0.0f;
+                    //color = Color.Red;
+                    //color.A = 128;
                     color = Color.Red;
-                    color.A = 128;
+                    color.A = 64;
+                    XNATools.Draw.FilledCircle(new Vector2(mCol * 32 + 16, mRow * 32 + 16), 14.0f, 16, color);
                 }
 
                 if (towerTexture != null)

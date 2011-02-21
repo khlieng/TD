@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace TD
 {
-    public enum Font { Small, Large }
+    public enum Font { Small, Large, MobMovingText }
 
     public class TheGame : Game
     {
@@ -25,6 +25,9 @@ namespace TD
                     
                 case Font.Large:
                     return GameHelper.Game.Content.Load<SpriteFont>("Miramonte_14");
+
+                case Font.MobMovingText:
+                    return GameHelper.Game.Content.Load<SpriteFont>("Arial_8");
 
                 default:
                     return null;
@@ -50,7 +53,8 @@ namespace TD
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 600;
-
+            graphics.PreferMultiSampling = true;
+            
             bloom = new BloomComponent(this);
             bloom.Settings = BloomSettings.PresetSettings[5];
             bloom.DrawOrder = 20;
@@ -79,7 +83,7 @@ namespace TD
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             GameHelper.AddService<SpriteBatch>(spriteBatch);
-
+            
             XNATools.Draw.Init(GraphicsDevice);
             
             cursor = Content.Load<Texture2D>("glowing_cursor");            
@@ -120,6 +124,11 @@ namespace TD
         {
             KeyboardState currentKeyState = Keyboard.GetState();
             MouseState currentMouseState = Mouse.GetState();
+
+            if (currentKeyState.IsKeyDown(Keys.Escape) && prevKeyState.IsKeyUp(Keys.Escape))
+            {
+                Exit();
+            }
 
             cursorEmitter.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
 

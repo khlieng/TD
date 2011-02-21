@@ -23,7 +23,7 @@ namespace TD
             mobContainer = container;
             rand = new Random();            
             this.interval = interval;
-            amount = 30;
+            amount = 50;
             timeBetweenMobs = TimeSpan.FromSeconds((rand.NextDouble() + 0.5) * (interval / amount));
             
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
