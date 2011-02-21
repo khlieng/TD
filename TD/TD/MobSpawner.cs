@@ -74,13 +74,19 @@ namespace TD
 
         private void SendMob()
         {
-            Mob mob = new Mob(Game, mobContainer.SpawnPoint + new Vector2(0, 4 - rand.Next(9)), new Vector2(40.0f + 2.0f * level, 0), 150 + 40 * level * level);
+            Mob mob = new Mob(Game, mobContainer.Path, new Vector2(40.0f + 2.0f * level, 0), 150 + 40 * level * level);
             mobContainer.AddMob(mob);
             mob.Died += (o, e) =>
             {
-                if (e.Cause == CauseOfDeath.Killed)
+                switch (e.Cause)
                 {
-                    Player.AddMoney(6 + 2 * level);
+                    case CauseOfDeath.Killed:
+                        Player.AddMoney(6 + 2 * level);
+                        break;
+
+                    case CauseOfDeath.LeftMap:
+                        Player.LoseLife();
+                        break;
                 }
                 mobContainer.RemoveMob(mob);
             };

@@ -11,9 +11,12 @@ namespace TD
 
     class Mob : DrawableGameComponent, ITarget
     {
+        private static Random rand = new Random();
+
         private SpriteBatch spriteBatch;
-        //private Texture2D texture;
         private Animation animation;
+
+        private List<Vector2> path;
 
         private Vector2 position;
         private Vector2 velocity;
@@ -64,13 +67,19 @@ namespace TD
             }
         }
 
-        public Mob(Game game, Vector2 position, Vector2 velocity, int initialHealth) : base(game)
+        public Mob(Game game, List<Vector2> path, Vector2 velocity, int initialHealth) : base(game)
         {
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
-            //texture = Game.Content.Load<Texture2D>("mob2");
             animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
-            
+
+            this.path = path;
+            position = path[0] - new Vector2(16, 16) + new Vector2(0, 4 - rand.Next(9));
+            this.velocity = velocity;
+            this.initalHp = initialHealth;
+            this.hp = initalHp;
+            VelocityFactor = 1.0f;
+
             hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 20, 8));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
@@ -78,13 +87,7 @@ namespace TD
             foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
             {
                 state.AddComponent(this);
-            }   
-
-            this.position = position;
-            this.velocity = velocity;
-            this.initalHp = initialHealth;
-            this.hp = initalHp;
-            VelocityFactor = 1.0f;
+            }
         }
 
         protected override void UnloadContent()
@@ -99,6 +102,28 @@ namespace TD
 
         public override void Update(GameTime gameTime)
         {
+            int closest = 0;
+            for (int i = 1; i < path.Count; i++)
+            {
+                if ((path[i] - Center).LengthSquared() < (path[closest] - Center).LengthSquared())
+                {
+                    closest = i;
+                }
+            }
+
+            if (closest != path.Count - 1)
+            {
+                Vector2 newVelocity = path[closest + 1] - path[closest];
+                newVelocity.Normalize();
+                newVelocity *= Velocity.Length();
+                Velocity = newVelocity;
+            }
+            else
+            {
+                hp = 0;
+                OnMobDied(CauseOfDeath.LeftMap);
+            }
+
             float elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
             position += velocity * elapsedSeconds * VelocityFactor;
             hpBar.Bounds = new Rectangle((int)position.X, (int)position.Y, 30, 6);
@@ -129,12 +154,6 @@ namespace TD
                 return true;
             }
             return false;
-        }
-
-        public void LeftMap()
-        {
-            hp = 0;
-            OnMobDied(CauseOfDeath.LeftMap);
         }
 
         protected virtual void OnMobDied(CauseOfDeath cause)

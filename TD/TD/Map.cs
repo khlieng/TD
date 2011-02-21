@@ -50,8 +50,7 @@ namespace TD
 
         private Vector2 spawn;
         private Vector2 exit;
-        private List<Vector2> path;
-        private List<Vector2> pathScreen;
+        public List<Vector2> Path { get; private set; }
 
         private LinkedList<Mob> mobs;
         public IEnumerable<ITarget> Mobs
@@ -59,9 +58,7 @@ namespace TD
             get { return mobs; }
         }
         private MobSpawner spawner;
-        private Queue<MobRemoval> removeThese;
-
-        public Vector2 SpawnPoint { get; private set; }
+        private Queue<Mob> removeThese;
 
         private bool mouseOnMap;
         public event EventHandler<MapClickArgs> Click;
@@ -89,17 +86,14 @@ namespace TD
             DrawOrder = 8;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
-            //Load(@"Maps\test.map");
             GeneratePath();
             SmoothPath(3);
-            CreateScreenSpacePath();
-            SpawnPoint = new Vector2(path[0].X * 32, path[0].Y * 32);
 
             towers = new Tower[15, 20];
 
             mobs = new LinkedList<Mob>();
             spawner = new MobSpawner(Game, this, 40.0f);
-            removeThese = new Queue<MobRemoval>();
+            removeThese = new Queue<Mob>();
 
             base.LoadContent();
         }
@@ -183,7 +177,7 @@ namespace TD
 
         public void RemoveMob(Mob mob)
         {
-            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.Killed));
+            removeThese.Enqueue(mob);
         }
 
         private void DeleteMob(Mob mob)
@@ -262,56 +256,11 @@ namespace TD
                 {
                     selectedMob = mob;
                 }
-
-                int closest = 0;
-                for (int i = 1; i < pathScreen.Count; i++)
-                {
-                    if ((pathScreen[i] - mob.Center).LengthSquared() < (pathScreen[closest] - mob.Center).LengthSquared())
-                    {
-                        closest = i;
-                    }
-                }
-
-                if (closest != pathScreen.Count - 1)
-                {
-                    Vector2 velocity = pathScreen[closest + 1] - pathScreen[closest];
-                    velocity.Normalize();
-                    velocity *= mob.Velocity.Length();
-                    mob.Velocity = velocity;
-                }
-                else
-                {
-                    removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
-                }
-
-                //for (int i = 0; i < path.Count; i++)
-                //{
-                //    if ((mob.Center - new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16)).Length() < 6.0f)
-                //    {
-                //        if (i + 1 == path.Count)
-                //        {
-                //            removeThese.Enqueue(new MobRemoval(mob, CauseOfDeath.LeftMap));
-                //            break;
-                //        }
-                        
-                //        Vector2 velocity = new Vector2(path[i + 1].X * 32 + 16, path[i + 1].Y * 32 + 16) -
-                //            new Vector2(path[i].X * 32 + 16, path[i].Y * 32 + 16);
-                //        velocity.Normalize();
-                //        velocity *= mob.Velocity.Length();
-                //        mob.Velocity = velocity;
-                //    }
-                //}
             }
 
             while (removeThese.Count > 0)
             {
-                MobRemoval mobRemoval = removeThese.Dequeue();
-                if (mobRemoval.Reason == CauseOfDeath.LeftMap)
-                {
-                    Player.LoseLife();
-                    mobRemoval.Mob.LeftMap();
-                }
-                DeleteMob(mobRemoval.Mob);
+                DeleteMob(removeThese.Dequeue());
             }
 
             prev = current;
@@ -333,11 +282,11 @@ namespace TD
             }
             spriteBatch.End();
 #if DEBUG            
-            for (int i = 0; i < pathScreen.Count - 1; i++)
+            for (int i = 0; i < Path.Count - 1; i++)
             {
-                XNATools.Draw.Line(pathScreen[i], pathScreen[i + 1], Color.Red);
+                XNATools.Draw.Line(Path[i], Path[i + 1], Color.Red);
             }
-            foreach (Vector2 p in pathScreen)
+            foreach (Vector2 p in Path)
             {
                 XNATools.Draw.FilledRect(p - new Vector2(2, 2), new Vector2(4, 4), Color.Black);
             }
@@ -364,14 +313,14 @@ namespace TD
 
                 if (currentP == exit)
                 {
-                    path = new List<Vector2>();
+                    Path = new List<Vector2>();
                     do
                     {
-                        path.Add(new Vector2(current.y, current.x));
+                        Path.Add(new Vector2(current.y * 32 + 16, current.x * 32 + 16));
                     } while ((current = current.parent) != startNode);
 
-                    path.Add(new Vector2(spawn.Y, spawn.X));
-                    path.Reverse();
+                    Path.Add(new Vector2(spawn.Y * 32 + 16, spawn.X * 32 + 16));
+                    Path.Reverse();
                     break;
                 }
 
@@ -411,11 +360,11 @@ namespace TD
 
         private void SmoothPath(int subdivs)
         {
-            for (int i = 1; i < path.Count - 1; i++)
+            for (int i = 1; i < Path.Count - 1; i++)
             {
-                Vector2 p = path[i];
-                Vector2 v1 = path[i] - path[i - 1];
-                Vector2 v2 = path[i + 1] - path[i];
+                Vector2 p = Path[i];
+                Vector2 v1 = Path[i] - Path[i - 1];
+                Vector2 v2 = Path[i + 1] - Path[i];
                 Vector2 v12 = v1 + v2;
 
                 if (v1 != v2)
@@ -455,25 +404,16 @@ namespace TD
                         }
                     }
 
-                    path.RemoveAt(i);
+                    Path.RemoveAt(i);
                     for (int j = 0; j < subdivs; j++)
                     {
-                        path.Insert(i, apex + dir * 0.5f);
+                        Path.Insert(i, apex + dir * 16.0f);
                         dir = Vector2.Transform(dir, Matrix.CreateRotationZ(MathHelper.PiOver2 / applePie));
                         i++;
                     }
-                    path.Insert(i, apex + dir * 0.5f);
+                    Path.Insert(i, apex + dir * 16.0f);
                     i++;
                 }
-            }
-        }
-
-        private void CreateScreenSpacePath()
-        {
-            pathScreen = new List<Vector2>();
-            foreach (Vector2 point in path)
-            {
-                pathScreen.Add(point * 32 + new Vector2(16, 16));
             }
         }
 
@@ -562,7 +502,7 @@ namespace TD
                 map.textures = new Texture2D[input.ReadInt32()];
                 for (int i = 0; i < map.textures.Length; i++)
                 {
-                    map.textures[i] = GameHelper.Game.Content.Load<Texture2D>(Path.GetFileNameWithoutExtension(input.ReadString()));
+                    map.textures[i] = GameHelper.Game.Content.Load<Texture2D>(System.IO.Path.GetFileNameWithoutExtension(input.ReadString()));
                 }
 
                 map.sprites = new Sprite[input.ReadInt32()];

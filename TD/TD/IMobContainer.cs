@@ -8,7 +8,7 @@ namespace TD
 {
     interface IMobContainer
     {
-        Vector2 SpawnPoint { get; }
+        List<Vector2> Path { get; }
         IEnumerable<ITarget> Mobs { get; }
         void AddMob(Mob mob);
         void RemoveMob(Mob mob);
