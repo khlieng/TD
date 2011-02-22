@@ -11,6 +11,11 @@ namespace TD
 {
     class MenuGameState : GameState
     {
+        Label labelTitle;
+        TextButton buttonGo;
+        TextButton buttonOptions;
+        TextButton buttonExit;
+
         public MenuGameState(Game game)
             : base(game)
         {
@@ -18,25 +23,38 @@ namespace TD
 
         public override void LoadContent(ContentManager content)
         {
-            Label label = new Label(Game, new Vector2(100, 80), "Some TD", TheGame.GetFont(Font.Large));
-            label.Color = Color.Orange;
-            label.DropShadow = true;            
+            labelTitle = new Label(Game, new Vector2(100, 80), "Some TD", TheGame.GetFont(Font.Large));
+            labelTitle.Color = Color.Orange;
+            labelTitle.DropShadow = true;            
             
-            TextButton button = new TextButton(Game, new Vector2(100, 100), "GO!", TheGame.GetFont(Font.Large));
-            button.DropShadow = true;
-            TextButton buttonExit = new TextButton(Game, new Vector2(100, 120), "Exit", TheGame.GetFont(Font.Large));
+            buttonGo = new TextButton(Game, new Vector2(100, 100), "GO!", TheGame.GetFont(Font.Large));
+            buttonGo.DropShadow = true;
+            buttonOptions = new TextButton(Game, new Vector2(100, 120), "Options", TheGame.GetFont(Font.Large));
+            buttonOptions.DropShadow = true;
+            buttonExit = new TextButton(Game, new Vector2(100, 140), "Exit", TheGame.GetFont(Font.Large));
             buttonExit.DropShadow = true;
 
-            button.Click += (o, e) =>
+            buttonGo.Click += (o, e) =>
                 {
-                    Game.Components.Remove(button);
-                    Game.Components.Remove(buttonExit);
-                    Game.Components.Remove(label);
-
+                    CleanUp();
                     Manager.Swap(this, new MainGameState(Game));
                 };
 
+            buttonOptions.Click += (o, e) =>
+                {
+                    CleanUp();
+                    Manager.Swap(this, new OptionsGameState(Game));
+                };
+
             buttonExit.Click += (o, e) => Game.Exit();
+        }
+
+        private void CleanUp()
+        {
+            Game.Components.Remove(buttonGo);
+            Game.Components.Remove(buttonOptions);
+            Game.Components.Remove(buttonExit);
+            Game.Components.Remove(labelTitle);
         }
     }
 }

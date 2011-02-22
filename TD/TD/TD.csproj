@@ -127,10 +127,11 @@
     <Compile Include="Projectiles\BouncingProjectile.cs" />
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
+    <Compile Include="State\OptionsGameState.cs" />
     <Compile Include="Towers\FlameTower.cs" />
-    <Compile Include="IProjectileEffect.cs" />
+    <Compile Include="Projectiles\IProjectileEffect.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="SlowEffect.cs" />
+    <Compile Include="Projectiles\SlowEffect.cs" />
     <Compile Include="Text\TypedText.cs" />
     <Compile Include="UI\FPSLabel.cs" />
     <Compile Include="State\GameState.cs" />

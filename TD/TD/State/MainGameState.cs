@@ -202,7 +202,8 @@ namespace TD
                 if (buttonUpgrade.Hovered && selectedTower.UpgradeAvailable())
                 {
                     Tower.TowerData upgradedData = selectedTower.GetNextUpgradeStats();
-                    towerInfoLabel.Text = string.Format("Damage: {0} + {1}\n", data.Damage, upgradedData.Damage - data.Damage);
+                    towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
+                    towerInfoLabel.Text += string.Format("Damage: {0} + {1}\n", data.Damage, upgradedData.Damage - data.Damage);
                     towerInfoLabel.Text += string.Format("Speed: {0:0.0} + {1:0.0}\n", data.Speed, upgradedData.Speed - data.Speed);
                     towerInfoLabel.Text += string.Format("Range: {0:0.0} + {1:0.0}\n", data.Range, upgradedData.Range - data.Range);
                     if (data.SlowPercentage != null)
@@ -213,7 +214,8 @@ namespace TD
                 }
                 else
                 {
-                    towerInfoLabel.Text = string.Format("Damage: {0}\n", data.Damage);
+                    towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
+                    towerInfoLabel.Text += string.Format("Damage: {0}\n", data.Damage);
                     towerInfoLabel.Text += string.Format("Speed: {0:0.0}\n", data.Speed);
                     towerInfoLabel.Text += string.Format("Range: {0:0.0}\n", data.Range);
                     if (data.SlowPercentage != null)
@@ -241,6 +243,18 @@ namespace TD
 
             buttonSell.Visible = selectedTower != null;
             buttonSell.Enabled = selectedTower != null;
+        }
+
+        private string GetTowerName(Tower tower)
+        {
+            if (tower is RocketTower)
+                return "Rocket Tower";
+            else if (tower is SlowTower)
+                return "Slow Tower";
+            else if (tower is FlameTower)
+                return "Flame Tower";
+            else
+                return string.Empty;
         }
 
         private void SetupUI()

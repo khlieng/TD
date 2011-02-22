@@ -85,18 +85,12 @@ namespace TD
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
 
-            foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-            {
-                state.AddComponent(this);
-            }
+            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
 
         protected override void UnloadContent()
         {
-            foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-            {
-                state.RemoveComponent(hpBar);
-            }   
+            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
 
             base.UnloadContent();
         }

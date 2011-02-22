@@ -19,10 +19,16 @@ namespace TD
         public Game Game { get; private set; }
         public GameStateManager Manager { get; set; }
 
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
+
         public GameState(Game game)
         {
             Game = game;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
+
+            Enabled = true;
+            Visible = true;
         }
         
         public void AddComponent(GameComponent component)
@@ -51,9 +57,12 @@ namespace TD
 
         public virtual void Update(GameTime gameTime)
         {
-            foreach (GameComponent component in components)
+            if (Enabled)
             {
-                component.Update(gameTime);
+                foreach (GameComponent component in components)
+                {
+                    component.Update(gameTime);
+                }
             }
 
             while (removeThese.Count > 0)
@@ -73,11 +82,14 @@ namespace TD
 
         public virtual void Draw(GameTime gameTime)
         {
-            foreach (GameComponent component in components)
+            if (Visible)
             {
-                if (component is DrawableGameComponent)
+                foreach (GameComponent component in components)
                 {
-                    ((DrawableGameComponent)component).Draw(gameTime);
+                    if (component is DrawableGameComponent)
+                    {
+                        ((DrawableGameComponent)component).Draw(gameTime);
+                    }
                 }
             }
         }

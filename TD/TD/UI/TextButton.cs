@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using XNATools;
 
 namespace TD
 {
@@ -73,7 +74,7 @@ namespace TD
                     }
                 };
 
-            spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
+            spriteBatch = GameHelper.GetService<SpriteBatch>();
 
             game.Components.Add(this);
         }

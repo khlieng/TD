@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using XNATools;
 
 namespace TD
 {
@@ -25,8 +26,8 @@ namespace TD
             Font = font;
             Color = Color.White;
             ShadowColor = Color.Black;
-            
-            spriteBatch = (SpriteBatch)game.Services.GetService(typeof(SpriteBatch));
+
+            spriteBatch = GameHelper.GetService<SpriteBatch>();
 
             game.Components.Add(this);
         }

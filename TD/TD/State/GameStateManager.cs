@@ -32,13 +32,18 @@ namespace TD
             Add(newState);
         }
 
-        public IEnumerable<GameState> GetStates<T>()
+        public GameState GetState<T>()
         {
-            foreach (GameState state in states.Where(state => state.GetType().Equals(typeof(T))))
-            {
-                yield return state;
-            }
+            return states.Where(state => state.GetType().Equals(typeof(T))).First();
         }
+
+        //public IEnumerable<GameState> GetStates<T>()
+        //{
+        //    foreach (GameState state in states.Where(state => state.GetType().Equals(typeof(T))))
+        //    {
+        //        yield return state;
+        //    }
+        //}
 
         public GameStateManager(Game game)
             : base(game)

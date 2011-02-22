@@ -71,10 +71,7 @@ namespace TD
             this.rows = rows;
             this.cols = cols;
 
-            foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-            {
-                state.AddComponent(this);
-            }   
+            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
 
         public override void Initialize()
@@ -128,10 +125,7 @@ namespace TD
                 if (towerAdded != null)
                 {
                     towers[row, col] = towerAdded;
-                    foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-                    {
-                        state.AddComponent(towerAdded);
-                    }
+                    GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(towerAdded);
                     return true;
                 }                
             }
@@ -142,10 +136,7 @@ namespace TD
         {
             if (towers[row, col] != null)
             {
-                foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-                {
-                    state.RemoveComponent(towers[row, col]);
-                }
+                GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(towers[row, col]);
                 towers[row, col] = null;
 
                 return true;
@@ -189,10 +180,7 @@ namespace TD
             }
 
             mobs.Remove(mob);
-            foreach (GameState state in GameHelper.GetService<GameStateManager>().GetStates<MainGameState>())
-            {
-                state.RemoveComponent(mob);
-            }
+            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(mob);
             mob.Dispose();
         }
 
