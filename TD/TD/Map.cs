@@ -85,7 +85,7 @@ namespace TD
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
             GeneratePath();
-            SmoothPath(3);
+            //SmoothPath(3);
 
             towers = new Tower[15, 20];
 

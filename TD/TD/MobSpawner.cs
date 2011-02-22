@@ -72,7 +72,7 @@ namespace TD
 
         private void SendMob()
         {
-            Mob mob = new Mob(Game, mobContainer.Path, new Vector2(40.0f + 2.0f * level, 0), 150 + 40 * level * level);
+            Mob mob = new Mob(Game, mobContainer.Path, 40.0f + 2.0f * level, 150 + 40 * level * level);
             mobContainer.AddMob(mob);
             mob.Died += (o, e) =>
             {

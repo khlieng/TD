@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="MovingAgent.cs" />
     <Compile Include="Projectiles\AOEProjectile.cs" />
     <Compile Include="BloomComponent.cs" />
     <Compile Include="BloomSettings.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
     <Compile Include="State\OptionsGameState.cs" />
+    <Compile Include="Steering.cs" />
     <Compile Include="Towers\FlameTower.cs" />
     <Compile Include="Projectiles\IProjectileEffect.cs" />
     <Compile Include="Player.cs" />

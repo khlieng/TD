@@ -10,7 +10,7 @@ namespace TD
 {
     enum CauseOfDeath { Killed, LeftMap }
 
-    class Mob : DrawableGameComponent, ITarget
+    class Mob : MovingAgent, ITarget
     {
         private static Random rand = new Random();
 
@@ -19,29 +19,16 @@ namespace TD
 
         private List<Vector2> path;
 
-        private Vector2 position;
-        private Vector2 velocity;
         private int initalHp;
         private int hp;
 
         private ProgressBar hpBar;
 
         public event EventHandler<DeathEventArgs> Died;
-        
-        public Vector2 Position
-        {
-            get { return position; }
-        }
 
         public Vector2 Center
         {
-            get { return new Vector2(position.X + 16, position.Y + 16); }
-        }
-
-        public Vector2 Velocity
-        {
-            get { return velocity; }
-            set { velocity = value; }
+            get { return Position; }
         }
 
         public int Health
@@ -64,24 +51,29 @@ namespace TD
                 {
                     Modified = true;
                 }
+                float prev = velocityFactor;
                 velocityFactor = value;
+                if (prev > 0.0f)
+                {
+                    MaxSpeed = (MaxSpeed / prev) * velocityFactor;
+                }
             }
         }
 
-        public Mob(Game game, List<Vector2> path, Vector2 velocity, int initialHealth) : base(game)
+        public Mob(Game game, List<Vector2> path, float velocity, int initialHealth) 
+            : base(game, path[0] + new Vector2(0, 4 - rand.Next(9)), velocity)
         {
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
             animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
 
             this.path = path;
-            position = path[0] - new Vector2(16, 16) + new Vector2(0, 4 - rand.Next(9));
-            this.velocity = velocity;
             this.initalHp = initialHealth;
             this.hp = initalHp;
             VelocityFactor = 1.0f;
+            Steering.Seek = true;
 
-            hpBar = new ProgressBar(game, new Rectangle((int)position.X, (int)position.Y, 20, 8));
+            hpBar = new ProgressBar(game, new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 20, 8));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
 
@@ -108,10 +100,7 @@ namespace TD
 
             if (closest != path.Count - 1)
             {
-                Vector2 newVelocity = path[closest + 1] - path[closest];
-                newVelocity.Normalize();
-                newVelocity *= Velocity.Length();
-                Velocity = newVelocity;
+                Steering.Target = path[closest + 1];
             }
             else
             {
@@ -119,9 +108,7 @@ namespace TD
                 OnMobDied(CauseOfDeath.LeftMap);
             }
 
-            float elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-            position += velocity * elapsedSeconds * VelocityFactor;
-            hpBar.Bounds = new Rectangle((int)position.X, (int)position.Y, 30, 6);
+            hpBar.Bounds = new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 30, 6);
 
             base.Update(gameTime);
         }
@@ -129,7 +116,7 @@ namespace TD
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.Begin();
-            spriteBatch.Draw(animation.Texture, Center, null, Color.White, (float)Math.Atan2(velocity.Y, velocity.X), 
+            spriteBatch.Draw(animation.Texture, Position, null, Color.White, (float)Math.Atan2(Direction.Y, Direction.X), 
                 new Vector2(16, 16), 0.6f, SpriteEffects.None, 0.0f);
             spriteBatch.End();
 
@@ -141,7 +128,8 @@ namespace TD
             hp -= amount;
             hpBar.Percentage = (int)((100.0f / initalHp) * hp);
 
-            new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), position, new Vector2(position.X, position.Y - 20), 500);
+            new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), Position - new Vector2(16, 16), 
+                new Vector2(Position.X - 16, Position.Y - 36), 500);
 
             if (hp <= 0)
             {
