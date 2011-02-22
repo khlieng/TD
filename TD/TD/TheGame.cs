@@ -73,8 +73,8 @@ namespace TD
         protected override void Initialize()
         {   
             base.Initialize();
-        }        
-        
+        }
+
         /// <summary>
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.

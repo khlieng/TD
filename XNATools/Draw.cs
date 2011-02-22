@@ -103,7 +103,14 @@ namespace XNATools
 
         public static void Shape(Shape shape)
         {
-            DrawVertices(shape.Vertices, shape.PrimitiveType);
+            if (shape.VertexBuffer == null)
+            {
+                DrawVertices(shape.Vertices, shape.PrimitiveType);
+            }
+            else
+            {
+                DrawVertexBuffer(shape.VertexBuffer, shape.PrimitiveType);
+            }
         }
 
         private static void DrawVertices(VertexPositionColor[] vertices, PrimitiveType type)
@@ -130,6 +137,38 @@ namespace XNATools
 
                         case PrimitiveType.TriangleStrip:
                             device.DrawUserPrimitives<VertexPositionColor>(type, vertices, 0, vertices.Length - 2);
+                            break;
+                    }
+                }
+            }
+        }
+
+        private static void DrawVertexBuffer(VertexBuffer buffer, PrimitiveType type)
+        {
+            if (device != null)
+            {
+                device.SetVertexBuffer(buffer);
+
+                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+
+                    switch (type)
+                    {
+                        case PrimitiveType.LineList:
+                            device.DrawPrimitives(type, 0, buffer.VertexCount / 2);
+                            break;
+
+                        case PrimitiveType.TriangleList:
+                            device.DrawPrimitives(type, 0, buffer.VertexCount / 3);
+                            break;
+
+                        case PrimitiveType.LineStrip:
+                            device.DrawPrimitives(type, 0, buffer.VertexCount - 1);
+                            break;
+
+                        case PrimitiveType.TriangleStrip:
+                            device.DrawPrimitives(type, 0, buffer.VertexCount - 2);
                             break;
                     }
                 }

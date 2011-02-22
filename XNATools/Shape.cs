@@ -9,7 +9,10 @@ namespace XNATools
 {
     public abstract class Shape
     {
+        public static bool UseVertexBuffer { get; set; }
+
         public PrimitiveType PrimitiveType;
         public VertexPositionColor[] Vertices;
+        public VertexBuffer VertexBuffer;
     }
 }
