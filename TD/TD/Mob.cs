@@ -19,7 +19,7 @@ namespace TD
 
         private List<Vector2> path;
 
-        private int initalHp;
+        private int initialHp;
         private int hp;
 
         private ProgressBar hpBar;
@@ -61,15 +61,15 @@ namespace TD
         }
 
         public Mob(Game game, List<Vector2> path, float velocity, int initialHealth) 
-            : base(game, path[0] + new Vector2(0, 4 - rand.Next(9)), velocity)
+            : base(game, path[0] + new Vector2(0, 4 - rand.Next(9)), velocity, 0.5f)
         {
             DrawOrder = 9;
             spriteBatch = GameHelper.GetService<SpriteBatch>();
             animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
 
             this.path = path;
-            this.initalHp = initialHealth;
-            this.hp = initalHp;
+            this.initialHp = initialHealth;
+            this.hp = initialHp;
             VelocityFactor = 1.0f;
             Steering.Seek = true;
 
@@ -126,7 +126,7 @@ namespace TD
         public bool DoDamage(int amount)
         {
             hp -= amount;
-            hpBar.Percentage = (int)((100.0f / initalHp) * hp);
+            hpBar.Percentage = (int)((100.0f / initialHp) * hp);
 
             new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), Position - new Vector2(16, 16), 
                 new Vector2(Position.X - 16, Position.Y - 36), 500);
