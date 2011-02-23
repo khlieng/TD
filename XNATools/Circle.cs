@@ -12,7 +12,7 @@ namespace XNATools
         public Circle(Vector2 center, float radius, int subdivs, Color color, bool filled, float thickness = 1.0f)
         {
             VertexPositionColor[] verts = CreateVertices(center, radius, subdivs, color, filled, thickness);
-
+            
             if (UseVertexBuffer)
             {
                 VertexBuffer = new VertexBuffer(GameHelper.Game.GraphicsDevice,
@@ -79,7 +79,7 @@ namespace XNATools
                     VertexPositionColor[] verts = new VertexPositionColor[subdivs + 1];
 
                     Vector2 direction = new Vector2(0, -1);
-                    for (int i = 0; i < Vertices.Length; i++)
+                    for (int i = 0; i < verts.Length; i++)
                     {
                         verts[i] = new VertexPositionColor(new Vector3(center + direction * radius, 0f), color);
                         direction = Vector2.Transform(direction, Matrix.CreateRotationZ(MathHelper.TwoPi / subdivs));

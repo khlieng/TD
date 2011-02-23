@@ -87,6 +87,7 @@ namespace TD
             base.UnloadContent();
         }
 
+        int currentTarget = -1;
         public override void Update(GameTime gameTime)
         {
             int closest = 0;
@@ -98,14 +99,18 @@ namespace TD
                 }
             }
 
-            if (closest != path.Count - 1)
+            if (currentTarget != closest + 1)
             {
-                Steering.Target = path[closest + 1];
-            }
-            else
-            {
-                hp = 0;
-                OnMobDied(CauseOfDeath.LeftMap);
+                if (closest != path.Count - 1)
+                {
+                    Steering.Target = path[closest + 1] + new Vector2(rand.Next(9) - 4, rand.Next(9) - 4);
+                    currentTarget = closest + 1;
+                }
+                else
+                {
+                    hp = 0;
+                    OnMobDied(CauseOfDeath.LeftMap);
+                }
             }
 
             hpBar.Bounds = new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 30, 6);

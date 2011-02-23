@@ -160,7 +160,7 @@ namespace TD
         protected override void Draw(GameTime gameTime)
         {
             bloom.BeginDraw();
-
+            
             GraphicsDevice.Clear(Color.FromNonPremultiplied(20, 20, 20, 255));
 
             base.Draw(gameTime);

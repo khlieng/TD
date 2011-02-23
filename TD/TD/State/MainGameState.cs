@@ -24,6 +24,7 @@ namespace TD
         Map map;
         TowerType currentlyBuilding;
         Tower selectedTower;
+        PulsatingCircle selectionCircle;
 
         Vector2 radiusCircle;
         float radius;
@@ -52,6 +53,20 @@ namespace TD
             map.Click += (o, e) =>
             {
                 selectedTower = map.GetTower(e.Row, e.Col);
+                
+                if (selectionCircle != null)
+                {
+                    Game.Components.Remove(selectionCircle);
+                }
+                if (selectedTower != null)
+                {                    
+                    Color c = Color.Red;
+                    c.A = 255;
+                    selectionCircle = new PulsatingCircle(Game, new Vector2(selectedTower.Col * 32 + 15.6f,
+                        selectedTower.Row * 32 + 15.6f), 16.5f, 16, c, false, 2.0f);
+                    Game.Components.Add(selectionCircle);
+                }
+
                 if (map.AddTower(e.Row, e.Col, currentlyBuilding))
                 {
                     Tower added = map.GetTower(e.Row, e.Col);
@@ -173,13 +188,6 @@ namespace TD
                 }
                 else if (!map.CanAddTower(mRow, mCol) && map.GetTower(mRow, mCol) == null && Tower.TextureNames.ContainsKey(currentlyBuilding))
                 {
-                    //if (Tower.TextureNames[currentlyBuilding] != string.Empty)
-                    //{
-                    //    towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[currentlyBuilding]);
-                    //}
-                    //radius = 0.0f;
-                    //color = Color.Red;
-                    //color.A = 128;
                     color = Color.Red;
                     color.A = 64;
                     XNATools.Draw.FilledCircle(new Vector2(mCol * 32 + 16, mRow * 32 + 16), 14.0f, 16, color);
@@ -314,6 +322,8 @@ namespace TD
                     map.RemoveTower(selectedTower.Row, selectedTower.Col);
                     Player.AddMoney((int)(0.75 * selectedTower.Cost));
                     selectedTower = null;
+                    Game.Components.Remove(selectionCircle);
+                    selectionCircle = null;
                 };
 
             Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";
