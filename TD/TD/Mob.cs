@@ -23,6 +23,7 @@ namespace TD
         private int hp;
 
         private ProgressBar hpBar;
+        private MovingTextStream damageStream;
 
         public event EventHandler<DeathEventArgs> Died;
 
@@ -76,6 +77,8 @@ namespace TD
             hpBar = new ProgressBar(game, new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 20, 8));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
+            damageStream = new MovingTextStream(Game, TheGame.GetFont(Font.MobMovingText), Color.White, -50.0f);
+            Game.Components.Add(damageStream);
 
             GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
@@ -83,6 +86,7 @@ namespace TD
         protected override void UnloadContent()
         {
             GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
+            new DelayedCall(Game, () => Game.Components.Remove(damageStream), 1000);
 
             base.UnloadContent();
         }
@@ -114,6 +118,7 @@ namespace TD
             }
 
             hpBar.Bounds = new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 30, 6);
+            damageStream.Position = Position - new Vector2(16, 16);
 
             base.Update(gameTime);
         }
@@ -133,8 +138,9 @@ namespace TD
             hp -= amount;
             hpBar.Percentage = (int)((100.0f / initialHp) * hp);
 
-            new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), Position - new Vector2(16, 16), 
-                new Vector2(Position.X - 16, Position.Y - 36), 500);
+            //new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), Position - new Vector2(16, 16), 
+            //    new Vector2(Position.X - 16, Position.Y - 36), 500);
+            damageStream.Add(amount.ToString());
 
             if (hp <= 0)
             {

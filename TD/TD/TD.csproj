@@ -131,6 +131,7 @@
     <Compile Include="PulsatingCircle.cs" />
     <Compile Include="State\OptionsGameState.cs" />
     <Compile Include="Steering.cs" />
+    <Compile Include="Text\MovingTextStream.cs" />
     <Compile Include="Towers\FlameTower.cs" />
     <Compile Include="Projectiles\IProjectileEffect.cs" />
     <Compile Include="Player.cs" />
