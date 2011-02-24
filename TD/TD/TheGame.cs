@@ -48,8 +48,6 @@ namespace TD
 
         bool dumpIt;
 
-        MovingTextStream textStream;
-
         public TheGame()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -127,13 +125,6 @@ namespace TD
         {
             KeyboardState currentKeyState = Keyboard.GetState();
             MouseState currentMouseState = Mouse.GetState();
-
-            textStream.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
-            if (currentMouseState.LeftButton == ButtonState.Pressed &&
-                prevMouseState.LeftButton == ButtonState.Released)
-            {
-                textStream.Add("1337");
-            }
 
             if (currentKeyState.IsKeyDown(Keys.Escape) && prevKeyState.IsKeyUp(Keys.Escape))
             {
