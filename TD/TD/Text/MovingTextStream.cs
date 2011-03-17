@@ -74,9 +74,9 @@ namespace TD
             addQueue = new Queue<TextItem>();
         }
 
-        public void Add(string text)
+        public void Add<T>(T text)
         {
-            addQueue.Enqueue(new TextItem(position, text));
+            addQueue.Enqueue(new TextItem(position, text.ToString()));
         }
 
         public override void Update(GameTime gameTime)

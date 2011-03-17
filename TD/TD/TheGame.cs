@@ -37,7 +37,8 @@ namespace TD
             }
         }
 
-        static readonly string CONFIG_PATH = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\TD\Settings.cfg";
+        static readonly string APPDATA = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        static readonly string CONFIG_PATH = APPDATA + @"\TD\Settings.cfg";
 
         public static dynamic Config
         {

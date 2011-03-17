@@ -140,7 +140,7 @@ namespace TD
 
             //new MovingText(Game, amount.ToString(), TheGame.GetFont(Font.MobMovingText), Position - new Vector2(16, 16), 
             //    new Vector2(Position.X - 16, Position.Y - 36), 500);
-            damageStream.Add(amount.ToString());
+            damageStream.Add(amount);
 
             if (hp <= 0)
             {

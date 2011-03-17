@@ -60,7 +60,7 @@ namespace TD
             {
                 float decayDelta = elapsed - alphaDecayStart;
                 float percent = 1.0f - (1.0f / alphaDecayTime) * decayDelta;
-                color.A = (byte)(255.0f * percent);
+                color = Color.FromNonPremultiplied(color.R, color.G, color.B, (byte)(255.0f * percent));
             }
 
             if (elapsed > scaleDecayStart)

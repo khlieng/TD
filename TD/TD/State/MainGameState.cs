@@ -207,25 +207,34 @@ namespace TD
             if (selectedTower != null)
             {
                 Tower.TowerData data = selectedTower.GetStats();
+
                 if (buttonUpgrade.Hovered && selectedTower.UpgradeAvailable())
                 {
                     Tower.TowerData upgradedData = selectedTower.GetNextUpgradeStats();
+                    int deltaDamage = upgradedData.Damage - data.Damage;
+                    float deltaSpeed = SpeedToAPS(upgradedData.Speed) - SpeedToAPS(data.Speed);
+                    float deltaRange = upgradedData.Range - data.Range;
+
                     towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
-                    towerInfoLabel.Text += string.Format("Damage: {0} + {1}\n", data.Damage, upgradedData.Damage - data.Damage);
-                    towerInfoLabel.Text += string.Format("Speed: {0:0.0} + {1:0.0}\n", data.Speed, upgradedData.Speed - data.Speed);
-                    towerInfoLabel.Text += string.Format("Range: {0:0.0} + {1:0.0}\n", data.Range, upgradedData.Range - data.Range);
+                    towerInfoLabel.Text += string.Format("Damage: {0} {1}\n", data.Damage, 
+                        deltaDamage != 0 ? "+ " + deltaDamage : "");
+                    towerInfoLabel.Text += string.Format("Speed: {0:0.00} {1}\n", SpeedToAPS(data.Speed), 
+                        deltaSpeed != 0 ? string.Format("+ {0:0.00}", deltaSpeed) : "");
+                    towerInfoLabel.Text += string.Format("Range: {0:0} {1}\n", data.Range, 
+                        deltaRange != 0 ? string.Format("+ {0:0}", deltaRange) : "");
                     if (data.SlowPercentage != null)
                     {
-                        towerInfoLabel.Text += string.Format("Slow: {0}% + {1}%\n", data.SlowPercentage,
-                            upgradedData.SlowPercentage - data.SlowPercentage);
+                        int? deltaSlow = upgradedData.SlowPercentage - data.SlowPercentage;
+                        towerInfoLabel.Text += string.Format("Slow: {0}% {1}\n", data.SlowPercentage,
+                            deltaSlow != 0 ? "+ " + deltaSlow + "%" : "");
                     }
                 }
                 else
                 {
                     towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
                     towerInfoLabel.Text += string.Format("Damage: {0}\n", data.Damage);
-                    towerInfoLabel.Text += string.Format("Speed: {0:0.0}\n", data.Speed);
-                    towerInfoLabel.Text += string.Format("Range: {0:0.0}\n", data.Range);
+                    towerInfoLabel.Text += string.Format("Speed: {0:0.00}\n", SpeedToAPS(data.Speed));
+                    towerInfoLabel.Text += string.Format("Range: {0:0}\n", data.Range);
                     if (data.SlowPercentage != null)
                     {
                         towerInfoLabel.Text += string.Format("Slow: {0}%\n", data.SlowPercentage);
@@ -263,6 +272,11 @@ namespace TD
                 return "Flame Tower";
             else
                 return string.Empty;
+        }
+
+        private float SpeedToAPS(float speed)
+        {
+            return 1.0f / speed;
         }
 
         private void SetupUI()
