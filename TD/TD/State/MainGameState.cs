@@ -20,6 +20,7 @@ namespace TD
         TextButton buttonSell;
         Tooltip sellTooltip;
         ToggleGroup towerButtons;
+        Timeline waveTimeline;
 
         Map map;
         TowerType currentlyBuilding;
@@ -342,6 +343,14 @@ namespace TD
 
             Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";
             Player.LifeLost += (o, e) => livesLabel.Text = "Lives: " + Player.Lives;
+
+            waveTimeline = new Timeline(Game, new Rectangle(10, 560, 500, 30), 15.0f);
+            waveTimeline.Add(20.0f, 30.0f, "1: Regular");
+            waveTimeline.Add(35.0f, 45.0f, "2: Fast");
+            waveTimeline.Add(50.0f, 60.0f, "3: Flying");
+            AddComponent(waveTimeline);
+
+            new TextButton(Game, new Vector2(515, 560), "Next wave!", TheGame.GetFont(Font.Large)).Click += (o, e) => waveTimeline.JumpToNextItem();
         }
     }
 }

@@ -166,6 +166,7 @@
     <Compile Include="Towers\SlowTower.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="TheGame.cs" />
+    <Compile Include="UI\Timeline.cs" />
     <Compile Include="UI\ToggleGroup.cs" />
     <Compile Include="UI\Tooltip.cs" />
     <Compile Include="Towers\Tower.cs" />

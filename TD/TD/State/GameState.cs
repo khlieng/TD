@@ -61,7 +61,10 @@ namespace TD
             {
                 foreach (GameComponent component in components)
                 {
-                    component.Update(gameTime);
+                    if (component.Enabled)
+                    {
+                        component.Update(gameTime);
+                    }
                 }
             }
 
@@ -86,9 +89,9 @@ namespace TD
             {
                 foreach (GameComponent component in components)
                 {
-                    if (component is DrawableGameComponent)
+                    if (component is DrawableGameComponent && (component as DrawableGameComponent).Visible)
                     {
-                        ((DrawableGameComponent)component).Draw(gameTime);
+                        (component as DrawableGameComponent).Draw(gameTime);
                     }
                 }
             }

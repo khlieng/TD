@@ -8,7 +8,7 @@ using XNATools;
 
 namespace TD
 {
-    class TypedText : DrawableGameComponent
+    class TypeWriter : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
 
@@ -16,14 +16,14 @@ namespace TD
         private string text;
         private SpriteFont font;
         private Color color;
-        private StringBuilder builder;
         private int interval;
+        private StringBuilder builder;
         private int elapsed;
         private int currentChar;
 
         public bool DropShadow { get; set; }
 
-        public TypedText(Game game, Vector2 position, string text, SpriteFont font, Color color, int interval)
+        public TypeWriter(Game game, Vector2 position, string text, SpriteFont font, Color color)
             : base(game)
         {
             spriteBatch = GameHelper.GetService<SpriteBatch>();
@@ -32,9 +32,14 @@ namespace TD
             this.text = text;
             this.font = font;
             this.color = color;
-            this.interval = interval;
 
             builder = new StringBuilder();
+        }
+
+        public void Start(int interval)
+        {
+            this.interval = interval;
+            currentChar = 0;
         }
 
         public override void Update(GameTime gameTime)

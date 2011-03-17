@@ -14,7 +14,18 @@ namespace TD
         private SpriteBatch spriteBatch;
         private ITooltipProvider provider;
 
-        public string Text { get; set; }
+        private string text;
+        private Vector2 textSize;
+
+        public string Text
+        {
+            get { return text; }
+            set
+            {                
+                text = value;
+                textSize = Font.MeasureString(text);
+            }
+        }
         public Color TextColor { get; set; }
         public SpriteFont Font { get; set; }
 
@@ -43,13 +54,12 @@ namespace TD
 
         public override void Draw(GameTime gameTime)
         {
-            Vector2 textSize = Font.MeasureString(Text);
             Vector2 position = new Vector2(Mouse.GetState().X - 10, Mouse.GetState().Y - (textSize.Y + 20));
 
             spriteBatch.Begin();
             spriteBatch.Draw(temp, new Rectangle((int)position.X, (int)position.Y, 
                 (int)textSize.X + 20, (int)textSize.Y + 10), Color.White);
-            spriteBatch.DrawString(Font, Text, position + new Vector2(10, 5), TextColor);            
+            spriteBatch.DrawString(Font, text, position + new Vector2(10, 5), TextColor);            
             spriteBatch.End();
 
             XNATools.Draw.Rect(position, 
