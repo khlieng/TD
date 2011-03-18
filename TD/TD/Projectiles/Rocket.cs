@@ -11,6 +11,7 @@ namespace TD
     class Rocket : AOEProjectile
     {
         private Emitter emitter;
+        private Emitter smokeTrail;
 
         public Rocket(Game game, Vector2 position, ITarget target, IMobContainer mobContainer, float velocity, int onHitDamage)
             : base(game, position, target, mobContainer, velocity, onHitDamage, 80.0f, game.Content.Load<Texture2D>("rocket"))
@@ -25,6 +26,14 @@ namespace TD
             emitter.MaxScale = 0.8f;
             emitter.AlphaDecayTimeFraction = 0.2f;
             emitter.Emitting = true;
+
+            smokeTrail = new Emitter(game, position, 25.0f, Game.Content.Load<Texture2D>("smoke"));
+            smokeTrail.MinDuration = 1000;
+            smokeTrail.MaxDuration = 2000;
+            smokeTrail.EmitOffset = 8;
+            smokeTrail.MaxDirectionDevation = 90;
+            smokeTrail.AlphaDecayTimeFraction = 0.8f;
+            smokeTrail.Emitting = true;
         }
 
         public override void Update(GameTime gameTime)
@@ -32,7 +41,8 @@ namespace TD
             base.Update(gameTime);
 
             emitter.Direction = -direction;
-            emitter.Position = position - direction * 12;            
+            emitter.Position = position - direction * 12;
+            smokeTrail.Position = emitter.Position;
         }
 
         protected override void OnHit()
@@ -83,6 +93,8 @@ namespace TD
 
             Game.Components.Remove(emitter);
             emitter.Dispose();
+            smokeTrail.Emitting = false;
+            smokeTrail.RemoveAfter(3000);
         }
     }
 }

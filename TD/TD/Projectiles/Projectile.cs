@@ -127,14 +127,6 @@ namespace TD
             }
         }
 
-        //protected virtual void PositionChanged()
-        //{
-        //}
-
-        //protected virtual void DirectionChanged()
-        //{
-        //}        
-
         protected virtual void OnHit()
         {
             GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(this);

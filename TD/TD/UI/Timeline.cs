@@ -88,6 +88,7 @@ namespace TD
                         itemSize.X = (itemPos.X + itemSize.X) - bounds.Left - Padding;
                         itemPos.X = bounds.Left + Padding;
                     }
+
                     if (itemPos.X + itemSize.X > bounds.Right - Padding)
                     {
                         itemSize.X = bounds.Right - itemPos.X - Padding;
@@ -98,9 +99,10 @@ namespace TD
                     Vector2 textSize = font.MeasureString(item.Text);
                     if (textSize.X < itemSize.X)
                     {
-                        spriteBatch.Begin();
                         Vector2 textPos = new Vector2(itemPos.X + itemSize.X / 2.0f - textSize.X / 2.0f,
                             itemPos.Y + itemSize.Y / 2.0f - textSize.Y / 2.0f);
+
+                        spriteBatch.Begin();
                         spriteBatch.DrawString(font, item.Text, textPos, TextColor);
                         spriteBatch.End();
                     }

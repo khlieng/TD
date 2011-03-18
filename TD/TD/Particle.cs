@@ -18,6 +18,7 @@ namespace TD
         float velocity;
         float initialScale;
         float scale;
+        float acceleration;
         int elapsed;
         int time;
         float alphaDecayTime;
@@ -27,7 +28,7 @@ namespace TD
         Color color;
 
         public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, 
-            float velocity, float scale, int time, float alphaDecayFraction, float scaleDecayFraction)
+            float velocity, float scale, float acceleration, int time, float alphaDecayFraction, float scaleDecayFraction)
         {
             this.emitter = emitter;
             this.texture = texture;
@@ -37,6 +38,7 @@ namespace TD
             this.time = time;
             this.initialScale = scale;
             this.scale = scale;
+            this.acceleration = acceleration;
             origin = new Vector2(texture.Width / 2.0f, texture.Height / 2.0f);
             alphaDecayTime = time * alphaDecayFraction;
             alphaDecayStart = time - alphaDecayTime;
@@ -49,6 +51,7 @@ namespace TD
         {
             elapsed += gameTime.ElapsedGameTime.Milliseconds;
             float elapsedSeconds = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
+            velocity += acceleration * elapsedSeconds;
             position += direction * velocity * elapsedSeconds;
             
             if (elapsed >= time)

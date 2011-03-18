@@ -41,7 +41,7 @@ namespace TD
         public override void Initialize()
         {
             Player.Init(20, 500);
-
+            
             base.Initialize();
         }
 
@@ -294,9 +294,13 @@ namespace TD
             buttonFlame.ToggleAble = true;
             buttonFlame.DropShadow = true;
             towerButtons = new ToggleGroup(buttonRocket, buttonSlow, buttonFlame);
-            new Tooltip(Game, buttonRocket, "Shootz dem rokkitz!\nDamange: 20\nSpeed: 2.0\nRange 150\nCost: 100") { TextColor = Color.Red };
-            new Tooltip(Game, buttonSlow, "Slow jaaaa o_O\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
-            new Tooltip(Game, buttonFlame, "HAWT ^,^\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
+            var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
+            new Tooltip(Game, buttonRocket, 
+                string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}", 
+                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost)) 
+                { TextColor = Color.Red };
+            new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
+            new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;
@@ -350,7 +354,10 @@ namespace TD
             waveTimeline.Add(50.0f, 60.0f, "3: Flying");
             AddComponent(waveTimeline);
 
-            new TextButton(Game, new Vector2(515, 560), "Next wave!", TheGame.GetFont(Font.Large)).Click += (o, e) => waveTimeline.JumpToNextItem();
+            new TextButton(Game, new Vector2(520, 565), "Next wave!", TheGame.GetFont(Font.Large))
+            {
+                DropShadow = true
+            }.Click += (o, e) => waveTimeline.JumpToNextItem();
         }
     }
 }

@@ -127,7 +127,7 @@ namespace TD
             cursorEmitter.MaxScale = 0.5f;
             cursorEmitter.MinDuration = 600;
             cursorEmitter.MaxDuration = 600;
-            cursorEmitter.AlphaDecayTimeFraction = 1.0f;
+            cursorEmitter.AlphaDecayTimeFraction = 0.2f;
             cursorEmitter.ScaleDecayTimeFraction = 1.0f;
             cursorEmitter.Emitting = true;
 

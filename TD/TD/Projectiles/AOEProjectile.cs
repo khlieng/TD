@@ -10,7 +10,7 @@ namespace TD
     class AOEProjectile : Projectile
     {
         protected IMobContainer mobContainer;
-        protected float aoeRadius;
+        protected float aoeRadiusSquared;
 
         public AOEProjectile(Game game, Vector2 position, ITarget target, IMobContainer mobContainer,
             float velocity, int onHitDamage, float aoeRadius)
@@ -23,14 +23,14 @@ namespace TD
             : base(game, position, target, velocity, onHitDamage, texture)
         {
             this.mobContainer = mobContainer;
-            this.aoeRadius = aoeRadius;
+            this.aoeRadiusSquared = aoeRadius * aoeRadius;
         }
 
         protected override void OnHit()
         {
             foreach (ITarget otherTarget in mobContainer.Mobs)
             {
-                if (otherTarget != target && (otherTarget.Center - position).Length() < aoeRadius)
+                if (otherTarget != target && (otherTarget.Center - position).LengthSquared() < aoeRadiusSquared)
                 {
                     otherTarget.DoDamage(damage);
                     ApplyEffects(otherTarget);
