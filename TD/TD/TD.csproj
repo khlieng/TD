@@ -159,6 +159,7 @@
     <Compile Include="MobSpawner.cs" />
     <Compile Include="Text\MovingText.cs" />
     <Compile Include="Particle.cs" />
+    <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\ProgressBar.cs" />
     <Compile Include="Projectiles\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="UI\ToggleGroup.cs" />
     <Compile Include="UI\Tooltip.cs" />
     <Compile Include="Towers\Tower.cs" />
+    <Compile Include="UI\UIControl.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -9,19 +9,26 @@ using XNATools;
 
 namespace TD
 {
-    public class TextButton : DrawableGameComponent, IToggleAble, ITooltipProvider
+    public class TextButton : UIControl, IToggleAble, ITooltipProvider
     {
         private SpriteBatch spriteBatch;
 
-        public Vector2 Position { get; set; }
-        public string Text { get; set; }
+        private string text;
+        public string Text
+        {
+            get { return text; }
+            set
+            {
+                text = value;
+                textSize = Font.MeasureString(text);
+                Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
+            }
+        }
         public Color Color { get; set; }
         public Color HoveredColor { get; set; }
         public bool ToggleAble { get; set; }
         public Color ToggledColor { get; set; }
         public SpriteFont Font { get; set; }
-        public bool DropShadow { get; set; }
-        public Color ShadowColor { get; set; }
 
         private Vector2 textSize;
         private bool hovered;
@@ -29,7 +36,6 @@ namespace TD
 
         private MouseState prev;
 
-        public event EventHandler Click;
         public event EventHandler ToggledChanged;
                 
         public bool Toggled
@@ -55,16 +61,15 @@ namespace TD
         }
 
         public TextButton(Game game, Vector2 position, String text, SpriteFont font)
-            : base(game)
+            : base(game, position)
         {
-            Position = position;
-            Text = text;            
+            spriteBatch = game.GetService<SpriteBatch>();
+
             Font = font;
-            Color = Color.White;
-            ShadowColor = Color.Black;
+            Text = text; 
+            Color = Color.White;            
             HoveredColor = Color.Gray;
             ToggledColor = Color.Red;
-            textSize = font.MeasureString(text);
 
             VisibleChanged += (o, e) =>
                 {
@@ -73,10 +78,6 @@ namespace TD
                         OnHideTooltip();
                     }
                 };
-
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
-
-            //game.Components.Add(this);
         }
 
         public override void Update(GameTime gameTime)
@@ -88,13 +89,6 @@ namespace TD
                 if (!toggled)
                 {
                     hovered = true;
-                }
-
-                if (prev.LeftButton == ButtonState.Pressed && current.LeftButton == ButtonState.Released)
-                {                    
-                    Toggled = !toggled;
-                    hovered = !toggled;
-                    OnClick();
                 }
             }
             else
@@ -147,12 +141,12 @@ namespace TD
             base.Draw(gameTime);
         }
 
-        protected virtual void OnClick()
+        protected override void OnClick()
         {
-            if (Click != null)
-            {
-                Click(this, EventArgs.Empty);
-            }
+            Toggled = !toggled;
+            hovered = !toggled;
+
+            base.OnClick();
         }
 
         protected virtual void OnToggleChanged()

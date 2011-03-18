@@ -15,6 +15,11 @@ namespace TD
         private Queue<GameComponent> addThese = new Queue<GameComponent>();
         private Queue<GameComponent> removeThese = new Queue<GameComponent>();
 
+        public ICollection<GameComponent> Components
+        {
+            get { return components; }
+        }
+
         protected SpriteBatch spriteBatch;
         public Game Game { get; private set; }
         public GameStateManager Manager { get; set; }

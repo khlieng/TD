@@ -74,7 +74,7 @@ namespace TD
             VelocityFactor = 1.0f;
             Steering.Seek = true;
 
-            hpBar = new ProgressBar(game, new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 20, 8));
+            hpBar = new ProgressBar(game, new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 30, 6));
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
             damageStream = new MovingTextStream(Game, TheGame.GetFont(Font.MobMovingText), Color.White, -50.0f);
@@ -119,8 +119,8 @@ namespace TD
                 }
             }
 
-            hpBar.Bounds = new Rectangle((int)Position.X - 16, (int)Position.Y - 16, 30, 6);
-            damageStream.Position = Position - new Vector2(16, 16);
+            hpBar.Position = Position - new Vector2(16);
+            damageStream.Position = Position - new Vector2(0, 16);
 
             base.Update(gameTime);
         }

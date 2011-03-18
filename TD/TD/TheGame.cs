@@ -15,7 +15,7 @@ using Tools;
 
 namespace TD
 {
-    public enum Font { Small, Large, MobMovingText }
+    public enum Font { Small, Large, MobMovingText, Huge }
 
     public class TheGame : Game
     {
@@ -24,13 +24,16 @@ namespace TD
             switch (font)
             {
                 case Font.Small:
-                    return GameHelper.Game.Content.Load<SpriteFont>("Calibri_8");
+                    return GameHelper.Content.Load<SpriteFont>("Calibri_8");
                     
                 case Font.Large:
-                    return GameHelper.Game.Content.Load<SpriteFont>("Miramonte_14");
+                    return GameHelper.Content.Load<SpriteFont>("Miramonte_14");
 
                 case Font.MobMovingText:
-                    return GameHelper.Game.Content.Load<SpriteFont>("Arial_8");
+                    return GameHelper.Content.Load<SpriteFont>("Arial_8");
+
+                case Font.Huge:
+                    return GameHelper.Content.Load<SpriteFont>("huge");
 
                 default:
                     return null;
@@ -55,7 +58,6 @@ namespace TD
         Texture2D cursor;
         Emitter cursorEmitter;
 
-        KeyboardState prevKeyState;
         MouseState prevMouseState;
 
         bool dumpIt;
@@ -79,8 +81,9 @@ namespace TD
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = Config.Width;
             graphics.PreferredBackBufferHeight = Config.Height;
-            graphics.PreferMultiSampling = Config.AA;           
-
+            graphics.PreferMultiSampling = Config.AA;
+            IsMouseVisible = true;
+            
             if (Config.Bloom)
             {
                 bloom = new BloomComponent(this);
@@ -123,8 +126,8 @@ namespace TD
                 };
 
             Components.Add(input);
-            GameHelper.AddService(input);
-
+            this.AddService(input);
+            
             base.Initialize();
         }
 
@@ -136,17 +139,18 @@ namespace TD
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            GameHelper.AddService<SpriteBatch>(spriteBatch);
+            this.AddService(spriteBatch);
             
             XNATools.Draw.Init(GraphicsDevice);
             
             cursor = Content.Load<Texture2D>("glowing_cursor");            
             
-            stateManager = new GameStateManager(this);
-            GameHelper.AddService<GameStateManager>(stateManager);
+            stateManager = new GameStateManager(this);            
             Components.Add(stateManager);
+            this.AddService(stateManager);
 
-            stateManager.Add(new MainGameState(this));
+            //stateManager.Add(new MainGameState(this));
+            stateManager.Add(new MenuGameState(this));
 
             cursorEmitter = new Emitter(this, Vector2.Zero, 0.5f, Content.Load<Texture2D>("fireOrb"));
             cursorEmitter.MinScale = 0.5f;
@@ -155,7 +159,7 @@ namespace TD
             cursorEmitter.MaxDuration = 600;
             cursorEmitter.AlphaDecayTimeFraction = 0.2f;
             cursorEmitter.ScaleDecayTimeFraction = 1.0f;
-            cursorEmitter.Emitting = true;
+            //cursorEmitter.Emitting = true;
 
             base.LoadContent();
         }

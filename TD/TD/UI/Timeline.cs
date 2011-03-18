@@ -51,7 +51,7 @@ namespace TD
         public Timeline(Game game, Rectangle bounds, float pixelsPerSecond)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
             font = TheGame.GetFont(Font.Large);
             
             this.bounds = bounds;

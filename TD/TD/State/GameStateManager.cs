@@ -73,9 +73,14 @@ namespace TD
 
         public override void Update(GameTime gameTime)
         {
-            foreach (GameState state in states)
+            //foreach (GameState state in states)
+            //{
+            //    state.Update(gameTime);
+            //}
+
+            for (int i = 0; i < states.Count; i++)
             {
-                state.Update(gameTime);
+                states[i].Update(gameTime);
             }
 
             base.Update(gameTime);
@@ -83,9 +88,14 @@ namespace TD
 
         public override void Draw(GameTime gameTime)
         {
-            foreach (GameState state in states)
+            //foreach (GameState state in states)
+            //{
+            //    state.Draw(gameTime);
+            //}
+
+            for (int i = 0; i < states.Count; i++)
             {
-                state.Draw(gameTime);
+                states[i].Draw(gameTime);
             }
 
             base.Draw(gameTime);

@@ -11,10 +11,7 @@ namespace TD
 {
     class MenuGameState : GameState
     {
-        Label labelTitle;
-        TextButton buttonGo;
-        TextButton buttonOptions;
-        TextButton buttonExit;
+        private Menu menu;
 
         public MenuGameState(Game game)
             : base(game)
@@ -23,38 +20,20 @@ namespace TD
 
         public override void LoadContent(ContentManager content)
         {
-            labelTitle = new Label(Game, new Vector2(100, 80), "Some TD", TheGame.GetFont(Font.Large));
-            labelTitle.Color = Color.Orange;
-            labelTitle.DropShadow = true;            
-            
-            buttonGo = new TextButton(Game, new Vector2(100, 100), "GO!", TheGame.GetFont(Font.Large));
-            buttonGo.DropShadow = true;
-            buttonOptions = new TextButton(Game, new Vector2(100, 120), "Options", TheGame.GetFont(Font.Large));
-            buttonOptions.DropShadow = true;
-            buttonExit = new TextButton(Game, new Vector2(100, 140), "Exit", TheGame.GetFont(Font.Large));
-            buttonExit.DropShadow = true;
+            menu = new Menu(Game, new Vector2(100, 80), TheGame.GetFont(Font.Large));
+            menu.Spacing = 5;
+            menu.AddLabel("title", "Some TD");
+            menu.AddButton("go", "Go!");
+            menu.AddButton("options", "Options");
+            menu.AddButton("exit", "Exit");
+            menu.DropShadow = true;
 
-            buttonGo.Click += (o, e) =>
-                {
-                    CleanUp();
-                    Manager.Swap(this, new MainGameState(Game));
-                };
+            (menu["title"] as Label).Color = Color.Orange;
+            menu["go"].Click += (o, e) => Manager.Swap(this, new MainGameState(Game));
+            menu["options"].Click += (o, e) => Manager.Swap(this, new OptionsGameState(Game));
+            menu["exit"].Click += (o, e) => Game.Exit();
 
-            buttonOptions.Click += (o, e) =>
-                {
-                    CleanUp();
-                    Manager.Swap(this, new OptionsGameState(Game));
-                };
-
-            buttonExit.Click += (o, e) => Game.Exit();
-        }
-
-        private void CleanUp()
-        {
-            Game.Components.Remove(buttonGo);
-            Game.Components.Remove(buttonOptions);
-            Game.Components.Remove(buttonExit);
-            Game.Components.Remove(labelTitle);
+            AddComponent(menu);
         }
     }
 }

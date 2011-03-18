@@ -95,6 +95,7 @@
     <Compile Include="Circle.cs" />
     <Compile Include="DelayedCall.cs" />
     <Compile Include="Draw.cs" />
+    <Compile Include="GameExtensions.cs" />
     <Compile Include="GameHelper.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

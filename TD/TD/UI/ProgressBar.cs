@@ -8,13 +8,13 @@ using XNATools;
 
 namespace TD
 {
-    class ProgressBar : DrawableGameComponent
+    class ProgressBar : UIControl
     {
         private static Texture2D temp;
 
         private SpriteBatch spriteBatch;
+        private Rectangle foregroundBounds;        
 
-        public Rectangle Bounds { get; set; }
         public int Percentage { get; set; }
         public Color BackgroundColor { get; set; }
         public Color ForegroundColor { get; set; }
@@ -26,16 +26,14 @@ namespace TD
         }
 
         public ProgressBar(Game game, Rectangle bounds, Color background, Color foreground)
-            : base(game)
+            : base(game, new Vector2(bounds.X, bounds.Y))
         {
+            spriteBatch = game.GetService<SpriteBatch>();
+
             Bounds = bounds;
             BackgroundColor = background;
             ForegroundColor = foreground;
             ForegroundInset = 1;
-
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
-
-            //GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
 
         protected override void LoadContent()
@@ -53,12 +51,17 @@ namespace TD
         {
             spriteBatch.Begin();
             spriteBatch.Draw(temp, Bounds, BackgroundColor);
-            spriteBatch.Draw(temp, new Rectangle(Bounds.X + ForegroundInset, Bounds.Y + ForegroundInset,
-                (int)((Bounds.Width - ForegroundInset * 2) * Percentage / 100.0f), 
-                Bounds.Height - ForegroundInset * 2), ForegroundColor);
+            CalculateForeground();
+            spriteBatch.Draw(temp, foregroundBounds, ForegroundColor);
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private void CalculateForeground()
+        {
+            foregroundBounds = new Rectangle(Bounds.X + ForegroundInset, Bounds.Y + ForegroundInset,
+                (int)((Bounds.Width - ForegroundInset * 2) * Percentage / 100.0f), Bounds.Height - ForegroundInset * 2);
         }
     }
 }

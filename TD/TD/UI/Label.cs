@@ -8,28 +8,24 @@ using XNATools;
 
 namespace TD
 {
-    public class Label : DrawableGameComponent
+    public class Label : UIControl
     {
         private SpriteBatch spriteBatch;
 
-        public Vector2 Position { get; set; }
         public string Text { get; set; }
         public Color Color { get; set; }
         public SpriteFont Font { get; set; }
-        public bool DropShadow { get; set; }
-        public Color ShadowColor { get; set; }
+        
+        public int Rotation { get; set; }
 
-        public Label(Game game, Vector2 position, String text, SpriteFont font) : base(game)
+        public Label(Game game, Vector2 position, String text, SpriteFont font) 
+            : base(game, position)
         {
-            Position = position;
+            spriteBatch = game.GetService<SpriteBatch>();
+
             Text = text;
             Font = font;
             Color = Color.White;
-            ShadowColor = Color.Black;
-
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
-
-            //game.Components.Add(this);
         }
 
         public override void Draw(GameTime gameTime)
@@ -37,9 +33,11 @@ namespace TD
             spriteBatch.Begin();
             if (DropShadow)
             {
-                spriteBatch.DrawString(Font, Text, Position + Vector2.One, ShadowColor);
+                spriteBatch.DrawString(Font, Text, Position + Vector2.One, ShadowColor,
+                    MathHelper.ToRadians(Rotation), Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             }
-            spriteBatch.DrawString(Font, Text, Position, Color);
+            spriteBatch.DrawString(Font, Text, Position, Color, 
+                MathHelper.ToRadians(Rotation), Vector2.Zero, 1.0f, SpriteEffects.None, 0.0f);
             spriteBatch.End();
 
             base.Draw(gameTime);

@@ -34,7 +34,7 @@ namespace TD
         public Tooltip(Game game, ITooltipProvider provider, string text)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
             Font = TheGame.GetFont(TD.Font.Small);
 
             this.provider = provider;
@@ -48,8 +48,6 @@ namespace TD
 
             temp = new Texture2D(game.GraphicsDevice, 1, 1);
             temp.SetData<Color>(new[] { Color.FromNonPremultiplied(0, 0, 0, 230) });
-
-            //game.Components.Add(this);
         }
 
         public override void Draw(GameTime gameTime)
