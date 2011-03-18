@@ -49,7 +49,7 @@ namespace TD
             temp = new Texture2D(game.GraphicsDevice, 1, 1);
             temp.SetData<Color>(new[] { Color.FromNonPremultiplied(0, 0, 0, 230) });
 
-            game.Components.Add(this);
+            //game.Components.Add(this);
         }
 
         public override void Draw(GameTime gameTime)

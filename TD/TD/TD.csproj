@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="MovingAgent.cs" />
     <Compile Include="Projectiles\AOEProjectile.cs" />
     <Compile Include="BloomComponent.cs" />

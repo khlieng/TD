@@ -50,6 +50,7 @@ namespace TD
         SpriteBatch spriteBatch;
         GameStateManager stateManager;
         BloomComponent bloom;
+        Input input;
 
         Texture2D cursor;
         Emitter cursorEmitter;
@@ -78,7 +79,7 @@ namespace TD
             Content.RootDirectory = "Content";
             graphics.PreferredBackBufferWidth = Config.Width;
             graphics.PreferredBackBufferHeight = Config.Height;
-            graphics.PreferMultiSampling = Config.AA;
+            graphics.PreferMultiSampling = Config.AA;           
 
             if (Config.Bloom)
             {
@@ -98,7 +99,32 @@ namespace TD
         /// and initialize them as well.
         /// </summary>
         protected override void Initialize()
-        {   
+        {
+            input = new Input(this);            
+            input.KeyPressed += (key) =>
+                {
+                    switch (key)
+                    {
+                        case Keys.Escape:
+                            Exit();
+                            break;
+
+                        case Keys.F5:
+                            dumpIt = true;
+                            break;
+
+                        case Keys.Q:
+                            if (Config.Bloom)
+                            {
+                                bloom.Visible = !bloom.Visible;
+                            }
+                            break;
+                    }
+                };
+
+            Components.Add(input);
+            GameHelper.AddService(input);
+
             base.Initialize();
         }
 
@@ -119,7 +145,7 @@ namespace TD
             stateManager = new GameStateManager(this);
             GameHelper.AddService<GameStateManager>(stateManager);
             Components.Add(stateManager);
-            
+
             stateManager.Add(new MainGameState(this));
 
             cursorEmitter = new Emitter(this, Vector2.Zero, 0.5f, Content.Load<Texture2D>("fireOrb"));
@@ -150,31 +176,10 @@ namespace TD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            KeyboardState currentKeyState = Keyboard.GetState();
             MouseState currentMouseState = Mouse.GetState();
-
-            if (currentKeyState.IsKeyDown(Keys.Escape) && prevKeyState.IsKeyUp(Keys.Escape))
-            {
-                Exit();
-            }
 
             cursorEmitter.Position = new Vector2(currentMouseState.X, currentMouseState.Y);
 
-            if (currentKeyState.IsKeyDown(Keys.P) && prevKeyState.IsKeyUp(Keys.P))
-            {
-                dumpIt = true;
-            }
-            else
-            {
-                dumpIt = false;
-            }
-
-            if (currentKeyState.IsKeyDown(Keys.Q) && prevKeyState.IsKeyUp(Keys.Q) && Config.Bloom)
-            {
-                bloom.Visible = !bloom.Visible;
-            }
-
-            prevKeyState = currentKeyState;
             prevMouseState = currentMouseState;
 
             base.Update(gameTime);
@@ -201,6 +206,8 @@ namespace TD
 
             if (dumpIt)
             {
+                dumpIt = false;
+
                 Color[] data = new Color[800 * 600];
                 GraphicsDevice.GetBackBufferData<Color>(data);
 

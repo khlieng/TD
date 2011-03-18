@@ -29,7 +29,7 @@ namespace TD
 
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
-            game.Components.Add(this);
+            //game.Components.Add(this);
         }
 
         public override void Draw(GameTime gameTime)

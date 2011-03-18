@@ -197,25 +197,15 @@ namespace TD
             float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
             Vector2 pDirection = Vector2.Transform(Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));
 
-            float velocity = RandomBetween(MinVelocity, MaxVelocity);
-            float acceleration = RandomBetween(MinAcceleration, MaxAcceleration);
-            int duration = RandomBetween(MinDuration, MaxDuration);
-            float scale = RandomBetween(MinScale, MaxScale);
+            float velocity = rand.Between(MinVelocity, MaxVelocity);
+            float acceleration = rand.Between(MinAcceleration, MaxAcceleration);
+            int duration = rand.Between(MinDuration, MaxDuration);
+            float scale = rand.Between(MinScale, MaxScale);
 
             currentTexture = ++currentTexture % textures.Length;
 
             return new Particle(this, textures[currentTexture], Position + pDirection * EmitOffset + offset, 
                 pDirection, velocity, scale, acceleration, duration, AlphaDecayTimeFraction, ScaleDecayTimeFraction);
-        }
-
-        private int RandomBetween(int min, int max)
-        {
-            return rand.Next(max - min + 1) + min;
-        }
-
-        private float RandomBetween(float min, float max)
-        {
-            return rand.Next((int)(max * 1000.0f) - (int)(min * 1000.0f) + 1) / 1000.0f + min;
         }
     }
 }

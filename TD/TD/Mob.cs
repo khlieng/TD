@@ -78,9 +78,11 @@ namespace TD
             hpBar.ForegroundColor = Color.Red;
             hpBar.Percentage = 100;
             damageStream = new MovingTextStream(Game, TheGame.GetFont(Font.MobMovingText), Color.White, -50.0f);
-            Game.Components.Add(damageStream);
 
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
+            GameState mainState = GameHelper.GetService<GameStateManager>().GetState<MainGameState>();
+            mainState.AddComponent(this);
+            mainState.AddComponent(hpBar);
+            mainState.AddComponent(damageStream);
         }
 
         protected override void UnloadContent()

@@ -99,6 +99,7 @@
     <Compile Include="Line.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DelayedCallGeneric.cs" />
+    <Compile Include="RandomExtensions.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Shape.cs" />
   </ItemGroup>

@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using XNATools;
 
 namespace TD
 {
@@ -48,8 +49,7 @@ namespace TD
         public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content)
         {
             overlay = Game.Content.Load<Texture2D>("overlay3");
-            SetupUI();
-
+            
             map = Game.Content.Load<Map>(@"Maps\test2");
             map.Click += (o, e) =>
             {
@@ -89,6 +89,8 @@ namespace TD
                 {
                     radius = 0.0f;
                 };
+
+            SetupUI();
 
             base.LoadContent(content);
         }
@@ -294,13 +296,15 @@ namespace TD
             buttonFlame.ToggleAble = true;
             buttonFlame.DropShadow = true;
             towerButtons = new ToggleGroup(buttonRocket, buttonSlow, buttonFlame);
+
             var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
-            new Tooltip(Game, buttonRocket, 
+            Tooltip rocketTooltip = new Tooltip(Game, buttonRocket, 
                 string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}", 
                 rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost)) 
                 { TextColor = Color.Red };
-            new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
-            new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
+
+            Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
+            Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;
@@ -352,12 +356,28 @@ namespace TD
             waveTimeline.Add(20.0f, 30.0f, "1: Regular");
             waveTimeline.Add(35.0f, 45.0f, "2: Fast");
             waveTimeline.Add(50.0f, 60.0f, "3: Flying");
-            AddComponent(waveTimeline);
 
-            new TextButton(Game, new Vector2(520, 565), "Next wave!", TheGame.GetFont(Font.Large))
-            {
-                DropShadow = true
-            }.Click += (o, e) => waveTimeline.JumpToNextItem();
+            TextButton buttonNextWave = new TextButton(Game, new Vector2(520, 565), "Next wave!", TheGame.GetFont(Font.Large));
+            buttonNextWave.DropShadow = true;
+            buttonNextWave.Click += (o, e) => waveTimeline.JumpToNextItem();
+            
+            AddComponent(timeLabel);
+            AddComponent(fpsLabel);
+            AddComponent(moneyLabel);
+            AddComponent(livesLabel);
+            AddComponent(towerInfoLabel);
+            AddComponent(towersLabel);
+            AddComponent(buttonRocket);
+            AddComponent(buttonSlow);
+            AddComponent(buttonFlame);
+            AddComponent(buttonUpgrade);
+            AddComponent(buttonSell);
+            AddComponent(rocketTooltip);
+            AddComponent(slowTooltip);
+            AddComponent(flameTooltip);
+            AddComponent(sellTooltip);
+            AddComponent(waveTimeline);
+            AddComponent(buttonNextWave);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace TD
 
             spriteBatch = GameHelper.GetService<SpriteBatch>();
 
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
+            //GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
 
         protected override void LoadContent()
