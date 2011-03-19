@@ -10,22 +10,13 @@ namespace TD
 {
     public class Label : UIControl
     {
-        private SpriteBatch spriteBatch;
-
-        public string Text { get; set; }
-        public Color Color { get; set; }
-        public SpriteFont Font { get; set; }
-        
         public int Rotation { get; set; }
 
         public Label(Game game, Vector2 position, String text, SpriteFont font) 
             : base(game, position)
         {
-            spriteBatch = game.GetService<SpriteBatch>();
-
-            Text = text;
             Font = font;
-            Color = Color.White;
+            Text = text;
         }
 
         public override void Draw(GameTime gameTime)

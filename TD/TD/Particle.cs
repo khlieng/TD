@@ -27,7 +27,13 @@ namespace TD
         float scaleDecayStart;
         Color color;
 
-        public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, 
+        public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction,
+            float velocity, float scale, float acceleration, int time, float alphaDecayFraction, float scaleDecayFraction)
+            : this(emitter, texture, position, direction, Color.White, velocity, scale, acceleration, time, alphaDecayFraction, scaleDecayFraction)
+        {
+        }
+
+        public Particle(Emitter emitter, Texture2D texture, Vector2 position, Vector2 direction, Color color,
             float velocity, float scale, float acceleration, int time, float alphaDecayFraction, float scaleDecayFraction)
         {
             this.emitter = emitter;
@@ -44,7 +50,7 @@ namespace TD
             alphaDecayStart = time - alphaDecayTime;
             scaleDecayTime = time * scaleDecayFraction;
             scaleDecayStart = time - scaleDecayTime;
-            color = Color.White;
+            this.color = color;
         }
 
         public void Update(GameTime gameTime)
@@ -65,7 +71,7 @@ namespace TD
                 float percent = 1.0f - (1.0f / alphaDecayTime) * decayDelta;
                 color = Color.FromNonPremultiplied(color.R, color.G, color.B, (byte)(255.0f * percent));
             }
-
+            
             if (elapsed > scaleDecayStart)
             {
                 float decayDelta = elapsed - scaleDecayStart;

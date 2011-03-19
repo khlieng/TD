@@ -487,13 +487,13 @@ namespace TD
             protected override Map Read(ContentReader input, Map existingInstance)
             {
                 Map map = new Map(GameHelper.Game, 20, 15);
-
+                
                 map.textures = new Texture2D[input.ReadInt32()];
                 for (int i = 0; i < map.textures.Length; i++)
                 {
                     map.textures[i] = GameHelper.Game.Content.Load<Texture2D>(System.IO.Path.GetFileNameWithoutExtension(input.ReadString()));
                 }
-
+                
                 map.sprites = new Sprite[input.ReadInt32()];
                 for (int i = 0; i < map.sprites.Length; i++)
                 {

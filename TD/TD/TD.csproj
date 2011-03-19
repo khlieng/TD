@@ -127,6 +127,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="LineEmitter.cs" />
     <Compile Include="MovingAgent.cs" />
     <Compile Include="Projectiles\AOEProjectile.cs" />
     <Compile Include="BloomComponent.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Towers\SlowTower.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="TheGame.cs" />
+    <Compile Include="UI\TextOutput.cs" />
     <Compile Include="UI\Timeline.cs" />
     <Compile Include="UI\ToggleGroup.cs" />
     <Compile Include="UI\Tooltip.cs" />

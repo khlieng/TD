@@ -11,14 +11,14 @@ namespace TD
     class Emitter : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
-        private Texture2D[] textures;
-        private int currentTexture;
+        protected Texture2D[] textures;
+        protected int currentTexture;
 
         private float interval;
         private float elapsed;
         private bool instant;
 
-        private Random rand = new Random();
+        protected static Random rand = new Random();
 
         private Vector2 position;        
         public Vector2 Position
@@ -192,7 +192,7 @@ namespace TD
             base.Draw(gameTime);
         }
         
-        private Particle CreateParticle(Vector2 offset)
+        protected virtual Particle CreateParticle(Vector2 offset)
         {
             float deviationAngle = (rand.Next(MaxDirectionDevation * 2 + 1) - MaxDirectionDevation);
             Vector2 pDirection = Vector2.Transform(Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(deviationAngle)));

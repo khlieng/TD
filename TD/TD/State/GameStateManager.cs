@@ -23,7 +23,8 @@ namespace TD
 
         public void Remove(GameState state)
         {
-            states.Remove(state);            
+            state.UnloadContent();
+            states.Remove(state);
         }
 
         public void Swap(GameState state, GameState newState)

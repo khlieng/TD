@@ -42,7 +42,16 @@ namespace TD
         public override void Initialize()
         {
             Player.Init(20, 500);
-            
+#if !DEBUG
+            Game.GetService<Input>().KeyPressed += (key) =>
+                {
+                    if (key == Keys.F1)
+                    {
+                        fpsLabel.Visible = !fpsLabel.Visible;
+                        timeLabel.Visible = !timeLabel.Visible;
+                    }
+                };
+#endif            
             base.Initialize();
         }
 
@@ -117,15 +126,7 @@ namespace TD
 
             timeLabel.Text = String.Format("{0:00}:{1:00}:{2}", gameTime.TotalGameTime.Minutes,
                 gameTime.TotalGameTime.Seconds, gameTime.TotalGameTime.Milliseconds);        
-#if !DEBUG
-            KeyboardState keyState = Keyboard.GetState();
-            if (prevKeyState.IsKeyUp(Keys.F1) && keyState.IsKeyDown(Keys.F1))
-            {
-                timeLabel.Visible = !timeLabel.Visible;
-                fpsLabel.Visible = !fpsLabel.Visible;
-            }
-            prevKeyState = keyState;
-#endif
+
             if (Player.Lives <= 0)
             {
                 Game.Exit();
@@ -148,9 +149,7 @@ namespace TD
 
             if (radius > 0.0f)
             {
-                Color c = Color.Black;
-                c.A = 16;
-                XNATools.Draw.FilledCircle(radiusCircle, radius, 32, c);
+                XNATools.Draw.FilledCircle(radiusCircle, radius, 32, Color.FromNonPremultiplied(0, 0, 0, 16));
                 XNATools.Draw.Circle(radiusCircle, radius, 32, Color.FromNonPremultiplied(0, 0, 0, 64));
             }
         }

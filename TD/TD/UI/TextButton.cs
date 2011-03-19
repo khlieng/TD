@@ -11,26 +11,10 @@ namespace TD
 {
     public class TextButton : UIControl, IToggleAble, ITooltipProvider
     {
-        private SpriteBatch spriteBatch;
-
-        private string text;
-        public string Text
-        {
-            get { return text; }
-            set
-            {
-                text = value;
-                textSize = Font.MeasureString(text);
-                Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
-            }
-        }
-        public Color Color { get; set; }
         public Color HoveredColor { get; set; }
         public bool ToggleAble { get; set; }
         public Color ToggledColor { get; set; }
-        public SpriteFont Font { get; set; }
-
-        private Vector2 textSize;
+        
         private bool hovered;
         private bool toggled;
 
@@ -63,11 +47,8 @@ namespace TD
         public TextButton(Game game, Vector2 position, String text, SpriteFont font)
             : base(game, position)
         {
-            spriteBatch = game.GetService<SpriteBatch>();
-
             Font = font;
-            Text = text; 
-            Color = Color.White;            
+            Text = text;      
             HoveredColor = Color.Gray;
             ToggledColor = Color.Red;
 

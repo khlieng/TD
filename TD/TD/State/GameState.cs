@@ -60,6 +60,10 @@ namespace TD
         {
         }
 
+        public virtual void UnloadContent()
+        {
+        }
+
         public virtual void Update(GameTime gameTime)
         {
             if (Enabled)

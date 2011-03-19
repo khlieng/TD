@@ -23,7 +23,7 @@ namespace TD
         {
             Mob mob = (Mob)target;
             mob.VelocityFactor = 1.0f - speedReduction;
-
+            
             if (targetMap.ContainsKey(target))
             {
                 targetMap[target].Reset();

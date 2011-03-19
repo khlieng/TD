@@ -29,6 +29,8 @@ namespace TD
             menu.AddButton("back", "Back");
             menu.DropShadow = true;
 
+            menu.Position = new Vector2(400.0f - menu.Size.X / 2.0f, 300.0f - menu.Size.Y / 2.0f);
+
             (menu["title"] as Label).Color = Color.Orange;
 
             menu["aa"].Click += (o, e) =>

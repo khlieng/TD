@@ -83,12 +83,33 @@ namespace TD
             mainState.AddComponent(this);
             mainState.AddComponent(hpBar);
             mainState.AddComponent(damageStream);
-        }
 
+            burningTest = new Emitter(game, Center, 10.0f, 
+                game.Content.Load<Texture2D>("fireOrb"), 
+                game.Content.Load<Texture2D>("smoke"), 
+                game.Content.Load<Texture2D>("fire"),
+                game.Content.Load<Texture2D>("smoke"));
+            burningTest.MinVelocity = 100;
+            burningTest.MaxVelocity = 150;
+            burningTest.MinScale = 0.2f;
+            burningTest.MaxScale = 0.8f;
+            burningTest.MinDuration = 500;
+            burningTest.MaxDuration = 1500;
+            burningTest.MinAcceleration = -500;
+            burningTest.MaxAcceleration = -250;
+            burningTest.MaxDirectionDevation = 10;
+            burningTest.ScaleDecayTimeFraction = 0.8f;
+            burningTest.EmitOffset = 4;
+            burningTest.Direction = new Vector2(0, -1);
+            //burningTest.Emitting = true;
+
+        }
+        Emitter burningTest;
         protected override void UnloadContent()
         {
             GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
             new DelayedCall(Game, () => Game.Components.Remove(damageStream), 1000);
+            burningTest.RemoveAfter(2000);
 
             base.UnloadContent();
         }
@@ -118,7 +139,8 @@ namespace TD
                     OnMobDied(CauseOfDeath.LeftMap);
                 }
             }
-
+            burningTest.Position = Center;
+            burningTest.Direction = Vector2.Transform(burningTest.Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(10.0f)));
             hpBar.Position = Position - new Vector2(16);
             damageStream.Position = Position - new Vector2(0, 16);
 
@@ -154,6 +176,7 @@ namespace TD
 
         protected virtual void OnMobDied(CauseOfDeath cause)
         {
+            burningTest.Emitting = false;
             if (Died != null)
             {
                 Died(this, new DeathEventArgs(cause));

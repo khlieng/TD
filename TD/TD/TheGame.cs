@@ -54,6 +54,7 @@ namespace TD
         GameStateManager stateManager;
         BloomComponent bloom;
         Input input;
+        TextOutput output;
 
         Texture2D cursor;
         Emitter cursorEmitter;
@@ -112,6 +113,10 @@ namespace TD
                             Exit();
                             break;
 
+                        case Keys.F2:
+                            output.Visible = !output.Visible;
+                            break;
+
                         case Keys.F5:
                             dumpIt = true;
                             break;
@@ -160,6 +165,12 @@ namespace TD
             cursorEmitter.AlphaDecayTimeFraction = 0.2f;
             cursorEmitter.ScaleDecayTimeFraction = 1.0f;
             //cursorEmitter.Emitting = true;
+
+            output = new TextOutput(this, new Vector2(5, 5), GetFont(Font.Small), bufferSize: 5);
+            output.DropShadow = true;
+            output.Visible = false;
+            Components.Add(output);
+            this.AddService(output);
 
             base.LoadContent();
         }

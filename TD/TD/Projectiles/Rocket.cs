@@ -47,16 +47,30 @@ namespace TD
 
         protected override void OnHit()
         {
+            //Emitter explosionEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("fire"));
+            //explosionEmitter.MaxDirectionDevation = 180;
+            //explosionEmitter.MinVelocity = 5;
+            //explosionEmitter.MaxVelocity = 50;
+            //explosionEmitter.MinDuration = 400;
+            //explosionEmitter.MaxDuration = 750;
+            //explosionEmitter.MinScale = 0.5f;
+            //explosionEmitter.MaxScale = 1.0f;
+            //explosionEmitter.AlphaDecayTimeFraction = 0.1f;
+            //explosionEmitter.Emit(100);            
+            //explosionEmitter.RemoveAfter(800);
+
             Emitter explosionEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("fire"));
             explosionEmitter.MaxDirectionDevation = 180;
-            explosionEmitter.MinVelocity = 5;
-            explosionEmitter.MaxVelocity = 50;
+            explosionEmitter.MinVelocity = 30;
+            explosionEmitter.MaxVelocity = 75;
+            explosionEmitter.MinAcceleration = -150;
+            explosionEmitter.MaxAcceleration = -100;
             explosionEmitter.MinDuration = 400;
             explosionEmitter.MaxDuration = 750;
             explosionEmitter.MinScale = 0.5f;
             explosionEmitter.MaxScale = 1.0f;
             explosionEmitter.AlphaDecayTimeFraction = 0.1f;
-            explosionEmitter.Emit(100);            
+            explosionEmitter.Emit(100);
             explosionEmitter.RemoveAfter(800);
 
             Emitter sparkEmitter = new Emitter(Game, target.Center, Game.Content.Load<Texture2D>("fireOrb"));
@@ -91,8 +105,7 @@ namespace TD
         {
             base.Dispose(disposing);
 
-            Game.Components.Remove(emitter);
-            emitter.Dispose();
+            emitter.RemoveAfter(0);
             smokeTrail.Emitting = false;
             smokeTrail.RemoveAfter(3000);
         }

@@ -5,11 +5,14 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using XNATools;
 
 namespace TD
 {
     public abstract class UIControl : DrawableGameComponent
     {
+        protected SpriteBatch spriteBatch;
+
         private Vector2 position;
         private Rectangle bounds;
 
@@ -47,6 +50,22 @@ namespace TD
             }
         }
 
+        public Color Color { get; set; }
+        public SpriteFont Font { get; set; }
+
+        protected Vector2 textSize;
+        private string text;
+        public string Text
+        {
+            get { return text; }
+            set
+            {
+                text = value;
+                textSize = Font.MeasureString(text);
+                Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
+            }
+        }
+
         public bool DropShadow { get; set; }
         public Color ShadowColor { get; set; }
 
@@ -57,7 +76,10 @@ namespace TD
         protected UIControl(Game game, Vector2 position)
             : base(game)
         {
+            spriteBatch = game.GetService<SpriteBatch>();
+
             Position = position;
+            Color = Color.White;
             ShadowColor = Color.Black;
         }
 
