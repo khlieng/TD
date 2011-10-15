@@ -25,30 +25,30 @@ namespace TD
             menu = new Menu(Game, new Vector2(100, 80), TheGame.GetFont(Font.Large));
             menu.Spacing = 5;
             menu.AddLabel("title", "Options");
-            menu.AddButton("aa", "Anti-Alias: " + (config.AA ? "ON" : "OFF"));
-            menu.AddButton("bloom", "Bloom: " + (config.Bloom ? "ON" : "OFF"));
+            menu.AddLabel("aa", "Anti-Alias");
+            menu.AddLabel("bloom", "Bloom");
             menu.AddButton("back", "Back");
             menu.DropShadow = true;
-
+            
             menu.Position = new Vector2(400.0f - menu.Size.X / 2.0f, 300.0f - menu.Size.Y / 2.0f);
 
             (menu["title"] as Label).Color = Color.Orange;
 
-            menu["aa"].Click += (o, e) =>
-                {
-                    config.AA = !config.AA;
-                    (menu["aa"] as TextButton).Text = "Anti-Alias: " + (config.AA ? "ON" : "OFF");
-                };
-
-            menu["bloom"].Click += (o, e) =>
-                {
-                    config.Bloom = !config.Bloom;
-                    (menu["bloom"] as TextButton).Text = "Bloom: " + (config.Bloom ? "ON" : "OFF");
-                };
-
             menu["back"].Click += (o, e) => Manager.Swap(this, new MenuGameState(Game));
 
+            CheckBox checkBoxAA = new CheckBox(Game, new Rectangle((int)menu["aa"].Position.X - 20, (int)menu["aa"].Position.Y + 1, 15, 15));
+            checkBoxAA.ForegroundColor = Color.Orange;
+            checkBoxAA.Toggled = config.AA;
+            checkBoxAA.ToggledChanged += (o, e) => config.AA = checkBoxAA.Toggled;
+
+            CheckBox checkBoxBloom = new CheckBox(Game, new Rectangle((int)menu["bloom"].Position.X - 20, (int)menu["bloom"].Position.Y + 1, 15, 15));
+            checkBoxBloom.ForegroundColor = Color.Orange;
+            checkBoxBloom.Toggled = config.Bloom;            
+            checkBoxBloom.ToggledChanged += (o, e) => config.Bloom = checkBoxBloom.Toggled;
+
             AddComponent(menu);
+            AddComponent(checkBoxAA);
+            AddComponent(checkBoxBloom);
 
             base.LoadContent(content);
         }

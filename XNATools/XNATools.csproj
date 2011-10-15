@@ -103,6 +103,7 @@
     <Compile Include="RandomExtensions.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Shape.cs" />
+    <Compile Include="UI\CheckBox.cs" />
     <Compile Include="UI\FPSLabel.cs" />
     <Compile Include="UI\IToggleAble.cs" />
     <Compile Include="UI\ITooltipProvider.cs" />

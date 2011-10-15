@@ -28,7 +28,6 @@ namespace XNATools.UI
             get
             {
                 Vector2 size = new Vector2();
-                int i = 0;
                 foreach (var item in items.Values)
                 {
                     Vector2 stringSize = font.MeasureString(item.Text);
@@ -38,7 +37,6 @@ namespace XNATools.UI
                     {
                         size.X = stringSize.X;
                     }
-                    i++;
                 }
 
                 if (items.Count > 0)

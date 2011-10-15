@@ -384,7 +384,7 @@ namespace TD
             AddComponent(flameTooltip);
             AddComponent(sellTooltip);
             AddComponent(waveTimeline);
-            AddComponent(buttonNextWave);            
+            AddComponent(buttonNextWave);
         }
     }
 }
