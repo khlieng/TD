@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
-    class Tooltip : DrawableGameComponent
+    public class Tooltip : DrawableGameComponent
     {
         private SpriteBatch spriteBatch;
         private ITooltipProvider provider;
@@ -31,11 +31,12 @@ namespace TD
 
         Texture2D temp;
 
-        public Tooltip(Game game, ITooltipProvider provider, string text)
+        public Tooltip(Game game, ITooltipProvider provider, string text, SpriteFont font)
             : base(game)
         {
             spriteBatch = game.GetService<SpriteBatch>();
-            Font = TheGame.GetFont(TD.Font.Small);
+            //Font = TheGame.GetFont(TD.Font.Small);
+            Font = font;
 
             this.provider = provider;
             Text = text;

@@ -30,7 +30,7 @@ namespace TD
         public GameState(Game game)
         {
             Game = game;
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
 
             Enabled = true;
             Visible = true;

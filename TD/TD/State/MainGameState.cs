@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using XNATools;
+using XNATools.UI;
 
 namespace TD
 {
@@ -300,11 +301,11 @@ namespace TD
             var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
             Tooltip rocketTooltip = new Tooltip(Game, buttonRocket, 
                 string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}", 
-                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost)) 
+                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) 
                 { TextColor = Color.Red };
 
-            Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150") { TextColor = Color.LightSkyBlue };
-            Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100") { TextColor = Color.OrangeRed };
+            Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150", TheGame.GetFont(Font.Small)) { TextColor = Color.LightSkyBlue };
+            Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100", TheGame.GetFont(Font.Small)) { TextColor = Color.OrangeRed };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;
@@ -313,7 +314,7 @@ namespace TD
             buttonSell = new TextButton(Game, new Vector2(650, 230), "Sell", TheGame.GetFont(Font.Large));
             buttonSell.DropShadow = true;
             buttonSell.Visible = false;
-            sellTooltip = new Tooltip(Game, buttonSell, string.Empty);
+            sellTooltip = new Tooltip(Game, buttonSell, string.Empty, TheGame.GetFont(Font.Small));
 
             fpsLabel = new FPSLabel(Game, new Vector2(640, 575), TheGame.GetFont(Font.Large));
             timeLabel = new Label(Game, new Vector2(717, 575), String.Empty, TheGame.GetFont(Font.Large));
@@ -351,12 +352,12 @@ namespace TD
 
             xpBar = new ProgressBar(Game, new Rectangle(0, 480, 640, 8), Color.Black, Color.Orange);
             Player.XpGained += (o, e) => xpBar.Percentage += 3;
-            Tooltip xpTooltip = new Tooltip(Game, xpBar, "XP: 500 / 25000");
+            Tooltip xpTooltip = new Tooltip(Game, xpBar, "XP: 500 / 25000", TheGame.GetFont(Font.Small));
 
             Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";
             Player.LifeLost += (o, e) => livesLabel.Text = "Lives: " + Player.Lives;
-            
-            waveTimeline = new Timeline(Game, new Rectangle(10, 560, 500, 30), 15.0f);
+
+            waveTimeline = new Timeline(Game, new Rectangle(10, 560, 500, 30), 15.0f, TheGame.GetFont(Font.Small));
             waveTimeline.Add(20.0f, 30.0f, "1: Regular");
             waveTimeline.Add(35.0f, 45.0f, "2: Fast");
             waveTimeline.Add(50.0f, 60.0f, "3: Flying");

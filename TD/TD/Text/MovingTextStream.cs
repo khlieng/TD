@@ -61,7 +61,7 @@ namespace TD
         public MovingTextStream(Game game, SpriteFont font, Color color, float verticalSpeed)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
 
             this.font = font;
             this.color = color;

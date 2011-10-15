@@ -71,7 +71,7 @@ namespace TD
             this.rows = rows;
             this.cols = cols;
 
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
+            game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
 
         public override void Initialize()
@@ -82,7 +82,7 @@ namespace TD
         protected override void LoadContent()
         {
             DrawOrder = 8;
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = Game.GetService<SpriteBatch>();
 
             GeneratePath();
             //SmoothPath(3);
@@ -92,7 +92,7 @@ namespace TD
             mobs = new LinkedList<Mob>();
             spawner = new MobSpawner(Game, this, 40.0f);
             removeThese = new Queue<Mob>();
-
+            
             base.LoadContent();
         }
 
@@ -125,7 +125,7 @@ namespace TD
                 if (towerAdded != null)
                 {
                     towers[row, col] = towerAdded;
-                    GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(towerAdded);
+                    Game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(towerAdded);
                     return true;
                 }                
             }
@@ -136,7 +136,7 @@ namespace TD
         {
             if (towers[row, col] != null)
             {
-                GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(towers[row, col]);
+                Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(towers[row, col]);
                 towers[row, col] = null;
 
                 return true;
@@ -178,9 +178,9 @@ namespace TD
             {
                 selectedMob = null;
             }
-
+            
             mobs.Remove(mob);
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(mob);
+            Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(mob);
             mob.Dispose();
         }
 

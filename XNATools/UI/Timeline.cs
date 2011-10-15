@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
-    class Timeline : DrawableGameComponent
+    public class Timeline : DrawableGameComponent
     {
         struct TimelineItem
         {
@@ -48,11 +48,12 @@ namespace TD
             }
         }
 
-        public Timeline(Game game, Rectangle bounds, float pixelsPerSecond)
+        public Timeline(Game game, Rectangle bounds, float pixelsPerSecond, SpriteFont font)
             : base(game)
         {
             spriteBatch = game.GetService<SpriteBatch>();
-            font = TheGame.GetFont(Font.Large);
+            //font = TheGame.GetFont(Font.Large);
+            this.font = font;
             
             this.bounds = bounds;
             this.pixelsPerSecond = pixelsPerSecond;

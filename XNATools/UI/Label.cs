@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
     public class Label : UIControl
     {

@@ -103,6 +103,18 @@
     <Compile Include="RandomExtensions.cs" />
     <Compile Include="Rect.cs" />
     <Compile Include="Shape.cs" />
+    <Compile Include="UI\FPSLabel.cs" />
+    <Compile Include="UI\IToggleAble.cs" />
+    <Compile Include="UI\ITooltipProvider.cs" />
+    <Compile Include="UI\Label.cs" />
+    <Compile Include="UI\Menu.cs" />
+    <Compile Include="UI\ProgressBar.cs" />
+    <Compile Include="UI\TextButton.cs" />
+    <Compile Include="UI\TextOutput.cs" />
+    <Compile Include="UI\Timeline.cs" />
+    <Compile Include="UI\ToggleGroup.cs" />
+    <Compile Include="UI\Tooltip.cs" />
+    <Compile Include="UI\UIControl.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

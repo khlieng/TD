@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
     public class TextButton : UIControl, IToggleAble
     {

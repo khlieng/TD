@@ -75,7 +75,7 @@ namespace TD
         private Emitter(Game game, Texture2D[] textures, Vector2 position, float interval)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
             this.textures = textures;
             currentTexture = textures.Length - 1;
 

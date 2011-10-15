@@ -50,10 +50,10 @@ namespace TD
 
             if (texture != null)
             {
-                spriteBatch = GameHelper.GetService<SpriteBatch>();
+                spriteBatch = game.GetService<SpriteBatch>();
             }
 
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
+            game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);
         }
         
         public override void Update(GameTime gameTime)
@@ -95,7 +95,7 @@ namespace TD
 
             if (position.X < 0 || position.X > 640 || position.Y < 0 || position.Y > 480)
             {
-                GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(this);
+                Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(this);
                 Dispose(true);
             }
 
@@ -129,7 +129,7 @@ namespace TD
 
         protected virtual void OnHit()
         {
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(this);
+            Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(this);
             Dispose(true);
 
             if (Hit != null)

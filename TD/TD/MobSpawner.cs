@@ -27,7 +27,7 @@ namespace TD
             amount = 50;
             timeBetweenMobs = TimeSpan.FromSeconds((rand.NextDouble() + 0.5) * (interval / amount));
 
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);   
+            game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(this);   
         }
 
         public override void Update(GameTime gameTime)

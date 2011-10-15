@@ -5,9 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace TD
+namespace XNATools.UI
 {
-    class Menu : DrawableGameComponent
+    public class Menu : DrawableGameComponent
     {
         private Dictionary<string, UIControl> items;
         private SpriteFont font;

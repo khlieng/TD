@@ -56,7 +56,7 @@ namespace TD
         public Tower(Game game, int row, int col, IMobContainer mobs) : base(game)
         {
             DrawOrder = 10;
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
             upgradeLevels = new List<TowerData>();
 
             Row = row;

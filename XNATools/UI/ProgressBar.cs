@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
-    class ProgressBar : UIControl
+    public class ProgressBar : UIControl
     {
         private Rectangle foregroundBounds;
 

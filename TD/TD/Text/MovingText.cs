@@ -29,7 +29,7 @@ namespace TD
         public MovingText(Game game, string text, SpriteFont font, Color color, Vector2 start, Vector2 end, int time)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
 
             this.text = text;
             this.font = font;

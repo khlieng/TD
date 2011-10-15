@@ -26,7 +26,7 @@ namespace TD
         public TypeWriter(Game game, Vector2 position, string text, SpriteFont font, Color color)
             : base(game)
         {
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
 
             this.position = position;
             this.text = text;

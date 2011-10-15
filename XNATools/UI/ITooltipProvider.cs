@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace TD
+namespace XNATools.UI
 {
-    interface ITooltipProvider
+    public interface ITooltipProvider
     {
         event EventHandler ShowTooltip;
         event EventHandler HideTooltip;

@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
 
-namespace TD
+namespace XNATools.UI
 {
-    class TextOutput : UIControl
+    public class TextOutput : UIControl
     {
         private string[] buffer;
         private int currentIndex;

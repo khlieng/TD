@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
+using XNATools.UI;
 
 namespace TD
 {
@@ -65,7 +66,7 @@ namespace TD
             : base(game, path[0] + new Vector2(0, 4 - rand.Next(9)), velocity, 0.5f)
         {
             DrawOrder = 9;
-            spriteBatch = GameHelper.GetService<SpriteBatch>();
+            spriteBatch = game.GetService<SpriteBatch>();
             animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
 
             this.path = path;
@@ -79,7 +80,7 @@ namespace TD
             hpBar.Percentage = 100;
             damageStream = new MovingTextStream(Game, TheGame.GetFont(Font.MobMovingText), Color.White, -50.0f);
 
-            GameState mainState = GameHelper.GetService<GameStateManager>().GetState<MainGameState>();
+            GameState mainState = game.GetService<GameStateManager>().GetState<MainGameState>();
             mainState.AddComponent(this);
             mainState.AddComponent(hpBar);
             mainState.AddComponent(damageStream);
@@ -107,7 +108,7 @@ namespace TD
         Emitter burningTest;
         protected override void UnloadContent()
         {
-            GameHelper.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
+            Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
             new DelayedCall(Game, () => Game.Components.Remove(damageStream), 1000);
             burningTest.RemoveAfter(2000);
 
