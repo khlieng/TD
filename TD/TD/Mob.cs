@@ -89,14 +89,14 @@ namespace TD
                 game.Content.Load<Texture2D>("smoke"), 
                 game.Content.Load<Texture2D>("fire"),
                 game.Content.Load<Texture2D>("smoke"));
-            burningTest.MinVelocity = 100;
-            burningTest.MaxVelocity = 150;
+            burningTest.MinVelocity = 50;
+            burningTest.MaxVelocity = 75;
             burningTest.MinScale = 0.2f;
             burningTest.MaxScale = 0.8f;
             burningTest.MinDuration = 500;
             burningTest.MaxDuration = 1500;
-            burningTest.MinAcceleration = -500;
-            burningTest.MaxAcceleration = -250;
+            burningTest.MinAcceleration = -200;
+            burningTest.MaxAcceleration = 100;
             burningTest.MaxDirectionDevation = 10;
             burningTest.ScaleDecayTimeFraction = 0.8f;
             burningTest.EmitOffset = 4;
@@ -140,7 +140,7 @@ namespace TD
                 }
             }
             burningTest.Position = Center;
-            burningTest.Direction = Vector2.Transform(burningTest.Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(10.0f)));
+            //burningTest.Direction = Vector2.Transform(burningTest.Direction, Matrix.CreateRotationZ(MathHelper.ToRadians(10.0f)));
             hpBar.Position = Position - new Vector2(16);
             damageStream.Position = Position - new Vector2(0, 16);
 

@@ -21,6 +21,7 @@ namespace TD
 
         public static event EventHandler LifeLost;
         public static event EventHandler MoneyChanged;
+        public static event EventHandler XpGained;
 
         public static void Init(int lives, int money)
         {
@@ -51,6 +52,11 @@ namespace TD
             return false;
         }
 
+        public static void AddXp()
+        {
+            OnXpGained();
+        }
+
         private static void OnLifeLost()
         {
             if (LifeLost != null)
@@ -64,6 +70,14 @@ namespace TD
             if (MoneyChanged != null)
             {
                 MoneyChanged(null, EventArgs.Empty);
+            }
+        }
+
+        private static void OnXpGained()
+        {
+            if (XpGained != null)
+            {
+                XpGained(null, EventArgs.Empty);
             }
         }
     }

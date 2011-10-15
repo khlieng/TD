@@ -83,7 +83,7 @@ namespace TD
             graphics.PreferredBackBufferWidth = Config.Width;
             graphics.PreferredBackBufferHeight = Config.Height;
             graphics.PreferMultiSampling = Config.AA;
-            IsMouseVisible = true;
+            IsMouseVisible = false;
             
             if (Config.Bloom)
             {
@@ -164,7 +164,7 @@ namespace TD
             cursorEmitter.MaxDuration = 600;
             cursorEmitter.AlphaDecayTimeFraction = 0.2f;
             cursorEmitter.ScaleDecayTimeFraction = 1.0f;
-            //cursorEmitter.Emitting = true;
+            cursorEmitter.Emitting = true;
 
             output = new TextOutput(this, new Vector2(5, 5), GetFont(Font.Small), bufferSize: 5);
             output.DropShadow = true;

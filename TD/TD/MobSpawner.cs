@@ -80,6 +80,7 @@ namespace TD
                 {
                     case CauseOfDeath.Killed:
                         Player.AddMoney(6 + 2 * level);
+                        Player.AddXp();
                         break;
 
                     case CauseOfDeath.LeftMap:

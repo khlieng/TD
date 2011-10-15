@@ -22,6 +22,7 @@ namespace TD
         Tooltip sellTooltip;
         ToggleGroup towerButtons;
         Timeline waveTimeline;
+        ProgressBar xpBar;
 
         Map map;
         TowerType currentlyBuilding;
@@ -76,7 +77,7 @@ namespace TD
                         selectedTower.Row * 32 + 15.6f), 16.5f, 16, c, false, 2.0f);
                     Game.Components.Add(selectionCircle);
                 }
-
+                
                 if (map.AddTower(e.Row, e.Col, currentlyBuilding))
                 {
                     Tower added = map.GetTower(e.Row, e.Col);
@@ -348,9 +349,13 @@ namespace TD
                     selectionCircle = null;
                 };
 
+            xpBar = new ProgressBar(Game, new Rectangle(0, 480, 640, 8), Color.Black, Color.Orange);
+            Player.XpGained += (o, e) => xpBar.Percentage += 3;
+            Tooltip xpTooltip = new Tooltip(Game, xpBar, "XP: 500 / 25000");
+
             Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";
             Player.LifeLost += (o, e) => livesLabel.Text = "Lives: " + Player.Lives;
-
+            
             waveTimeline = new Timeline(Game, new Rectangle(10, 560, 500, 30), 15.0f);
             waveTimeline.Add(20.0f, 30.0f, "1: Regular");
             waveTimeline.Add(35.0f, 45.0f, "2: Fast");
@@ -371,12 +376,14 @@ namespace TD
             AddComponent(buttonFlame);
             AddComponent(buttonUpgrade);
             AddComponent(buttonSell);
+            AddComponent(xpBar);
+            AddComponent(xpTooltip);
             AddComponent(rocketTooltip);
             AddComponent(slowTooltip);
             AddComponent(flameTooltip);
             AddComponent(sellTooltip);
             AddComponent(waveTimeline);
-            AddComponent(buttonNextWave);
+            AddComponent(buttonNextWave);            
         }
     }
 }

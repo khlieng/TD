@@ -9,7 +9,7 @@ using XNATools;
 
 namespace TD
 {
-    public abstract class UIControl : DrawableGameComponent
+    public abstract class UIControl : DrawableGameComponent, ITooltipProvider
     {
         protected SpriteBatch spriteBatch;
 
@@ -66,6 +66,12 @@ namespace TD
             }
         }
 
+        private bool hovered;
+        public bool Hovered
+        {
+            get { return hovered; }
+        }
+
         public bool DropShadow { get; set; }
         public Color ShadowColor { get; set; }
 
@@ -81,6 +87,14 @@ namespace TD
             Position = position;
             Color = Color.White;
             ShadowColor = Color.Black;
+
+            VisibleChanged += (o, e) =>
+            {
+                if (!Visible)
+                {
+                    OnHideTooltip();
+                }
+            };
         }
 
         public override void Update(GameTime gameTime)
@@ -94,15 +108,31 @@ namespace TD
                 OnClick();
             }
 
+            hovered = IsMouseOver();
+
+            if (IsMouseOver(mouseState) && !IsMouseOver(prevMouseState))
+            {
+                OnShowTooltip();
+            }
+
+            if (!IsMouseOver(mouseState) && IsMouseOver(prevMouseState))
+            {
+                OnHideTooltip();
+            }
+            
             prevMouseState = mouseState;
 
             base.Update(gameTime);
         }
 
-        protected virtual bool IsMouseOver()
+        protected virtual bool IsMouseOver(MouseState state)
         {
-            MouseState mouseState = Mouse.GetState();
-            return bounds.Intersects(new Rectangle(mouseState.X, mouseState.Y, 1, 1));
+            return bounds.Intersects(new Rectangle(state.X, state.Y, 1, 1));
+        }
+
+        protected bool IsMouseOver()
+        {
+            return IsMouseOver(Mouse.GetState());
         }
 
         protected virtual void OnClick()
@@ -128,5 +158,26 @@ namespace TD
                 BoundsChanged(this, EventArgs.Empty);
             }
         }
+
+        #region ITooltipProvider implementation
+        public event EventHandler ShowTooltip;
+        public event EventHandler HideTooltip;
+
+        protected virtual void OnShowTooltip()
+        {
+            if (ShowTooltip != null)
+            {
+                ShowTooltip(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnHideTooltip()
+        {
+            if (HideTooltip != null)
+            {
+                HideTooltip(this, EventArgs.Empty);
+            }
+        }
+        #endregion
     }
 }
