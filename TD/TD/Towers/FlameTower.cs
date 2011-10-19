@@ -9,11 +9,14 @@ namespace TD
 {
     class FlameTower : Tower
     {
-        Emitter emitter;
+        private Emitter emitter;
+        private float angle;
 
         public FlameTower(Game game, int row, int col, IMobContainer mobs)
             : base(game, row, col, mobs)
         {
+            Name = "Flame Tower";
+
             upgradeLevels.Add(new TowerData() { Damage = 2, Speed = 0.1f, Range = 100.0f, Cost = 100 });
             upgradeLevels.Add(new TowerData() { Damage = 4, Speed = 0.1f, Range = 100.0f, Cost = 50 });
             upgradeLevels.Add(new TowerData() { Damage = 6, Speed = 0.1f, Range = 100.0f, Cost = 50 });
@@ -38,7 +41,7 @@ namespace TD
 
             base.LoadContent();
         }
-        float angle = 0.0f;
+        
         public override void Update(GameTime gameTime)
         {
             angle+= 5.0f;

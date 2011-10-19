@@ -104,6 +104,10 @@ namespace TD
                 Tower towerToAdd = null;
                 switch (type)
                 {
+                    case TowerType.Machinegun:
+                        towerToAdd = new MachinegunTower(Game, row, col, this);
+                        break;
+
                     case TowerType.Rocket:
                         towerToAdd = new RocketTower(Game, row, col, this);
                         break;

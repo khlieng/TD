@@ -14,6 +14,8 @@ namespace TD
         public SlowTower(Game game, int row, int col, IMobContainer mobs)
             : base(game, row, col, mobs)
         {
+            Name = "Slow Tower";
+
             upgradeLevels.Add(new TowerData() { Damage = 5, Speed = 0.5f, Range = 100.0f, Cost = 150, SlowPercentage = 25 });
             upgradeLevels.Add(new TowerData() { Damage = 10, Speed = 0.5f, Range = 110.0f, Cost = 75, SlowPercentage = 30 });
             upgradeLevels.Add(new TowerData() { Damage = 15, Speed = 0.5f, Range = 120.0f, Cost = 75, SlowPercentage = 35 });

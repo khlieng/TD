@@ -8,7 +8,7 @@ using XNATools;
 
 namespace TD
 {
-    enum TowerType { None, Rocket, Slow, Flame }
+    enum TowerType { None, Machinegun, Rocket, Slow, Flame }
 
     abstract class Tower : DrawableGameComponent
     {
@@ -17,6 +17,7 @@ namespace TD
         public static Dictionary<TowerType, string> TextureNames = new Dictionary<TowerType, string>();
         static Tower()
         {
+            TextureNames.Add(TowerType.Machinegun, string.Empty);
             TextureNames.Add(TowerType.Rocket, "rocket_tower");
             TextureNames.Add(TowerType.Slow, "slow_tower");
             TextureNames.Add(TowerType.Flame, string.Empty);
@@ -32,6 +33,8 @@ namespace TD
         }
         protected int currentUpgrade;
         protected List<TowerData> upgradeLevels;
+
+        public string Name { get; protected set; }
 
         protected int damage;
         private bool isCooling;

@@ -13,6 +13,8 @@ namespace TD
         public RocketTower(Game game, int row, int col, IMobContainer mobs)
             : base(game, row, col, mobs)
         {
+            Name = "Rocket Tower";
+
             upgradeLevels.Add(new TowerData() { Damage = 20, Speed = 2.0f, Range = 150.0f, Cost = 100 });
             upgradeLevels.Add(new TowerData() { Damage = 35, Speed = 1.9f, Range = 150.0f, Cost = 50 });
             upgradeLevels.Add(new TowerData() { Damage = 50, Speed = 1.8f, Range = 150.0f, Cost = 50 });

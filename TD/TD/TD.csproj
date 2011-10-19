@@ -159,6 +159,7 @@
     <Compile Include="Projectiles\Projectile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Projectiles\Rocket.cs" />
+    <Compile Include="Towers\MachinegunTower.cs" />
     <Compile Include="Towers\RocketTower.cs" />
     <Compile Include="Towers\SlowTower.cs" />
     <Compile Include="TheGame.cs" />

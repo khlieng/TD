@@ -166,6 +166,10 @@ namespace TD
                 Tower tower = null;
                 switch (currentlyBuilding)
                 {
+                    case TowerType.Machinegun:
+                        tower = new MachinegunTower(Game, 0, 0, null);
+                        break;
+
                     case TowerType.Rocket:
                         tower = new RocketTower(Game, 0, 0, null);
                         break;
@@ -219,7 +223,7 @@ namespace TD
                     float deltaSpeed = SpeedToAPS(upgradedData.Speed) - SpeedToAPS(data.Speed);
                     float deltaRange = upgradedData.Range - data.Range;
 
-                    towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
+                    towerInfoLabel.Text = selectedTower.Name + "\n\n";
                     towerInfoLabel.Text += string.Format("Damage: {0} {1}\n", data.Damage, 
                         deltaDamage != 0 ? "+ " + deltaDamage : "");
                     towerInfoLabel.Text += string.Format("Speed: {0:0.00} {1}\n", SpeedToAPS(data.Speed), 
@@ -235,7 +239,7 @@ namespace TD
                 }
                 else
                 {
-                    towerInfoLabel.Text = GetTowerName(selectedTower) + "\n\n";
+                    towerInfoLabel.Text = selectedTower.Name + "\n\n";
                     towerInfoLabel.Text += string.Format("Damage: {0}\n", data.Damage);
                     towerInfoLabel.Text += string.Format("Speed: {0:0.00}\n", SpeedToAPS(data.Speed));
                     towerInfoLabel.Text += string.Format("Range: {0:0}\n", data.Range);
@@ -266,17 +270,19 @@ namespace TD
             buttonSell.Enabled = selectedTower != null;
         }
 
-        private string GetTowerName(Tower tower)
-        {
-            if (tower is RocketTower)
-                return "Rocket Tower";
-            else if (tower is SlowTower)
-                return "Slow Tower";
-            else if (tower is FlameTower)
-                return "Flame Tower";
-            else
-                return string.Empty;
-        }
+        //private string GetTowerName(Tower tower)
+        //{
+        //    if (tower is RocketTower)
+        //        return "Rocket Tower";
+        //    else if (tower is SlowTower)
+        //        return "Slow Tower";
+        //    else if (tower is FlameTower)
+        //        return "Flame Tower";
+        //    else if (tower is MachinegunTower)
+        //        return "Machinegun Tower";
+        //    else
+        //        return string.Empty;
+        //}
 
         private float SpeedToAPS(float speed)
         {
@@ -287,22 +293,29 @@ namespace TD
         {
             Label towersLabel = new Label(Game, new Vector2(20, 490), "Towers:", TheGame.GetFont(Font.Large));
             towersLabel.DropShadow = true;
-            TextButton buttonRocket = new TextButton(Game, new Vector2(20, 520), "Rocket", TheGame.GetFont(Font.Large));
-            TextButton buttonSlow = new TextButton(Game, new Vector2(100, 520), "Slow", TheGame.GetFont(Font.Large));
-            TextButton buttonFlame = new TextButton(Game, new Vector2(160, 520), "Flame", TheGame.GetFont(Font.Large));
+            TextButton buttonMachinegun = new TextButton(Game, new Vector2(20, 520), "Machinegun", TheGame.GetFont(Font.Large));
+            TextButton buttonRocket = new TextButton(Game, new Vector2(120, 520), "Rocket", TheGame.GetFont(Font.Large));
+            TextButton buttonSlow = new TextButton(Game, new Vector2(200, 520), "Slow", TheGame.GetFont(Font.Large));
+            TextButton buttonFlame = new TextButton(Game, new Vector2(260, 520), "Flame", TheGame.GetFont(Font.Large));
+            buttonMachinegun.ToggleAble = true;
+            buttonMachinegun.DropShadow = true;
             buttonRocket.ToggleAble = true;
             buttonRocket.DropShadow = true;
             buttonSlow.ToggleAble = true;
             buttonSlow.DropShadow = true;
             buttonFlame.ToggleAble = true;
             buttonFlame.DropShadow = true;
-            towerButtons = new ToggleGroup(buttonRocket, buttonSlow, buttonFlame);
+            towerButtons = new ToggleGroup(buttonMachinegun, buttonRocket, buttonSlow, buttonFlame);
+
+            var machinegunTowerData = new MachinegunTower(Game, 0, 0, null).GetStats();
+            Tooltip machinegunTooltip = new Tooltip(Game, buttonMachinegun,
+                string.Format("A tower that fires bullets\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
+                machinegunTowerData.Damage, SpeedToAPS(machinegunTowerData.Speed), machinegunTowerData.Range, machinegunTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.LightGray };
 
             var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
-            Tooltip rocketTooltip = new Tooltip(Game, buttonRocket, 
-                string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}", 
-                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) 
-                { TextColor = Color.Red };
+            Tooltip rocketTooltip = new Tooltip(Game, buttonRocket,
+                string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
+                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.Red };
 
             Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150", TheGame.GetFont(Font.Small)) { TextColor = Color.LightSkyBlue };
             Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100", TheGame.GetFont(Font.Small)) { TextColor = Color.OrangeRed };
@@ -322,7 +335,7 @@ namespace TD
             fpsLabel.Visible = false;
             timeLabel.Visible = false;
 #endif
-            moneyLabel = new Label(Game, new Vector2(650, 5), "Cash: " + Player.Money + "$", TheGame.GetFont(Font.Large));
+            moneyLabel = new Label(Game, new Vector2(650, 5), "Cash: $" + Player.Money, TheGame.GetFont(Font.Large));
             moneyLabel.Color = Color.Yellow;
             moneyLabel.DropShadow = true;
             livesLabel = new Label(Game, new Vector2(650, 25), "Lives: " + Player.Lives, TheGame.GetFont(Font.Large));
@@ -330,6 +343,7 @@ namespace TD
             towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.GetFont(Font.Large));
             towerInfoLabel.DropShadow = true;
             
+            buttonMachinegun.Click += (o, e) => currentlyBuilding = buttonMachinegun.Toggled ? TowerType.Machinegun : TowerType.None;
             buttonRocket.Click += (o, e) => currentlyBuilding = buttonRocket.Toggled ? TowerType.Rocket : TowerType.None;
             buttonSlow.Click += (o, e) => currentlyBuilding = buttonSlow.Toggled ? TowerType.Slow : TowerType.None;
             buttonFlame.Click += (o, e) => currentlyBuilding = buttonFlame.Toggled ? TowerType.Flame : TowerType.None;
@@ -354,7 +368,7 @@ namespace TD
             Player.XpGained += (o, e) => xpBar.Percentage += 3;
             Tooltip xpTooltip = new Tooltip(Game, xpBar, "XP: 500 / 25000", TheGame.GetFont(Font.Small));
 
-            Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: " + Player.Money + "$";
+            Player.MoneyChanged += (o, e) => moneyLabel.Text = "Cash: $" + Player.Money;
             Player.LifeLost += (o, e) => livesLabel.Text = "Lives: " + Player.Lives;
 
             waveTimeline = new Timeline(Game, new Rectangle(10, 560, 500, 30), 15.0f, TheGame.GetFont(Font.Small));
@@ -372,6 +386,7 @@ namespace TD
             AddComponent(livesLabel);
             AddComponent(towerInfoLabel);
             AddComponent(towersLabel);
+            AddComponent(buttonMachinegun);
             AddComponent(buttonRocket);
             AddComponent(buttonSlow);
             AddComponent(buttonFlame);
@@ -379,6 +394,7 @@ namespace TD
             AddComponent(buttonSell);
             AddComponent(xpBar);
             AddComponent(xpTooltip);
+            AddComponent(machinegunTooltip);
             AddComponent(rocketTooltip);
             AddComponent(slowTooltip);
             AddComponent(flameTooltip);
