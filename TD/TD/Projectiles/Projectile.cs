@@ -77,8 +77,7 @@ namespace TD
             }
             else
             {
-                position += direction * velocity * timeDelta;
-                
+                position += direction * velocity * timeDelta;                
             }
 
             if (!lostTarget)
@@ -138,15 +137,15 @@ namespace TD
             }
         }
 
-        public static List<Vector2> FireRay(Vector2 position, ITarget target, IMobContainer mobContainer, int damage,
+        public static List<Vector2> FireRay(Vector2 origin, ITarget target, IMobContainer mobContainer, int damage,
             float range, int maxPassThrough, int passThroughDamageReduction)
         {
-            Vector2 direction = target.Center - position;
+            Vector2 direction = target.Center - origin;
             direction.Normalize();
-            Ray ray = new Ray(new Vector3(position, 0), new Vector3(direction, 0));
+            Ray ray = new Ray(new Vector3(origin, 0), new Vector3(direction, 0));
 
             var mobsInRange = from mob in mobContainer.Mobs
-                              let distance = (mob.Center - new Vector2(ray.Position.X, ray.Position.Y)).Length()
+                              let distance = (mob.Center - origin).Length()
                               where distance <= range
                               orderby distance
                               select mob;

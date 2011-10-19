@@ -62,7 +62,7 @@ namespace TD
             
             if (elapsed >= time)
             {
-                emitter.Remove(this);
+                emitter.RemoveParticle(this);
             }
 
             if (elapsed > alphaDecayStart)

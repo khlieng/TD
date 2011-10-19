@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using XNATools;
+using XNATools.UI;
 
 namespace TD
 {
@@ -47,6 +48,8 @@ namespace TD
         protected IMobContainer mobs;
         protected Rectangle? sourceRect;
 
+        private ProgressBar cooldownBar;
+
         public ITarget Target { get; set; }
         public int Cost { get; private set; }
 
@@ -70,6 +73,18 @@ namespace TD
 
             id = count;
             count++;
+
+            cooldownBar = new ProgressBar(game, new Rectangle((int)position.X + 30, (int)position.Y + 2, 2, 28), Color.Black, Color.Orange);
+            cooldownBar.BarDirection = Direction.Up;
+            cooldownBar.ForegroundInset = 0;
+            game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(cooldownBar);
+        }
+
+        protected override void UnloadContent()
+        {
+            Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(cooldownBar);
+
+            base.UnloadContent();
         }
 
         public TowerData GetStats()
@@ -166,6 +181,8 @@ namespace TD
         {
             float timeDelta = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
             cooldown += timeDelta;
+
+            cooldownBar.Percentage = (int)(100.0f / speed * (speed - cooldown));
 
             // The tower is in the hot state of 1/8th of the cooldown
             if (cooldown > speed / 8.0f)

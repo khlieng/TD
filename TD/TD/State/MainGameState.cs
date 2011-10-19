@@ -291,12 +291,15 @@ namespace TD
 
         private void SetupUI()
         {
-            Label towersLabel = new Label(Game, new Vector2(20, 490), "Towers:", TheGame.GetFont(Font.Large));
+            SpriteFont fontLarge = TheGame.GetFont(Font.Large);
+
+            Label towersLabel = new Label(Game, new Vector2(20, 492), "// Towers //", TheGame.GetFont(Font.Large));
             towersLabel.DropShadow = true;
+            towersLabel.Color = Color.Orange;
             TextButton buttonMachinegun = new TextButton(Game, new Vector2(20, 520), "Machinegun", TheGame.GetFont(Font.Large));
-            TextButton buttonRocket = new TextButton(Game, new Vector2(120, 520), "Rocket", TheGame.GetFont(Font.Large));
-            TextButton buttonSlow = new TextButton(Game, new Vector2(200, 520), "Slow", TheGame.GetFont(Font.Large));
-            TextButton buttonFlame = new TextButton(Game, new Vector2(260, 520), "Flame", TheGame.GetFont(Font.Large));
+            TextButton buttonRocket = new TextButton(Game, new Vector2(buttonMachinegun.Bounds.Right + 20, 520), "Rocket", TheGame.GetFont(Font.Large));
+            TextButton buttonSlow = new TextButton(Game, new Vector2(buttonRocket.Bounds.Right + 20, 520), "Slow", TheGame.GetFont(Font.Large));
+            TextButton buttonFlame = new TextButton(Game, new Vector2(buttonSlow.Bounds.Right + 20, 520), "Flame", TheGame.GetFont(Font.Large));
             buttonMachinegun.ToggleAble = true;
             buttonMachinegun.DropShadow = true;
             buttonRocket.ToggleAble = true;
@@ -310,15 +313,15 @@ namespace TD
             var machinegunTowerData = new MachinegunTower(Game, 0, 0, null).GetStats();
             Tooltip machinegunTooltip = new Tooltip(Game, buttonMachinegun,
                 string.Format("A tower that fires bullets\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
-                machinegunTowerData.Damage, SpeedToAPS(machinegunTowerData.Speed), machinegunTowerData.Range, machinegunTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.LightGray };
+                machinegunTowerData.Damage, SpeedToAPS(machinegunTowerData.Speed), machinegunTowerData.Range, machinegunTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
 
             var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
             Tooltip rocketTooltip = new Tooltip(Game, buttonRocket,
                 string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
-                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.Red };
+                rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
 
-            Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150", TheGame.GetFont(Font.Small)) { TextColor = Color.LightSkyBlue };
-            Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100", TheGame.GetFont(Font.Small)) { TextColor = Color.OrangeRed };
+            Tooltip slowTooltip = new Tooltip(Game, buttonSlow, "A tower that fires rays of\ncoldness, slowing enemies\nin an area around its target\n\nDamage: 5\nSpeed: 0.5\nRange: 100\nSlow: 25%\nCost: 150", TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
+            Tooltip flameTooltip = new Tooltip(Game, buttonFlame, "A tower that sprays out a whirl\nof flames, dealing rapid damage to\nthe enemies it hits\n\nDamage: 2\nSpeed: 0.1\nRange: 100\nCost: 100", TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
 
             buttonUpgrade = new TextButton(Game, new Vector2(650, 200), "Upgrade!", TheGame.GetFont(Font.Large));
             buttonUpgrade.DropShadow = true;

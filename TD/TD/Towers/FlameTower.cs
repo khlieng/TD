@@ -41,6 +41,13 @@ namespace TD
 
             base.LoadContent();
         }
+
+        protected override void UnloadContent()
+        {
+            emitter.Remove();
+
+            base.UnloadContent();
+        }
         
         public override void Update(GameTime gameTime)
         {
@@ -50,20 +57,8 @@ namespace TD
             Vector2 direction = Vector2.Transform(Vector2.UnitX, Matrix.CreateRotationZ(MathHelper.ToRadians(angle)));
             direction.Normalize();
             emitter.Direction = direction;
-            //if (Target != null)
-            //{
-            //    Vector2 direction = Target.Center - center;
-            //    direction.Normalize();
-            //    emitter.Direction = direction;
-            //}
-            //emitter.Emitting = Target != null;
 
             base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            //base.Draw(gameTime);
         }
 
         protected override void Fire()

@@ -114,17 +114,23 @@ namespace TD
             new DelayedCall(Game, () => emitting = false, ms);
         }
 
+        public void Remove()
+        {
+            Game.Components.Remove(this);
+            Dispose(true);
+        }
+
         public void RemoveAfter(int ms)
         {
             new DelayedCall(Game, () => { Game.Components.Remove(this); Dispose(true); }, ms);
         }
 
-        public void Add(Particle particle)
+        protected void AddParticle(Particle particle)
         {
             add.Enqueue(particle);            
         }
 
-        public void Remove(Particle particle)
+        public void RemoveParticle(Particle particle)
         {
             remove.Enqueue(particle);
         }
@@ -163,7 +169,7 @@ namespace TD
 
                     Particle particle = CreateParticle(offset);
                     particle.Update(new GameTime(gameTime.TotalGameTime, TimeSpan.FromMilliseconds(elapsed)));
-                    Add(particle);
+                    AddParticle(particle);
                 }
                 positionChangeAmount = 0.0f;
             }
