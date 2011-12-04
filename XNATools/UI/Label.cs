@@ -17,6 +17,14 @@ namespace XNATools.UI
         {
             Font = font;
             Text = text;
+            Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)

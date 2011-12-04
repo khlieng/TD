@@ -62,12 +62,15 @@ namespace TD
             }
         }
 
+        public List<IProjectileEffect> Effects { get; private set; }
+
         public Mob(Game game, List<Vector2> path, float velocity, int initialHealth) 
             : base(game, path[0] + new Vector2(0, 4 - rand.Next(9)), velocity, 0.5f)
         {
             DrawOrder = 9;
             spriteBatch = game.GetService<SpriteBatch>();
             animation = new Animation(game, new[] { Game.Content.Load<Texture2D>("1"), Game.Content.Load<Texture2D>("2") }, 200);
+            Effects = new List<IProjectileEffect>();
 
             this.path = path;
             this.initialHp = initialHealth;
@@ -111,6 +114,7 @@ namespace TD
             Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(hpBar);
             new DelayedCall(Game, () => Game.Components.Remove(damageStream), 1000);
             burningTest.RemoveAfter(2000);
+            Effects.Clear();
 
             base.UnloadContent();
         }
@@ -118,6 +122,22 @@ namespace TD
         int currentTarget = -1;
         public override void Update(GameTime gameTime)
         {
+            List<IProjectileEffect> finishedEffects = new List<IProjectileEffect>();
+
+            foreach (IProjectileEffect effect in Effects)
+            {
+                effect.Update(gameTime);
+                if (effect.Finished)
+                {
+                    finishedEffects.Add(effect);
+                }
+            }
+
+            foreach (IProjectileEffect effect in finishedEffects)
+            {
+                Effects.Remove(effect);
+            }
+
             int closest = 0;
             for (int i = 1; i < path.Count; i++)
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 using XNATools;
 
 namespace TD
@@ -13,10 +14,16 @@ namespace TD
         private float speedReduction;
         private int duration;
 
+        public bool Finished { get; private set; }
+
         public SlowEffect(float speedReduction, int duration)
         {
             this.speedReduction = speedReduction;
             this.duration = duration;
+        }
+
+        public void Update(GameTime time)
+        {
         }
 
         public void Apply(ITarget target)

@@ -39,6 +39,7 @@ namespace TD
         public MainGameState(Game game)
             : base(game)
         {
+            new Input(game).KeyPressed += key => { if (key == Keys.Escape) Manager.Swap(this, new MenuGameState(game)); };
         }
 
         public override void Initialize()
@@ -78,7 +79,7 @@ namespace TD
                         selectedTower.Row * 32 + 15.6f), 16.5f, 16, c, false, 2.0f);
                     Game.Components.Add(selectionCircle);
                 }
-                
+                                
                 if (map.AddTower(e.Row, e.Col, currentlyBuilding))
                 {
                     Tower added = map.GetTower(e.Row, e.Col);
@@ -102,7 +103,7 @@ namespace TD
                 };
 
             SetupUI();
-
+            
             base.LoadContent(content);
         }
 

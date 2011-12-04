@@ -40,11 +40,13 @@ namespace TD
             checkBoxAA.ForegroundColor = Color.Orange;
             checkBoxAA.Toggled = config.AA;
             checkBoxAA.ToggledChanged += (o, e) => config.AA = checkBoxAA.Toggled;
+            menu["aa"].Click += (o, e) => checkBoxAA.Toggled = !checkBoxAA.Toggled;
 
             CheckBox checkBoxBloom = new CheckBox(Game, new Rectangle((int)menu["bloom"].Position.X - 20, (int)menu["bloom"].Position.Y + 1, 15, 15));
             checkBoxBloom.ForegroundColor = Color.Orange;
             checkBoxBloom.Toggled = config.Bloom;            
             checkBoxBloom.ToggledChanged += (o, e) => config.Bloom = checkBoxBloom.Toggled;
+            menu["bloom"].Click += (o, e) => checkBoxBloom.Toggled = !checkBoxBloom.Toggled;
 
             AddComponent(menu);
             AddComponent(checkBoxAA);

@@ -9,6 +9,7 @@ namespace TD
     interface ITarget
     {
         Vector2 Center { get; }
+        List<IProjectileEffect> Effects { get; }
         bool DoDamage(int damage);
         event EventHandler<DeathEventArgs> Died;
     }

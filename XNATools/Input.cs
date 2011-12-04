@@ -5,9 +5,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace TD
+namespace XNATools
 {
-    class Input : GameComponent
+    public class Input : GameComponent
     {
         private KeyboardState prevKeyState;
         private MouseState prevMouseState;
@@ -21,6 +21,7 @@ namespace TD
             : base(game)
         {
             prevKeysDown = new Keys[0];
+            game.Components.Add(this);
         }
 
         public override void Update(GameTime gameTime)

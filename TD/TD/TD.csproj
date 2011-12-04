@@ -126,7 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
-    <Compile Include="Input.cs" />
     <Compile Include="LineEmitter.cs" />
     <Compile Include="MovingAgent.cs" />
     <Compile Include="Projectiles\AOEProjectile.cs" />
@@ -135,6 +134,7 @@
     <Compile Include="Projectiles\BouncingProjectile.cs" />
     <Compile Include="DeathEventArgs.cs" />
     <Compile Include="Emitter.cs" />
+    <Compile Include="Projectiles\DotEffect.cs" />
     <Compile Include="PulsatingCircle.cs" />
     <Compile Include="State\OptionsGameState.cs" />
     <Compile Include="Steering.cs" />

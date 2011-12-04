@@ -97,6 +97,7 @@
     <Compile Include="Draw.cs" />
     <Compile Include="GameExtensions.cs" />
     <Compile Include="GameHelper.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DelayedCallGeneric.cs" />
@@ -110,6 +111,7 @@
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\ProgressBar.cs" />
+    <Compile Include="UI\TextBox.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\TextOutput.cs" />
     <Compile Include="UI\Timeline.cs" />

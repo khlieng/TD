@@ -40,9 +40,17 @@ namespace XNATools.UI
             : base(game, position)
         {
             Font = font;
-            Text = text;      
+            Text = text;
+            Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
             HoveredColor = Color.Gray;
             ToggledColor = Color.Red;
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
+
+            base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)

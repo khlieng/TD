@@ -77,7 +77,7 @@ namespace TD
             cooldownBar = new ProgressBar(game, new Rectangle((int)position.X + 30, (int)position.Y + 2, 2, 28), Color.Black, Color.Orange);
             cooldownBar.BarDirection = Direction.Up;
             cooldownBar.ForegroundInset = 0;
-            game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(cooldownBar);
+            //game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(cooldownBar);
         }
 
         protected override void UnloadContent()

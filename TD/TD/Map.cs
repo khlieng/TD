@@ -85,7 +85,7 @@ namespace TD
             spriteBatch = Game.GetService<SpriteBatch>();
 
             GeneratePath();
-            //SmoothPath(3);
+            //SmoothPath(2);
 
             towers = new Tower[15, 20];
 
@@ -121,7 +121,12 @@ namespace TD
                         break;
                 }
 
-                if (towerToAdd != null && Player.TryTakeMoney(towerToAdd.Cost))
+                if (towerToAdd != null && Player.Money < towerToAdd.Cost)
+                {
+                    Vector2 start = new Vector2(col * 32, row * 32);
+                    new MovingText(Game, "Not enough money!", TheGame.GetFont(Font.Small), Color.Red, start, start - new Vector2(0, 20), 500);
+                }
+                else if (towerToAdd != null && Player.TryTakeMoney(towerToAdd.Cost))
                 {
                     towerAdded = towerToAdd;
                 }

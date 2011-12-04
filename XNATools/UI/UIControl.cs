@@ -62,7 +62,6 @@ namespace XNATools.UI
             {
                 text = value;
                 textSize = Font.MeasureString(text);
-                Bounds = new Rectangle(Bounds.X, Bounds.Y, (int)textSize.X, (int)textSize.Y);
             }
         }
 
@@ -71,6 +70,8 @@ namespace XNATools.UI
         {
             get { return hovered; }
         }
+
+        public bool HasFocus { get; private set; }
 
         public bool DropShadow { get; set; }
         public Color ShadowColor { get; set; }
@@ -102,10 +103,17 @@ namespace XNATools.UI
             MouseState mouseState = Mouse.GetState();
 
             if (mouseState.LeftButton == ButtonState.Released &&
-                prevMouseState.LeftButton == ButtonState.Pressed &&
-                IsMouseOver())
+                prevMouseState.LeftButton == ButtonState.Pressed)
             {
-                OnClick();
+                if (IsMouseOver())
+                {
+                    OnClick();
+                    HasFocus = true;
+                }
+                else
+                {
+                    HasFocus = false;
+                }
             }
 
             hovered = IsMouseOver();
