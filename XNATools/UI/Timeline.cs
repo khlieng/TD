@@ -77,6 +77,7 @@ namespace XNATools.UI
         {
             XNATools.Draw.Shape(background);
 
+            spriteBatch.Begin();
             foreach (var item in items)
             {
                 if (TimeOverlap(item))
@@ -103,12 +104,11 @@ namespace XNATools.UI
                         Vector2 textPos = new Vector2(itemPos.X + itemSize.X / 2.0f - textSize.X / 2.0f,
                             itemPos.Y + itemSize.Y / 2.0f - textSize.Y / 2.0f);
 
-                        spriteBatch.Begin();
                         spriteBatch.DrawString(font, item.Text, textPos, TextColor);
-                        spriteBatch.End();
                     }
                 }
             }
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

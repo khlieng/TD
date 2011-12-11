@@ -66,7 +66,7 @@ namespace TD
             {
                 spriteBatch.DrawString(font, builder, position + Vector2.One, Color.Black);
             }
-            spriteBatch.DrawString(font, builder, position, color);            
+            spriteBatch.DrawString(font, builder, position, color);
             spriteBatch.End();
 
             base.Draw(gameTime);

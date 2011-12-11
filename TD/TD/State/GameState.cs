@@ -81,7 +81,6 @@ namespace TD
             {
                 GameComponent component = removeThese.Dequeue();
                 components.Remove(component);
-                component.Dispose();
             }
 
             while (addThese.Count > 0)

@@ -11,8 +11,8 @@ namespace TD
     {
         private float speedReduction = 0.25f;
 
-        public SlowTower(Game game, int row, int col, IMobContainer mobs)
-            : base(game, row, col, mobs)
+        public SlowTower(Game game, IMobContainer mobs)
+            : base(game, mobs)
         {
             Name = "Slow Tower";
 

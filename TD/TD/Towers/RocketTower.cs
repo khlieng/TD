@@ -10,8 +10,10 @@ namespace TD
 {
     class RocketTower : Tower
     {
-        public RocketTower(Game game, int row, int col, IMobContainer mobs)
-            : base(game, row, col, mobs)
+        private Texture2D cannonTexture;
+
+        public RocketTower(Game game, IMobContainer mobs)
+            : base(game, mobs)
         {
             Name = "Rocket Tower";
 
@@ -25,9 +27,37 @@ namespace TD
 
         protected override void LoadContent()
         {
-            Texture = Game.Content.Load<Texture2D>("rocket_tower");
+            Texture = Game.Content.Load<Texture2D>("tower_base");
+            cannonTexture = Game.Content.Load<Texture2D>("rocket_top");
 
             base.LoadContent();
+        }
+        bool b = false;
+        float off;
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+
+            Vector2 c = center;
+            if (hot && !b)
+            {
+                b = true;
+                off = 5.0f;
+            }
+            if (b && off > 0)
+            {
+                c -= direction * off;
+
+                off -= 0.1f;
+                
+            }
+            if (off == 0 && !hot)
+                b = false;
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(cannonTexture, new Rectangle((int)c.X, (int)c.Y, 32, 32), null, Color.White, 
+                rotation, new Vector2(16, 16), SpriteEffects.None, 0);
+            spriteBatch.End();
         }
         
         protected override void Fire()

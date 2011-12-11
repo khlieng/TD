@@ -77,6 +77,8 @@ namespace XNATools.UI
         public Color ShadowColor { get; set; }
 
         public event EventHandler Click;
+        public event EventHandler MouseEnter;
+        public event EventHandler MouseLeave;
         public event EventHandler PositionChanged;
         public event EventHandler BoundsChanged;
 
@@ -120,11 +122,13 @@ namespace XNATools.UI
 
             if (IsMouseOver(mouseState) && !IsMouseOver(prevMouseState))
             {
+                OnMouseEnter();
                 OnShowTooltip();
             }
 
             if (!IsMouseOver(mouseState) && IsMouseOver(prevMouseState))
             {
+                OnMouseLeave();
                 OnHideTooltip();
             }
             
@@ -148,6 +152,22 @@ namespace XNATools.UI
             if (Click != null)
             {
                 Click(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnMouseEnter()
+        {
+            if (MouseEnter != null)
+            {
+                MouseEnter(this, EventArgs.Empty);
+            }
+        }
+
+        protected virtual void OnMouseLeave()
+        {
+            if (MouseLeave != null)
+            {
+                MouseLeave(this, EventArgs.Empty);
             }
         }
 

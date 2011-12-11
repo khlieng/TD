@@ -12,8 +12,8 @@ namespace TD
         private Emitter emitter;
         private float angle;
 
-        public FlameTower(Game game, int row, int col, IMobContainer mobs)
-            : base(game, row, col, mobs)
+        public FlameTower(Game game, IMobContainer mobs)
+            : base(game, mobs)
         {
             Name = "Flame Tower";
 
@@ -25,10 +25,9 @@ namespace TD
             SetStats(0);
         }
 
-        protected override void LoadContent()
+        public override void Place(int row, int col)
         {
-            Texture = new Texture2D(Game.GraphicsDevice, 1, 1);
-            Texture.SetData<Color>(new[] { Color.White });
+            base.Place(row, col);
 
             emitter = new Emitter(Game, center, 1, Game.Content.Load<Texture2D>("fire"));
             emitter.MaxDirectionDevation = 90;
@@ -38,6 +37,12 @@ namespace TD
             emitter.MaxDuration = 500;
             emitter.EmitOffset = 16;
             emitter.Emitting = true;
+        }
+
+        protected override void LoadContent()
+        {
+            Texture = new Texture2D(Game.GraphicsDevice, 1, 1);
+            Texture.SetData<Color>(new[] { Color.White });
 
             base.LoadContent();
         }

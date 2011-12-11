@@ -47,7 +47,7 @@ namespace TD
         private int rows, cols;
         private Tile[,] tiles;
 
-        private Tower[,] towers;
+        private Building[,] buildings;
 
         private Vector2 spawn;
         private Vector2 exit;
@@ -87,7 +87,7 @@ namespace TD
             GeneratePath();
             //SmoothPath(2);
 
-            towers = new Tower[15, 20];
+            buildings = new Building[15, 20];
 
             mobs = new LinkedList<Mob>();
             spawner = new MobSpawner(Game, this, 40.0f);
@@ -96,77 +96,80 @@ namespace TD
             base.LoadContent();
         }
 
-        public bool AddTower(int row, int col, TowerType type)
+        public bool Build(int row, int col, Building building)
         {
-            if (CanAddTower(row, col))
+            if (CanBuild(row, col))
             {
-                Tower towerAdded = null;
-                Tower towerToAdd = null;
-                switch (type)
-                {
-                    case TowerType.Machinegun:
-                        towerToAdd = new MachinegunTower(Game, row, col, this);
-                        break;
+                //Tower towerAdded = null;
+                //Tower towerToAdd = null;
+                //switch (type)
+                //{
+                //    case TowerType.Machinegun:
+                //        towerToAdd = new MachinegunTower(Game, row, col, this);
+                //        break;
 
-                    case TowerType.Rocket:
-                        towerToAdd = new RocketTower(Game, row, col, this);
-                        break;
+                //    case TowerType.Rocket:
+                //        towerToAdd = new RocketTower(Game, row, col, this);
+                //        break;
                         
-                    case TowerType.Slow:
-                        towerToAdd = new SlowTower(Game, row, col, this);
-                        break;
+                //    case TowerType.Slow:
+                //        towerToAdd = new SlowTower(Game, row, col, this);
+                //        break;
 
-                    case TowerType.Flame:
-                        towerToAdd = new FlameTower(Game, row, col, this);
-                        break;
-                }
+                //    case TowerType.Flame:
+                //        towerToAdd = new FlameTower(Game, row, col, this);
+                //        break;
+                //}
 
-                if (towerToAdd != null && Player.Money < towerToAdd.Cost)
+                if (Player.Money < building.Cost)
                 {
                     Vector2 start = new Vector2(col * 32, row * 32);
                     new MovingText(Game, "Not enough money!", TheGame.GetFont(Font.Small), Color.Red, start, start - new Vector2(0, 20), 500);
                 }
-                else if (towerToAdd != null && Player.TryTakeMoney(towerToAdd.Cost))
+                else if (Player.TryTakeMoney(building.Cost))
                 {
-                    towerAdded = towerToAdd;
+                    buildings[row, col] = building;
+                    building.Place(row, col);
+                    Game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(building);
+                    return true;
                 }
 
-                if (towerAdded != null)
-                {
-                    towers[row, col] = towerAdded;
-                    Game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(towerAdded);
-                    return true;
-                }                
+                //if (towerAdded != null)
+                //{
+                //    buildings[row, col] = towerAdded;
+                //    Game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(towerAdded);
+                //    return true;
+                //}                
             }
             return false;
         }
 
         public bool RemoveTower(int row, int col)
         {
-            if (towers[row, col] != null)
+            if (buildings[row, col] != null)
             {
-                Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(towers[row, col]);
-                towers[row, col] = null;
+                Game.GetService<GameStateManager>().GetState<MainGameState>().RemoveComponent(buildings[row, col]);
+                buildings[row, col] = null;
 
                 return true;
             }
             return false;
         }
 
-        public Tower GetTower(int row, int col)
+        public Building GetBuilding(int row, int col)
         {
             if (row >= 0 && col >= 0 && row < rows && col < cols)
             {
-                return towers[row, col];
+                return buildings[row, col];
             }
             return null;
         }
 
-        public bool CanAddTower(int row, int col)
+        public bool CanBuild(int row, int col)
         {
             if (row >= 0 && col >= 0 && row < rows && col < cols)
             {
-                return towers[row, col] == null && !tiles[row, col].Walkable;
+                return buildings[row, col] == null && !tiles[row, col].Walkable;
             }
             return false;
         }

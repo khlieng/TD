@@ -12,29 +12,33 @@ namespace TD
 {
     class MainGameState : GameState
     {
-        Texture2D overlay;
-        Label timeLabel;
-        Label fpsLabel;
-        Label moneyLabel;
-        Label livesLabel;
-        Label towerInfoLabel;
-        TextButton buttonUpgrade;
-        TextButton buttonSell;
-        Tooltip sellTooltip;
-        ToggleGroup towerButtons;
-        Timeline waveTimeline;
-        ProgressBar xpBar;
+        private Texture2D overlay;
+        private Label timeLabel;
+        private Label fpsLabel;
+        private Label moneyLabel;
+        private Label livesLabel;
+        private Label towerInfoLabel;
+        private TextButton buttonUpgrade;
+        private TextButton buttonSell;
+        private Tooltip sellTooltip;
+        private ToggleGroup towerButtons;
+        private Timeline waveTimeline;
+        private ProgressBar xpBar;
 
-        Map map;
-        TowerType currentlyBuilding;
-        Tower selectedTower;
-        PulsatingCircle selectionCircle;
+        private Map map;
+        //private Building currentlyBuilding;
+        private Func<Building> currentlyBuilding;
+        private Tower selectedTower;
+        private PulsatingCircle selectionCircle;
 
-        Vector2 radiusCircle;
-        float radius;
+        private Vector2 radiusCircle;
+        private float radius;
+        private float upgradedRadius;
 
-        int mCol, mRow;
-        MouseState prevMouse;
+        private int mCol, mRow;
+        private MouseState prevMouse;
+
+        private double gameSpeedMultiplier = 1.0;
 
         public MainGameState(Game game)
             : base(game)
@@ -64,51 +68,74 @@ namespace TD
             
             map = Game.Content.Load<Map>(@"Maps\test2");
             map.Click += (o, e) =>
-            {
-                selectedTower = map.GetTower(e.Row, e.Col);
+                {
+                    if (map.GetBuilding(e.Row, e.Col) is Tower)
+                    {
+                        selectedTower = (Tower)map.GetBuilding(e.Row, e.Col);
+                    }
+                    else if (map.GetBuilding(e.Row, e.Col) == null)
+                    {
+                        selectedTower = null;
+                    }
                 
-                if (selectionCircle != null)
-                {
-                    Game.Components.Remove(selectionCircle);
-                }
-                if (selectedTower != null)
-                {                    
-                    Color c = Color.Red;
-                    c.A = 255;
-                    selectionCircle = new PulsatingCircle(Game, new Vector2(selectedTower.Col * 32 + 15.6f,
-                        selectedTower.Row * 32 + 15.6f), 16.5f, 16, c, false, 2.0f);
-                    Game.Components.Add(selectionCircle);
-                }
+                    if (selectionCircle != null)
+                    {
+                        RemoveComponent(selectionCircle);
+                    }
+                    if (selectedTower != null)
+                    {
+                        radiusCircle = new Vector2(e.Col * 32 + 16, e.Row * 32 + 16);
+                        radius = selectedTower.GetStats().Range;
+
+                        Color c = Color.Red;
+                        c.A = 255;
+                        selectionCircle = new PulsatingCircle(Game, new Vector2(selectedTower.Col * 32 + 15.6f,
+                            selectedTower.Row * 32 + 15.6f), 16.5f, 16, c, false, 2.0f);
+                        AddComponent(selectionCircle);
+                    }
+                    else
+                    {
+                        radius = 0f;
+                    }
                                 
-                if (map.AddTower(e.Row, e.Col, currentlyBuilding))
-                {
-                    Tower added = map.GetTower(e.Row, e.Col);
-                    Vector2 startPos = new Vector2(e.Col * 32, e.Row * 32);
-                    new MovingText(Game, added.Cost + "$", TheGame.GetFont(Font.Small), Color.Yellow, startPos, startPos - new Vector2(0, 20), 500);
-                }
-            };
+                    if (currentlyBuilding != null && map.Build(e.Row, e.Col, currentlyBuilding()))
+                    {
+                        Building added = map.GetBuilding(e.Row, e.Col);
+                        Vector2 startPos = new Vector2(e.Col * 32, e.Row * 32);
+                        new MovingText(Game, "- $" + added.Cost, TheGame.GetFont(Font.Small), Color.Red, startPos, startPos - new Vector2(0, 20), 500);                        
+                    }
+                };
 
             map.MouseTileEnter += (o, e) =>
                 {
-                    Tower tower = map.GetTower(e.Row, e.Col);
-                    if (tower != null)
+                    if (!map.CanBuild(e.Row, e.Col))
                     {
-                        radiusCircle = new Vector2(e.Col * 32 + 16, e.Row * 32 + 16);
-                        radius = tower.GetStats().Range;
+                        radius = 0.0f;
                     }
                 };
             map.MouseTileLeave += (o, e) =>
                 {
-                    radius = 0.0f;
+                    if (selectedTower == null && currentlyBuilding == null)
+                    {
+                        radius = 0.0f;
+                    }
                 };
 
             SetupUI();
-            
+                        
             base.LoadContent(content);
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (gameSpeedMultiplier != 1.0)
+            {
+                gameTime = new GameTime(
+                    TimeSpan.FromTicks((long)(gameTime.TotalGameTime.Ticks * gameSpeedMultiplier)),
+                    TimeSpan.FromTicks((long)(gameTime.ElapsedGameTime.Ticks * gameSpeedMultiplier)),
+                    gameTime.IsRunningSlowly);
+            }
+
             MouseState currentMouse = Mouse.GetState();
             mCol = (currentMouse.X - (currentMouse.X % 32)) / 32;
             mRow = (currentMouse.Y - (currentMouse.Y % 32)) / 32;
@@ -116,10 +143,10 @@ namespace TD
             if (currentMouse.RightButton == ButtonState.Pressed &&
                 prevMouse.RightButton == ButtonState.Released)
             {
-                currentlyBuilding = TowerType.None;
+                currentlyBuilding = null;
                 towerButtons.UnToggleAll();
 
-                if (map.GetTower(mRow, mCol) == null)
+                if (map.GetBuilding(mRow, mCol) == null)
                 {
                     radius = 0.0f;
                 }
@@ -127,14 +154,14 @@ namespace TD
 
             UpdateTowerInfo();
 
-            timeLabel.Text = String.Format("{0:00}:{1:00}:{2}", gameTime.TotalGameTime.Minutes,
-                gameTime.TotalGameTime.Seconds, gameTime.TotalGameTime.Milliseconds);        
+            timeLabel.Text = String.Format("{0}:{1:00}", gameTime.TotalGameTime.Minutes,
+                gameTime.TotalGameTime.Seconds);        
 
             if (Player.Lives <= 0)
             {
                 Game.Exit();
             }
-
+            
             prevMouse = currentMouse;
 
             base.Update(gameTime);
@@ -153,61 +180,85 @@ namespace TD
             if (radius > 0.0f)
             {
                 XNATools.Draw.FilledCircle(radiusCircle, radius, 32, Color.FromNonPremultiplied(0, 0, 0, 16));
+                if (upgradedRadius > 0.0f)
+                {
+                    float delta = upgradedRadius - radius;
+                    Circle c = new Circle(radiusCircle, radius + delta / 2, 32, Color.FromNonPremultiplied(0, 255, 0, 16), false, delta);
+                    XNATools.Draw.Shape(c);
+                }
                 XNATools.Draw.Circle(radiusCircle, radius, 32, Color.FromNonPremultiplied(0, 0, 0, 64));
+                if (upgradedRadius > 0.0f)
+                {
+                    float delta = upgradedRadius - radius;
+                    XNATools.Draw.Circle(radiusCircle, radius + delta, 32, Color.FromNonPremultiplied(0, 255, 0, 64));
+                }
             }
         }
 
         private void DrawCurrentlyBuilding()
         {
-            if (currentlyBuilding != TowerType.None && 0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            //if (currentlyBuilding != TowerType.None && 0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
+            //{
+            //    Texture2D towerTexture = null;
+            //    Color color = new Color();
+
+            //    Tower tower = null;
+            //    switch (currentlyBuilding)
+            //    {
+            //        case TowerType.Machinegun:
+            //            tower = new MachinegunTower(Game, 0, 0, null);
+            //            break;
+
+            //        case TowerType.Rocket:
+            //            tower = new RocketTower(Game, 0, 0, null);
+            //            break;
+
+            //        case TowerType.Slow:
+            //            tower = new SlowTower(Game, 0, 0, null);
+            //            break;
+
+            //        case TowerType.Flame:
+            //            tower = new FlameTower(Game, 0, 0, null);
+            //            break;
+            //    }
+
+            //    if (map.CanBuild(mRow, mCol) && Tower.TextureNames.ContainsKey(currentlyBuilding))
+            //    {
+            //        if (Tower.TextureNames[currentlyBuilding] != string.Empty)
+            //        {
+            //            towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[currentlyBuilding]);
+            //        }
+            //        radiusCircle = new Vector2(mCol * 32 + 16, mRow * 32 + 16);
+            //        radius = tower.GetStats().Range;
+            //        color = Color.White;
+            //        color.A = 128;
+            //    }
+            //    else if (!map.CanBuild(mRow, mCol) && map.GetBuilding(mRow, mCol) == null && Tower.TextureNames.ContainsKey(currentlyBuilding))
+            //    {
+            //        color = Color.Red;
+            //        color.A = 64;
+            //        XNATools.Draw.FilledCircle(new Vector2(mCol * 32 + 16, mRow * 32 + 16), 14.0f, 16, color);
+            //    }
+
+            //    if (towerTexture != null)
+            //    {
+            //        spriteBatch.Begin();
+            //        spriteBatch.Draw(towerTexture, new Vector2(mCol * 32, mRow * 32), color);
+            //        spriteBatch.End();
+            //    }
+            //}
+            if (currentlyBuilding != null && 0 <= mCol && mCol < 20 && 0 <= mRow && mRow < 15)
             {
-                Texture2D towerTexture = null;
-                Color color = new Color();
-
-                Tower tower = null;
-                switch (currentlyBuilding)
-                {
-                    case TowerType.Machinegun:
-                        tower = new MachinegunTower(Game, 0, 0, null);
-                        break;
-
-                    case TowerType.Rocket:
-                        tower = new RocketTower(Game, 0, 0, null);
-                        break;
-
-                    case TowerType.Slow:
-                        tower = new SlowTower(Game, 0, 0, null);
-                        break;
-
-                    case TowerType.Flame:
-                        tower = new FlameTower(Game, 0, 0, null);
-                        break;
-                }
-
-                if (map.CanAddTower(mRow, mCol) && Tower.TextureNames.ContainsKey(currentlyBuilding))
-                {
-                    if (Tower.TextureNames[currentlyBuilding] != string.Empty)
-                    {
-                        towerTexture = Game.Content.Load<Texture2D>(Tower.TextureNames[currentlyBuilding]);
-                    }
-                    radiusCircle = new Vector2(mCol * 32 + 16, mRow * 32 + 16);
-                    radius = tower.GetStats().Range;
-                    color = Color.White;
-                    color.A = 128;
-                }
-                else if (!map.CanAddTower(mRow, mCol) && map.GetTower(mRow, mCol) == null && Tower.TextureNames.ContainsKey(currentlyBuilding))
+                Color color = Color.White;
+                if (!map.CanBuild(mRow, mCol))
                 {
                     color = Color.Red;
-                    color.A = 64;
-                    XNATools.Draw.FilledCircle(new Vector2(mCol * 32 + 16, mRow * 32 + 16), 14.0f, 16, color);
                 }
+                color.A = 128;
 
-                if (towerTexture != null)
-                {
-                    spriteBatch.Begin();
-                    spriteBatch.Draw(towerTexture, new Vector2(mCol * 32, mRow * 32), color);
-                    spriteBatch.End();
-                }
+                spriteBatch.Begin();
+                spriteBatch.Draw(currentlyBuilding().Texture, new Vector2(mCol * 32, mRow * 32), color);
+                spriteBatch.End();
             }
         }
 
@@ -309,14 +360,19 @@ namespace TD
             buttonSlow.DropShadow = true;
             buttonFlame.ToggleAble = true;
             buttonFlame.DropShadow = true;
-            towerButtons = new ToggleGroup(buttonMachinegun, buttonRocket, buttonSlow, buttonFlame);
 
-            var machinegunTowerData = new MachinegunTower(Game, 0, 0, null).GetStats();
+            TextButton buttonBank = new TextButton(Game, new Vector2(buttonFlame.Bounds.Right + 20, 520), "Bank", TheGame.GetFont(Font.Large));
+            buttonBank.ToggleAble = true;
+            buttonBank.DropShadow = true;
+
+            towerButtons = new ToggleGroup(buttonMachinegun, buttonRocket, buttonSlow, buttonFlame, buttonBank);
+
+            var machinegunTowerData = new MachinegunTower(Game, null).GetStats();
             Tooltip machinegunTooltip = new Tooltip(Game, buttonMachinegun,
                 string.Format("A tower that fires bullets\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
                 machinegunTowerData.Damage, SpeedToAPS(machinegunTowerData.Speed), machinegunTowerData.Range, machinegunTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
 
-            var rocketTowerData = new RocketTower(Game, 0, 0, null).GetStats();
+            var rocketTowerData = new RocketTower(Game, null).GetStats();
             Tooltip rocketTooltip = new Tooltip(Game, buttonRocket,
                 string.Format("A tower that fires rockets\nwhich deals AOE damage\n\nDamage: {0}\nSpeed: {1:0.0}\nRange: {2:0}\nCost: {3}",
                 rocketTowerData.Damage, SpeedToAPS(rocketTowerData.Speed), rocketTowerData.Range, rocketTowerData.Cost), TheGame.GetFont(Font.Small)) { TextColor = Color.DarkOrange };
@@ -344,27 +400,47 @@ namespace TD
             moneyLabel.DropShadow = true;
             livesLabel = new Label(Game, new Vector2(650, 25), "Lives: " + Player.Lives, TheGame.GetFont(Font.Large));
             livesLabel.DropShadow = true;
-            towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.GetFont(Font.Large));
+            towerInfoLabel = new Label(Game, new Vector2(650, 60), string.Empty, TheGame.GetFont(Font.Small));
             towerInfoLabel.DropShadow = true;
             
-            buttonMachinegun.Click += (o, e) => currentlyBuilding = buttonMachinegun.Toggled ? TowerType.Machinegun : TowerType.None;
-            buttonRocket.Click += (o, e) => currentlyBuilding = buttonRocket.Toggled ? TowerType.Rocket : TowerType.None;
-            buttonSlow.Click += (o, e) => currentlyBuilding = buttonSlow.Toggled ? TowerType.Slow : TowerType.None;
-            buttonFlame.Click += (o, e) => currentlyBuilding = buttonFlame.Toggled ? TowerType.Flame : TowerType.None;
+            //buttonMachinegun.Click += (o, e) => currentlyBuilding = buttonMachinegun.Toggled ? TowerType.Machinegun : TowerType.None;
+            //buttonRocket.Click += (o, e) => currentlyBuilding = buttonRocket.Toggled ? TowerType.Rocket : TowerType.None;
+            //buttonSlow.Click += (o, e) => currentlyBuilding = buttonSlow.Toggled ? TowerType.Slow : TowerType.None;
+            //buttonFlame.Click += (o, e) => currentlyBuilding = buttonFlame.Toggled ? TowerType.Flame : TowerType.None;
+            buttonMachinegun.Click += (o, e) => currentlyBuilding = () => new MachinegunTower(Game, map);
+            buttonRocket.Click += (o, e) => currentlyBuilding = () => new RocketTower(Game, map);
+            buttonSlow.Click += (o, e) => currentlyBuilding = () => new SlowTower(Game, map);
+            buttonFlame.Click += (o, e) => currentlyBuilding = () => new FlameTower(Game, map);
+            buttonBank.Click += (o, e) => currentlyBuilding = () => new Bank(Game, 5, 2000);
 
             buttonUpgrade.Click += (o, e) =>
                 {
                     if (Player.TryTakeMoney(selectedTower.UpgradeCost()))
                     {
                         selectedTower.Upgrade();
+                        radius = selectedTower.GetStats().Range;
                     }
+                };
+            buttonUpgrade.MouseEnter += (o, e) =>
+                {
+                    Tower.TowerData current = selectedTower.GetStats();
+                    Tower.TowerData upgraded = selectedTower.GetNextUpgradeStats();
+
+                    if (upgraded.Range - current.Range > 0.0f)
+                    {
+                        upgradedRadius = upgraded.Range;
+                    }
+                };
+            buttonUpgrade.MouseLeave += (o, e) =>
+                {
+                    upgradedRadius = 0f;
                 };
             buttonSell.Click += (o, e) =>
                 {
                     map.RemoveTower(selectedTower.Row, selectedTower.Col);
                     Player.AddMoney((int)(0.75 * selectedTower.Cost));
                     selectedTower = null;
-                    Game.Components.Remove(selectionCircle);
+                    RemoveComponent(selectionCircle);
                     selectionCircle = null;
                 };
 
@@ -394,6 +470,7 @@ namespace TD
             AddComponent(buttonRocket);
             AddComponent(buttonSlow);
             AddComponent(buttonFlame);
+            AddComponent(buttonBank);
             AddComponent(buttonUpgrade);
             AddComponent(buttonSell);
             AddComponent(xpBar);

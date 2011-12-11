@@ -58,7 +58,8 @@ namespace XNATools.UI
             spriteBatch.Begin();
             spriteBatch.Draw(temp, new Rectangle((int)position.X, (int)position.Y, 
                 (int)textSize.X + 20, (int)textSize.Y + 10), Color.White);
-            spriteBatch.DrawString(Font, text, position + new Vector2(10, 5), TextColor);            
+            spriteBatch.DrawString(Font, text, position + new Vector2(11, 6), Color.Black);
+            spriteBatch.DrawString(Font, text, position + new Vector2(10, 5), TextColor);
             spriteBatch.End();
 
             XNATools.Draw.Rect(position, 

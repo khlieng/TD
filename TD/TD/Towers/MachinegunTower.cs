@@ -11,8 +11,8 @@ namespace TD
     {
         private Emitter bulletEmitter;
 
-        public MachinegunTower(Game game, int row, int col, IMobContainer mobs)
-            : base(game, row, col, mobs)
+        public MachinegunTower(Game game, IMobContainer mobs)
+            : base(game, mobs)
         {
             Name = "Machinegun Tower";
 

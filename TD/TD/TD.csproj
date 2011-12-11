@@ -126,6 +126,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="Buildings\Bank.cs" />
+    <Compile Include="Buildings\Building.cs" />
     <Compile Include="LineEmitter.cs" />
     <Compile Include="MovingAgent.cs" />
     <Compile Include="Projectiles\AOEProjectile.cs" />

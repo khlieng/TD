@@ -11,19 +11,8 @@ namespace TD
 {
     enum TowerType { None, Machinegun, Rocket, Slow, Flame }
 
-    abstract class Tower : DrawableGameComponent
+    abstract class Tower : Building
     {
-        protected SpriteBatch spriteBatch;
-        public Texture2D Texture { get; protected set; }
-        public static Dictionary<TowerType, string> TextureNames = new Dictionary<TowerType, string>();
-        static Tower()
-        {
-            TextureNames.Add(TowerType.Machinegun, string.Empty);
-            TextureNames.Add(TowerType.Rocket, "rocket_tower");
-            TextureNames.Add(TowerType.Slow, "slow_tower");
-            TextureNames.Add(TowerType.Flame, string.Empty);
-        }
-        
         public struct TowerData
         {
             public int Damage;
@@ -43,41 +32,30 @@ namespace TD
         private float cooldown;
         protected float speed;
         protected float range;
-        protected Vector2 position;
-        protected Vector2 center;
+
+        protected float rotation;
+        protected Vector2 direction;
+        
         protected IMobContainer mobs;
         protected Rectangle? sourceRect;
 
         private ProgressBar cooldownBar;
 
         public ITarget Target { get; set; }
-        public int Cost { get; private set; }
-
-        public int Row { get; private set; }
-        public int Col { get; private set; }
-
+        
         private static int count = 0;
         private int id;
 
-        public Tower(Game game, int row, int col, IMobContainer mobs) : base(game)
+        public Tower(Game game, IMobContainer mobs) : base(game)
         {
             DrawOrder = 10;
             spriteBatch = game.GetService<SpriteBatch>();
             upgradeLevels = new List<TowerData>();
 
-            Row = row;
-            Col = col;
-            position = new Vector2(col * 32, row * 32);
-            center = new Vector2(position.X + 16, position.Y + 16);
             this.mobs = mobs;
 
             id = count;
             count++;
-
-            cooldownBar = new ProgressBar(game, new Rectangle((int)position.X + 30, (int)position.Y + 2, 2, 28), Color.Black, Color.Orange);
-            cooldownBar.BarDirection = Direction.Up;
-            cooldownBar.ForegroundInset = 0;
-            //game.GetService<GameStateManager>().GetState<MainGameState>().AddComponent(cooldownBar);
         }
 
         protected override void UnloadContent()
@@ -153,9 +131,16 @@ namespace TD
                 TryFindTarget();
             }
 
-            if (Target != null && !isCooling)
+            if (Target != null)
             {
-                Fire();
+                direction = Target.Center - center;
+                direction.Normalize();
+                rotation = (float)(Math.Atan2(direction.Y, direction.X) + MathHelper.PiOver2);
+
+                if (!isCooling)
+                {
+                    Fire();
+                }
             }
 
             base.Update(gameTime);
@@ -166,7 +151,7 @@ namespace TD
             spriteBatch.Begin();
             if (hot)
             {
-                spriteBatch.Draw(Texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.Red);
+                spriteBatch.Draw(Texture, new Rectangle((int)position.X, (int)position.Y, 32, 32), sourceRect, Color.White);
             }
             else
             {
@@ -181,8 +166,6 @@ namespace TD
         {
             float timeDelta = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
             cooldown += timeDelta;
-
-            cooldownBar.Percentage = (int)(100.0f / speed * (speed - cooldown));
 
             // The tower is in the hot state of 1/8th of the cooldown
             if (cooldown > speed / 8.0f)
@@ -209,7 +192,7 @@ namespace TD
             {
                 if ((mob.Center - center).Length() < range)
                 {
-                    Target = mob;
+                    Target = mob;                    
                     Target.Died += (o, e) => Target = null;
                     break;
                 }

@@ -31,8 +31,8 @@ namespace XNATools.UI
                 start = 0;
             }
             int end = start + Math.Min(outputSize, buffer.Length);
-            
-            spriteBatch.Begin();            
+
+            spriteBatch.Begin();
             for (int i = start; i < end; i++)
             {
                 if (buffer[i] == null)
