@@ -9,6 +9,16 @@ using XNATools;
 
 namespace XNATools.UI
 {
+    public class MouseEventArgs : EventArgs
+    {
+        public MouseState State { get; private set; }
+
+        public MouseEventArgs(MouseState state)
+        {
+            State = state;
+        }
+    }
+
     public abstract class UIControl : DrawableGameComponent, ITooltipProvider
     {
         protected SpriteBatch spriteBatch;
@@ -76,7 +86,7 @@ namespace XNATools.UI
         public bool DropShadow { get; set; }
         public Color ShadowColor { get; set; }
 
-        public event EventHandler Click;
+        public event EventHandler<MouseEventArgs> Click;
         public event EventHandler MouseEnter;
         public event EventHandler MouseLeave;
         public event EventHandler PositionChanged;
@@ -86,7 +96,7 @@ namespace XNATools.UI
             : base(game)
         {
             spriteBatch = game.GetService<SpriteBatch>();
-
+            
             Position = position;
             Color = Color.White;
             ShadowColor = Color.Black;
@@ -103,13 +113,15 @@ namespace XNATools.UI
         public override void Update(GameTime gameTime)
         {
             MouseState mouseState = Mouse.GetState();
-
-            if (mouseState.LeftButton == ButtonState.Released &&
-                prevMouseState.LeftButton == ButtonState.Pressed)
+            
+            if ((mouseState.LeftButton == ButtonState.Released &&
+                prevMouseState.LeftButton == ButtonState.Pressed) ||
+                (mouseState.RightButton == ButtonState.Released &&
+                prevMouseState.RightButton == ButtonState.Pressed))
             {
                 if (IsMouseOver())
                 {
-                    OnClick();
+                    OnClick(new MouseEventArgs(prevMouseState));
                     HasFocus = true;
                 }
                 else
@@ -147,11 +159,11 @@ namespace XNATools.UI
             return IsMouseOver(Mouse.GetState());
         }
 
-        protected virtual void OnClick()
+        protected virtual void OnClick(MouseEventArgs args)
         {
             if (Click != null)
             {
-                Click(this, EventArgs.Empty);
+                Click(this, args);
             }
         }
 

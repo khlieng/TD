@@ -77,11 +77,11 @@ namespace XNATools.UI
             base.Draw(gameTime);
         }
 
-        protected override void OnClick()
+        protected override void OnClick(MouseEventArgs args)
         {
             Toggled = !toggled;
-
-            base.OnClick();
+            
+            base.OnClick(args);
         }
 
         protected virtual void OnToggleChanged()

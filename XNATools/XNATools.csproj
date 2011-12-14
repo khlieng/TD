@@ -111,6 +111,8 @@
     <Compile Include="UI\Label.cs" />
     <Compile Include="UI\Menu.cs" />
     <Compile Include="UI\ProgressBar.cs" />
+    <Compile Include="UI\SkillButton.cs" />
+    <Compile Include="UI\SkillTree.cs" />
     <Compile Include="UI\TextBox.cs" />
     <Compile Include="UI\TextButton.cs" />
     <Compile Include="UI\TextOutput.cs" />

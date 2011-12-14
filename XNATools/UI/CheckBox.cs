@@ -73,11 +73,11 @@ namespace XNATools.UI
                 Bounds.Width - ForegroundInset * 2, Bounds.Height - ForegroundInset * 2);
         }
 
-        protected override void OnClick()
+        protected override void OnClick(MouseEventArgs args)
         {
             Toggled = !toggled;
 
-            base.OnClick();
+            base.OnClick(args);
         }
 
         protected override void OnBoundsChanged()

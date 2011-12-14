@@ -267,7 +267,7 @@ namespace TD
             if (selectedTower != null)
             {
                 Tower.TowerData data = selectedTower.GetStats();
-
+                
                 if (buttonUpgrade.Hovered && selectedTower.UpgradeAvailable())
                 {
                     Tower.TowerData upgradedData = selectedTower.GetNextUpgradeStats();
@@ -459,7 +459,18 @@ namespace TD
             TextButton buttonNextWave = new TextButton(Game, new Vector2(520, 565), "Next wave!", TheGame.GetFont(Font.Large));
             buttonNextWave.DropShadow = true;
             buttonNextWave.Click += (o, e) => waveTimeline.JumpToNextItem();
-            
+
+            SkillButton skillButton = new SkillButton(Game, new Vector2(100, 100), 
+                Game.Content.Load<Texture2D>("SkillTest"), TheGame.GetFont(Font.Small), 2, 5);
+            Tooltip skillTooltip = new Tooltip(Game, skillButton, "Increases your damage by an additional 5% per point", TheGame.GetFont(Font.Small));
+
+            SkillTree tree = new SkillTree(Game, new Vector2(5, 5));
+            tree.MaxPoints = 10;
+            tree.AddSkill("Roast Beef", new SkillButton(Game, new Vector2(0, 0), Game.Content.Load<Texture2D>("SkillTest"), TheGame.GetFont(Font.Small), 0, 5), 0);
+            tree.AddSkill("Cheese", new SkillButton(Game, new Vector2(0, 0), Game.Content.Load<Texture2D>("SkillTest"), TheGame.GetFont(Font.Small), 0, 4), 1);
+            tree.AddSkill("Pie", new SkillButton(Game, new Vector2(0, 0), Game.Content.Load<Texture2D>("SkillTest"), TheGame.GetFont(Font.Small), 0, 3), 2);
+            tree.AddSkill("Flameburst", new SkillButton(Game, new Vector2(0, 0), Game.Content.Load<Texture2D>("SkillTest"), TheGame.GetFont(Font.Small), 0, 1), 2);
+
             AddComponent(timeLabel);
             AddComponent(fpsLabel);
             AddComponent(moneyLabel);
@@ -482,6 +493,9 @@ namespace TD
             AddComponent(sellTooltip);
             AddComponent(waveTimeline);
             AddComponent(buttonNextWave);
+            //AddComponent(skillButton);
+            //AddComponent(skillTooltip);
+            AddComponent(tree);
         }
     }
 }

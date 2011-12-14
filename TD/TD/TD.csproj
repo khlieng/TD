@@ -139,6 +139,7 @@
     <Compile Include="Projectiles\DotEffect.cs" />
     <Compile Include="PulsatingCircle.cs" />
     <Compile Include="State\OptionsGameState.cs" />
+    <Compile Include="StatValueTypes.cs" />
     <Compile Include="Steering.cs" />
     <Compile Include="Text\MovingTextStream.cs" />
     <Compile Include="Towers\FlameTower.cs" />

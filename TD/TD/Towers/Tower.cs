@@ -9,7 +9,7 @@ using XNATools.UI;
 
 namespace TD
 {
-    enum TowerType { None, Machinegun, Rocket, Slow, Flame }
+    //enum TowerType { None, Machinegun, Rocket, Slow, Flame }    
 
     abstract class Tower : Building
     {
@@ -26,12 +26,12 @@ namespace TD
 
         public string Name { get; protected set; }
 
-        protected int damage;
+        protected IntStat damage;
         private bool isCooling;
         protected bool hot;
         private float cooldown;
-        protected float speed;
-        protected float range;
+        protected FloatStat speed;
+        protected FloatStat range;
 
         protected float rotation;
         protected Vector2 direction;
